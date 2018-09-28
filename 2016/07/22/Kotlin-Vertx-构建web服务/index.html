@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>Kotlin &amp; Vertx 构建web服务 | ThinkCat Me</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="Kotlin,Vertx," />
+  
+
+  <meta name="description" content="感想 Kotlin 是一门好语言，值得大家了解一下。   Vertx 是一个好框架，也值得大家了解一下。  Kotlin写过js，也写过一点点go，主力一直是java。用了kotlin，貌似找到了常用语言的平衡点了。 Kotlin 拥有一些偏函数式的语法（java8 也引入了一些），提供了相当多便捷的api与一些高阶函数。从两天的试用，以及今天搞得这个 Vertx web 项目，从中体会到最爽的有">
+<meta name="keywords" content="Kotlin,Vertx">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kotlin &amp; Vertx 构建web服务">
+<meta property="og:url" content="http://thinkcat.me/2016/07/22/Kotlin-Vertx-构建web服务/index.html">
+<meta property="og:site_name" content="ThinkCat Me">
+<meta property="og:description" content="感想 Kotlin 是一门好语言，值得大家了解一下。   Vertx 是一个好框架，也值得大家了解一下。  Kotlin写过js，也写过一点点go，主力一直是java。用了kotlin，貌似找到了常用语言的平衡点了。 Kotlin 拥有一些偏函数式的语法（java8 也引入了一些），提供了相当多便捷的api与一些高阶函数。从两天的试用，以及今天搞得这个 Vertx web 项目，从中体会到最爽的有">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-08T01:44:24.111Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kotlin &amp; Vertx 构建web服务">
+<meta name="twitter:description" content="感想 Kotlin 是一门好语言，值得大家了解一下。   Vertx 是一个好框架，也值得大家了解一下。  Kotlin写过js，也写过一点点go，主力一直是java。用了kotlin，貌似找到了常用语言的平衡点了。 Kotlin 拥有一些偏函数式的语法（java8 也引入了一些），提供了相当多便捷的api与一些高阶函数。从两天的试用，以及今天搞得这个 Vertx web 项目，从中体会到最爽的有">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cben" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/css/personal-style.css">
+  
+
+  
+
+  
+
+  
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">主页</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">主页</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="https://github.com/ThinkCats"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            Git
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#感想"><span class="toc-text">感想</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Kotlin"><span class="toc-text">Kotlin</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Vertx"><span class="toc-text">Vertx</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Kotlin-amp-Vertx"><span class="toc-text">Kotlin &amp; Vertx</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-maven-配置"><span class="toc-text">1.maven 配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-程序入口"><span class="toc-text">2.程序入口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-路由设置"><span class="toc-text">3.路由设置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-还有一个bean-对象"><span class="toc-text">4. 还有一个bean 对象</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#另外一些感想"><span class="toc-text">另外一些感想</span></a></li></ol></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-Kotlin-Vertx-构建web服务" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">Kotlin &amp; Vertx 构建web服务</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2016.07.22</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>ThinkCat</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/Kotlin-Vertx/">Kotlin,Vertx</a>
+  </span>
+
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h2 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h2><blockquote>
+<p>Kotlin 是一门好语言，值得大家了解一下。</p>
+</blockquote>
+<blockquote>
+<p>Vertx 是一个好框架，也值得大家了解一下。</p>
+</blockquote>
+<h4 id="Kotlin"><a href="#Kotlin" class="headerlink" title="Kotlin"></a>Kotlin</h4><p>写过js，也写过一点点go，主力一直是java。用了kotlin，貌似找到了常用语言的平衡点了。</p>
+<p>Kotlin 拥有一些偏函数式的语法（java8 也引入了一些），提供了相当多便捷的api与一些高阶函数。从两天的试用，以及今天搞得这个 Vertx web 项目，从中体会到最爽的有两点：</p>
+<ul>
+<li>支持“带接收者得函数字面值”(允许你直接指定函数的receiver的类型)这一特性。这个特性，在go里面经常看到。然而，java没有，java8也没有…  </li>
+<li>支持扩展函数（或许是我见识短，这功能爆炸了）</li>
+</ul>
+<p>一直很期待可以指定receiver这个功能。有了这个特性，那么写的函数，可以直接被调用者使用。</p>
+<h4 id="Vertx"><a href="#Vertx" class="headerlink" title="Vertx"></a>Vertx</h4><p>vertx 风格和node的express框架思想一致的，换了一种java的实现。不得不说，node的express 启发了很多其他语言的web框架设计。java的vertx，以及go里面的很多web框架(martin…)，很多都有express的影子(难道是我先入为主？)</p>
+<p>相比传统的基于Servlet的java web框架，vertx这种基于封装底层通信的框架，在速度上和内存占用上比较有优势。曾经为了在768M内存的docker容器上跑web应用，先是用相对较轻量级的spring-boot,勉强可以跑。然后又用了Node 的 express，这个毫无压力。</p>
+<p>终于有一个java版本的这种web框架，整个项目打完包，包括依赖的 lib，整个才4-5M的大小（主要是lib大小），太轻量了。</p>
+<p>下面就看看 Kotlin + Vertx 写的web项目，展示下kotlin的魅力。你要是比较懒的话，想直接check out代码，github库<a href="https://github.com/ThinkCats/Vertx.git" target="_blank" rel="noopener">在这里</a>。</p>
+<h3 id="Kotlin-amp-Vertx"><a href="#Kotlin-amp-Vertx" class="headerlink" title="Kotlin &amp; Vertx"></a>Kotlin &amp; Vertx</h3><h4 id="1-maven-配置"><a href="#1-maven-配置" class="headerlink" title="1.maven 配置"></a>1.maven 配置</h4><p> 按照kotlin和vertx官方的配置。<br> <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line"> &lt;?xml version="1.0" encoding="UTF-8"?&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">"http://maven.apache.org/POM/4.0.0"</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>vertx<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>com.vertx<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-compiler-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">source</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">source</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">target</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">target</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-shade-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.3<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">phase</span>&gt;</span>package<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">goal</span>&gt;</span>shade<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">transformers</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">transformer</span></span></span><br><span class="line"><span class="tag">                                        <span class="attr">implementation</span>=<span class="string">"org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;<span class="name">manifestEntries</span>&gt;</span></span><br><span class="line">                                        <span class="tag">&lt;<span class="name">Main-Class</span>&gt;</span>com.tt.vertx.HelloWorlds<span class="tag">&lt;/<span class="name">Main-Class</span>&gt;</span></span><br><span class="line">                                        <span class="tag">&lt;<span class="name">Main-Verticle</span>&gt;</span>com.tt.vertx.HelloWorlds<span class="tag">&lt;/<span class="name">Main-Verticle</span>&gt;</span></span><br><span class="line">                                    <span class="tag">&lt;/<span class="name">manifestEntries</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;/<span class="name">transformer</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">transformers</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">artifactSet</span>/&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">outputFile</span>&gt;</span>$&#123;project.build.directory&#125;/$&#123;project.artifactId&#125;-$&#123;project.version&#125;-fat.jar<span class="tag">&lt;/<span class="name">outputFile</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.jetbrains.kotlin<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>kotlin-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;kotlin.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">id</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">phase</span>&gt;</span>process-sources<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">goal</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">sourceDirs</span>&gt;</span></span><br><span class="line">                                <span class="tag">&lt;<span class="name">source</span>&gt;</span>src/main/java<span class="tag">&lt;/<span class="name">source</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;/<span class="name">sourceDirs</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">id</span>&gt;</span>test-compile<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">phase</span>&gt;</span>process-test-sources<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">goal</span>&gt;</span>test-compile<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">sourceDirs</span>&gt;</span><span class="tag">&lt;/<span class="name">sourceDirs</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.vertx<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>vertx-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.2.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.jetbrains.kotlin<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>kotlin-stdlib<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;kotlin.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">kotlin.version</span>&gt;</span>1.0.3<span class="tag">&lt;/<span class="name">kotlin.version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="2-程序入口"><a href="#2-程序入口" class="headerlink" title="2.程序入口"></a>2.程序入口</h4><p>和spring-boot 一样，vertx 的程序入口也是一个静态的main函数。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">class  HelloWorlds : AbstractVerticle() &#123;</span><br><span class="line"></span><br><span class="line">    companion object&#123;</span><br><span class="line">        <span class="meta">@JvmStatic</span> <span class="function">fun <span class="title">main</span><span class="params">(args: Array&lt;String&gt;)</span></span>&#123;</span><br><span class="line">            var vertx = Vertx.vertx()</span><br><span class="line">            vertx.deployVerticle(HelloWorlds())</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">override fun <span class="title">start</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        var router = customRouter(vertx)</span><br><span class="line">        println(<span class="string">"server running on 8888"</span>)</span><br><span class="line">        vertx.createHttpServer().requestHandler(&#123; handler -&gt; router.accept(handler)&#125;).listen(<span class="number">8888</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果写过nodejs应用，这段代码看起来就很简单了。继承vertx的启动类，在启动的时候，设置路由，绑定http server的端口。</p>
+<p><code>注意</code></p>
+<blockquote>
+<p>和普通的kotlin运行类不一样，入口主类需要打jar包的时候，主方法（main）一定是要是java的标准静态方法. 需要加 @JvmStatic 标注一下。否则运行打出来的jar包，会找不到静态主入口。</p>
+</blockquote>
+<p>在这里，封装了一下路由，提取到了单独的文件中。</p>
+<h4 id="3-路由设置"><a href="#3-路由设置" class="headerlink" title="3.路由设置"></a>3.路由设置</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">fun <span class="title">customRouter</span><span class="params">(vertx : Vertx)</span> : Router </span>&#123;</span><br><span class="line">    var router = Router.router(vertx)</span><br><span class="line">    router.route(<span class="string">"/"</span>).handler(&#123;c -&gt; c.response().html().end(<span class="string">"hello world"</span>)&#125;)</span><br><span class="line">    router.route(<span class="string">"/json"</span>).handler(&#123;c -&gt; c.response().json().end(Json.encode(Entity(<span class="string">"name"</span>,<span class="string">"sss"</span>)))&#125;)</span><br><span class="line">    <span class="keyword">return</span> router</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fun HttpServerResponse.html() : HttpServerResponse &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.putHeader(<span class="string">"content-type"</span>,<span class="string">"text/html"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fun HttpServerResponse.json() : HttpServerResponse &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.putHeader(<span class="string">"content-type"</span>,<span class="string">"application/json; charset=utf-8"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>让我觉得kotlin拯救了我的地方就在这一段路由代码里。</p>
+<p>先看一下，之前用纯java写的路由版本是什么样的吧，对比一下。</p>
+<p>java版本：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">router.route(<span class="string">"/"</span>).handler(context -&gt; context.response().putHeader(<span class="string">"content-type"</span>,<span class="string">"text/html"</span>).end(<span class="string">"hello world"</span>));</span><br><span class="line">  router.route(<span class="string">"/json"</span>).handler(context -&gt; &#123;</span><br><span class="line">      context.response().putHeader(<span class="string">"content-type"</span>,<span class="string">"application/json; charset=utf-8"</span>)</span><br><span class="line">              .end(Json.encodePrettily(<span class="keyword">new</span> Entity(<span class="string">"hello"</span>,<span class="string">"world"</span>)));</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure></p>
+<p>在java版本里面，给每个请求加header的时候，是要加 <code>.putHeader(&quot;content-type&quot;,&quot;xxxx&quot;)</code> 的。</p>
+<p>试想一下，如果我们有上百个路由的话，每个头里面都要指定这些header，多痛苦。根据经验，我们可能想把它提出来，当做一个方法。于是我们需要写一个工具类之类的，给<code>context.response()</code>的结果 HttpServerResponse 加上header，然后再返回这个 HttpServerResponse，最直观的大概写法应该是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SomeUtil.setHeader(context.response()).end(&apos;xxx&apos;)</span><br></pre></td></tr></table></figure></p>
+<p>不管怎么说，因为java的语法限制，我们貌似只能这么写（如果有更好的方法，请大家共享一下）。</p>
+<p>看一下kotlin版本的，把加header的操作提了出来，弄成了两个函数。这两个函数是函数接收字面量和扩展函数的结合体，使用扩展函数，这是个，也必须声明一个函数的接受者类型。<br>我们定义html() 和 json() 函数， 这两个方法只能用HttpServerResponse 去执行它，并且返回执行后的该 HttpServerResponse。 在扩展函数里面，this指向的是该函数的调用者。语法官方有详细文档，就少说了（好多语法我也没有看完 ORZ ）。</p>
+<p>这个特性超级好用，尤其是在这种链式的调用里面，我们不用在去另写写转换方法，不用在把要转换的对象当参数来回传递了。</p>
+<h4 id="4-还有一个bean-对象"><a href="#4-还有一个bean-对象" class="headerlink" title="4. 还有一个bean 对象"></a>4. 还有一个bean 对象</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">data class <span class="title">Entity</span><span class="params">(var name:String,var description:String)</span></span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>第一次写这个bean的时候，我写错了，无论如何，在路由里面，就是无法取到该bean构造后的值。看了官方文档才知道，这个类是需要加一个data前缀的，这样才会生成 equals ，hashCode ，Setter, Getter 等这些方法。</p>
+<h3 id="另外一些感想"><a href="#另外一些感想" class="headerlink" title="另外一些感想"></a>另外一些感想</h3><p>主要代码都在这里了，完整的代码<a href="https://github.com/ThinkCats/Vertx.git" target="_blank" rel="noopener">在这里</a>。</p>
+<p>用kotlin , 感觉很幸福，相见恨晚。</p>
+<p>代码写的少，对java 是一种强力的补充。它和java之间，完全可以相互调用，是一门很不错的语言，以后可以慢慢用起来了，还有很多东西值得去探索。</p>
+<p>还有一点还是提一提吧，kotlin亲爹jetbrains, Idea 亲爹也是 jetbrains。Idea对自家的这门语言支持的相当的不错，大家都可以试试。另： 放弃Eclipse吧，别再折磨自己啦。</p>
+<p>好久没写这么长的文章了，现在国内kotlin相关的东西也不多，希望这篇能有点作用。国内好多文字都随意转载，经常见到不署名原作作者地址的。知识靠传播才能影响更多人，也希望大家转载的话标注一下文章的原地址。</p>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2016/06/09/NodeJs-React-服务器端渲染开发环境/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2018/08/08/Hello/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+
+   
+      <div class="git"></div>
+   
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="https://github.com/ThinkCats"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              Git
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>Clojure垃圾函数系列-「letfn」 | ThinkCat Me</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="clojure," />
+  
+
+  <meta name="description" content="Table of Contents   1. &amp;#x51FD;&amp;#x6570;&amp;#x6837;&amp;#x4F8B; 2. &amp;#x8BF4;&amp;#x660E;&amp;#x4E00;&amp;#x4E0B;     letfn&amp;#x5B9E;&amp;#x9645;&amp;#x4E0A;&amp;#x662F;&amp;#x4E00;&amp;#x4E2A;&amp;#x53EF;&amp;#x6709;&amp;#x53EF;&amp;#x65E0;&amp;#x7684;&amp;#x51FD;&amp;">
+<meta name="keywords" content="clojure">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Clojure垃圾函数系列-「letfn」">
+<meta property="og:url" content="http://thinkcat.me/2018/08/08/Hello/index.html">
+<meta property="og:site_name" content="ThinkCat Me">
+<meta property="og:description" content="Table of Contents   1. &amp;#x51FD;&amp;#x6570;&amp;#x6837;&amp;#x4F8B; 2. &amp;#x8BF4;&amp;#x660E;&amp;#x4E00;&amp;#x4E0B;     letfn&amp;#x5B9E;&amp;#x9645;&amp;#x4E0A;&amp;#x662F;&amp;#x4E00;&amp;#x4E2A;&amp;#x53EF;&amp;#x6709;&amp;#x53EF;&amp;#x65E0;&amp;#x7684;&amp;#x51FD;&amp;">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-13T15:44:51.798Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Clojure垃圾函数系列-「letfn」">
+<meta name="twitter:description" content="Table of Contents   1. &amp;#x51FD;&amp;#x6570;&amp;#x6837;&amp;#x4F8B; 2. &amp;#x8BF4;&amp;#x660E;&amp;#x4E00;&amp;#x4E0B;     letfn&amp;#x5B9E;&amp;#x9645;&amp;#x4E0A;&amp;#x662F;&amp;#x4E00;&amp;#x4E2A;&amp;#x53EF;&amp;#x6709;&amp;#x53EF;&amp;#x65E0;&amp;#x7684;&amp;#x51FD;&amp;">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cben" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/css/personal-style.css">
+  
+
+  
+
+  
+
+  
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">主页</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">主页</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="https://github.com/ThinkCats"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            Git
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#undefined"><span class="toc-text">Table of Contents</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#org09a2738"><span class="toc-text">1 函数样例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#orgb527562"><span class="toc-text">2 说明一下</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-Hello" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">Clojure垃圾函数系列-「letfn」</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2018.08.08</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>ThinkCat</span>
+        </span>
+      
+
+      
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <div id="content">
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org09a2738">1. &#x51FD;&#x6570;&#x6837;&#x4F8B;</a></li>
+<li><a href="#orgb527562">2. &#x8BF4;&#x660E;&#x4E00;&#x4E0B;</a></li>
+</ul>
+</div>
+</div>
+<p>
+letfn&#x5B9E;&#x9645;&#x4E0A;&#x662F;&#x4E00;&#x4E2A;&#x53EF;&#x6709;&#x53EF;&#x65E0;&#x7684;&#x51FD;&#x6570;&#xFF0C;&#x5B83;&#x7684;&#x5B58;&#x5728;&#x5927;&#x6982;&#x662F;&#x60F3;&#x518D;&#x62EF;&#x6551;&#x4E00;&#x4E0B;&#x624B;&#x6B8B;&#x7684;&#x4F60;&#x3002;
+</p>
+<a id="more"></a>
+
+
+<div id="outline-container-org09a2738" class="outline-2">
+<h2 id="org09a2738"><span class="section-number-2">1</span> &#x51FD;&#x6570;&#x6837;&#x4F8B;</h2>
+<div class="outline-text-2" id="text-1">
+<div class="org-src-container">
+<figure class="highlight clojure"><table><tr><td class="code"><pre><span class="line"><span class="comment">;;&#x6837;&#x4F8B;1</span></span><br><span class="line"><span class="list">(<span class="keyword"><span class="built_in">letfn</span></span> <span class="collection">[<span class="list">(<span class="keyword">plus</span> <span class="collection">[x]</span> <span class="list">(<span class="keyword"><span class="built_in">+</span></span> <span class="number">2</span> x)</span>)</span> <span class="list">(<span class="keyword">gg</span> <span class="collection">[y]</span> <span class="list">(<span class="keyword"><span class="built_in">-</span></span> <span class="number">22</span> y)</span>)</span>]</span></span><br><span class="line">  <span class="comment">;;do something with plus and gg</span></span><br><span class="line">  <span class="list">(<span class="keyword"><span class="built_in">+</span></span> <span class="list">(<span class="keyword">plus</span> <span class="number">11</span>)</span> <span class="list">(<span class="keyword">gg</span> <span class="number">2</span>)</span>)</span></span><br><span class="line">  )</span></span><br><span class="line"><span class="comment">;; result: 33</span></span><br><span class="line"></span><br><span class="line"><span class="comment">;;&#x6837;&#x4F8B;2</span></span><br><span class="line"><span class="list">(<span class="keyword"><span class="built_in">defn</span></span> do-something <span class="collection">[item]</span></span><br><span class="line">  <span class="comment">;;do something using letfn</span></span><br><span class="line">  <span class="list">(<span class="keyword"><span class="built_in">letfn</span></span> <span class="collection">[<span class="list">(<span class="keyword">eat</span> <span class="collection">[x]</span> <span class="list">(<span class="keyword">println</span> <span class="string">&quot;eat:&quot;</span> x)</span>)</span></span><br><span class="line">	  <span class="list">(<span class="keyword">sleep</span> <span class="collection">[y]</span> <span class="list">(<span class="keyword">println</span> <span class="string">&quot;sleep:&quot;</span> y)</span>)</span>]</span></span><br><span class="line">    <span class="comment">;;do</span></span><br><span class="line">    <span class="list">(<span class="keyword">eat</span> item)</span></span><br><span class="line">    <span class="list">(<span class="keyword">sleep</span> item)</span></span><br><span class="line">    )</span></span><br><span class="line">  )</span></span><br><span class="line"><span class="list">(<span class="keyword">do-something</span> <span class="string">&quot;hehe&quot;</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">;;result: nil</span></span><br><span class="line"><span class="comment">;;&#x6253;&#x5370;&#x4EE5;&#x4E0B;&#x5185;&#x5BB9;:</span></span><br><span class="line"><span class="comment">;; eat: hehe</span></span><br><span class="line"><span class="comment">;; sleep: hehe</span></span><br></pre></td></tr></table></figure>
+</div>
+
+<p>
+&#x6837;&#x4F8B;1&#xFF0C;&#x5C31;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x6570;&#x503C;&#x800C;&#x5DF2;&#x3002;&#x7136;&#x540E;&#x6837;&#x4F8B;2&#xFF0C;&#x4F20;&#x5165;&#x4E00;&#x4E2A;&#x53C2;&#x6570;&#xFF0C;&#x53C2;&#x4E0E;letfn&#x7684;&#x5185;&#x90E8;&#x8BA1;&#x7B97;&#xFF0C;&#x6709;&#x526F;&#x4F5C;&#x7528;&#x7684;&#x65E0;&#x8FD4;&#x56DE;&#x503C;&#x3002;
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb527562" class="outline-2">
+<h2 id="orgb527562"><span class="section-number-2">2</span> &#x8BF4;&#x660E;&#x4E00;&#x4E0B;</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+letfn&#x5141;&#x8BB8;&#x50CF;&#x89E3;&#x6784;&#x7ED1;&#x5B9A;&#x6570;&#x636E;&#x4E00;&#x6837;&#xFF0C;&#x53BB;&#x58F0;&#x660E;&#x4E00;&#x4E2A;&#x51FD;&#x6570;&#x3002;&#x5F53;&#x7136;&#xFF0C;&#x53EF;&#x4EE5;&#x4E0D;&#x7528;&#x8FD9;&#x4E48;&#x5199;&#xFF0C;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x628A;&#x51FD;&#x6570;&#x5199;&#x5230;&#x5916;&#x90E8;&#xFF0C;&#x7136;&#x540E;&#x53BB;&#x8C03;&#x7528;&#x3002;
+</p>
+
+<p>
+&#x4E5F;&#x6CA1;&#x4EC0;&#x4E48;&#x4E0D;&#x5BF9;&#xFF0C;&#x53EA;&#x662F;&#x5BF9;&#x4E8E;&#x4E00;&#x4E9B;&#x8F85;&#x52A9;&#x6027;&#x8D28;&#x7684;&#x4E13;&#x7528;&#x5C0F;&#x51FD;&#x6570;&#xFF0C;&#x653E;&#x8FD9;&#x91CC;&#x8FD8;&#x662F;&#x633A;&#x65B9;&#x4FBF;&#x7684;&#x3002;
+</p>
+
+<p>
+&#x6BD5;&#x7ADF;&#x662F;&#x7528;&#x6765;&#x62EF;&#x6551;&#x624B;&#x6B8B;&#x7684;&#x3002;
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: HeHe</p>
+<p class="date">Created: 2018-09-28 Fri 22:41</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer" target="_blank" rel="noopener">Validate</a></p>
+</div>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2016/07/22/Kotlin-Vertx-构建web服务/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2018/09/28/Node支持Es6/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+
+   
+      <div class="git"></div>
+   
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="https://github.com/ThinkCats"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              Git
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

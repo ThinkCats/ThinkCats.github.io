@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>React &amp; React Router 服务端渲染学习 | ThinkCat Me</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="ReactJS, React-Router," />
+  
+
+  <meta name="description" content="吐槽下发现 NodeJs 用 Es6 来写东西，是个大坑啊 ！！ 我死活不知道是哪里出问题了，NodeJs 愣是解析不到 JSX 了。 已经纠结了两个晚上了。 来babel 的世界一看， 我好像掉入了一片大海，左右看不到岸，任由风浪推着我到处飘摇。。。 记得上次出现这感觉，还是刚进入大学，学习 C 的时候，直到我遇到了Java。对啊，我是Java程序员啊，怎么混入JavaScript的世界了，赶紧">
+<meta name="keywords" content="ReactJS, React-Router">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React &amp; React Router 服务端渲染学习">
+<meta property="og:url" content="http://thinkcat.me/2016/06/07/React-React-Router-服务端渲染学习/index.html">
+<meta property="og:site_name" content="ThinkCat Me">
+<meta property="og:description" content="吐槽下发现 NodeJs 用 Es6 来写东西，是个大坑啊 ！！ 我死活不知道是哪里出问题了，NodeJs 愣是解析不到 JSX 了。 已经纠结了两个晚上了。 来babel 的世界一看， 我好像掉入了一片大海，左右看不到岸，任由风浪推着我到处飘摇。。。 记得上次出现这感觉，还是刚进入大学，学习 C 的时候，直到我遇到了Java。对啊，我是Java程序员啊，怎么混入JavaScript的世界了，赶紧">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-08T01:44:24.112Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React &amp; React Router 服务端渲染学习">
+<meta name="twitter:description" content="吐槽下发现 NodeJs 用 Es6 来写东西，是个大坑啊 ！！ 我死活不知道是哪里出问题了，NodeJs 愣是解析不到 JSX 了。 已经纠结了两个晚上了。 来babel 的世界一看， 我好像掉入了一片大海，左右看不到岸，任由风浪推着我到处飘摇。。。 记得上次出现这感觉，还是刚进入大学，学习 C 的时候，直到我遇到了Java。对啊，我是Java程序员啊，怎么混入JavaScript的世界了，赶紧">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cben" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/css/personal-style.css">
+  
+
+  
+
+  
+
+  
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">主页</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">主页</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="https://github.com/ThinkCats"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            Git
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#吐槽下"><span class="toc-text">吐槽下</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基础的环境"><span class="toc-text">基础的环境</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-React-React-Router-服务端渲染学习" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">React &amp; React Router 服务端渲染学习</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2016.06.07</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>ThinkCat</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/JavaScript/">JavaScript</a>
+  </span>
+
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h3 id="吐槽下"><a href="#吐槽下" class="headerlink" title="吐槽下"></a>吐槽下</h3><p>发现 NodeJs 用 Es6 来写东西，是个大坑啊 ！！ 我死活不知道是哪里出问题了，NodeJs 愣是解析不到 JSX 了。</p>
+<p>已经纠结了两个晚上了。</p>
+<p>来babel 的世界一看， 我好像掉入了一片大海，左右看不到岸，任由风浪推着我到处飘摇。。。 记得上次出现这感觉，还是刚进入大学，学习 C 的时候，直到我遇到了Java。对啊，我是Java程序员啊，怎么混入JavaScript的世界了，赶紧写几行JavaScript压压惊 。。。</p>
+<p>好了，现在从最简单的程序开始写起，一步一步来，看看到底哪一步出什么问题了，看看各种babel工具是干嘛的。</p>
+<p>。。。（省略各种纠结的解决方案 ，ORZ。。。）</p>
+<p>经过好久的纠结排查中，终于发现问题在 route的引用上。</p>
+<p><code>React Router 配置的 route 是 jsx 的语法，在 node 环境中，引入该语法的文件，如果直接引用过来，会报语法异常，所以需要加上 babel-core 里面的 register 这个 hook 进行转换。</code></p>
+<p>阮一峰的博客里面，有提及到这个 register ， 但是他用的babel-register，而我使用 babel-core里面的register ，也可以成功跑起来。暂未知两个具体区别是什么。待之后探究。</p>
+<p>目前最简单的一个 React Router 的服务端框架已经可以展现出来了。</p>
+<h3 id="基础的环境"><a href="#基础的环境" class="headerlink" title="基础的环境"></a>基础的环境</h3><p>packge.json:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;</span><br><span class="line">  &quot;name&quot;: &quot;react-router-startup&quot;,</span><br><span class="line">  &quot;description&quot;: &quot;A Startup Devlopment Kit for React Router&quot;,</span><br><span class="line">  &quot;version&quot;: &quot;1.0.0&quot;,</span><br><span class="line">  &quot;devDependencies&quot;: &#123;</span><br><span class="line">    &quot;babel-cli&quot;: &quot;^6.9.0&quot;,</span><br><span class="line">    &quot;babel-core&quot;: &quot;^6.9.1&quot;,</span><br><span class="line">    &quot;babel-preset-es2015&quot;: &quot;^6.9.0&quot;,</span><br><span class="line">    &quot;babel-preset-react&quot;: &quot;^6.5.0&quot;,</span><br><span class="line">    &quot;babel-watch&quot;: &quot;^2.0.2&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;dependencies&quot;: &#123;</span><br><span class="line">    &quot;express&quot;: &quot;^4.13.4&quot;,</span><br><span class="line">    &quot;react&quot;: &quot;^15.1.0&quot;,</span><br><span class="line">    &quot;react-dom&quot;: &quot;^15.1.0&quot;,</span><br><span class="line">    &quot;react-router&quot;: &quot;^2.4.1&quot;,</span><br><span class="line">    &quot;swig&quot;: &quot;^1.4.2&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;scripts&quot;: &#123;</span><br><span class="line">    &quot;start&quot;: &quot;babel-node app.js&quot;,</span><br><span class="line">    &quot;dev&quot;: &quot;babel-watch app.js&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>babel-cli 里面有个 babel-node ,比较重要的工具。</li>
+<li>babel-watch 动态监视文件变化</li>
+<li>babel-preset-es2015 es2015转换</li>
+<li>babel-preset-react react转换</li>
+</ul>
+<p>app.js:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">// Babel 6 Compile</span><br><span class="line">require(&apos;babel-core/register&apos;)(&#123;</span><br><span class="line">   presets: [&apos;es2015&apos;, &apos;react&apos;]</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">import express from &apos;express&apos;;</span><br><span class="line">import React from &apos;react&apos;;</span><br><span class="line">import ReactDOM from &apos;react-dom/server&apos;;</span><br><span class="line">import &#123;match ,RouterContext&#125; from &apos;react-router&apos;;</span><br><span class="line">import swig from &apos;swig&apos;;</span><br><span class="line">var route = require(&apos;./view/route&apos;); //注意这一段怪怪的引用</span><br><span class="line"></span><br><span class="line">const app = express();</span><br><span class="line"></span><br><span class="line">//服务端渲染</span><br><span class="line">app.use((req,res) =&gt; &#123;</span><br><span class="line">   match(&#123;routes:route.default , location:req.url&#125;,(error, redirectLocation, renderProps) =&gt; &#123;</span><br><span class="line">      if (error) &#123;</span><br><span class="line">         res.status(500).send(error.message)</span><br><span class="line">      &#125; else if (redirectLocation) &#123;</span><br><span class="line">         res.redirect(302, redirectLocation.pathname + redirectLocation.search)</span><br><span class="line">      &#125; else if (renderProps) &#123;</span><br><span class="line">         var html = ReactDOM.renderToString(React.createElement(RouterContext, renderProps));</span><br><span class="line">         var page = swig.renderFile(&apos;template/index.html&apos;,&#123;html:html&#125;);</span><br><span class="line">         res.status(200).send(page);</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">         res.status(404).send(&apos;Not found&apos;)</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.listen(3000,()=&gt;&#123;</span><br><span class="line">   console.log(&apos;server running&apos;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>route.js:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import React from &apos;react&apos;;</span><br><span class="line">import &#123;Route&#125; from &apos;react-router&apos;;</span><br><span class="line">import App from &apos;./component/App&apos;;</span><br><span class="line">import Home from &apos;./component/Home&apos;;</span><br><span class="line">import Content from &apos;./component/Content&apos;;</span><br><span class="line"></span><br><span class="line">export default (</span><br><span class="line">    &lt;Route component=&#123;App&#125;&gt;</span><br><span class="line">        &lt;Route path=&quot;/&quot; component=&#123;Home&#125;/&gt;</span><br><span class="line">        &lt;Route path=&quot;/content&quot; component=&#123;Content&#125;/&gt;</span><br><span class="line">    &lt;/Route&gt;</span><br><span class="line">)</span><br></pre></td></tr></table></figure></p>
+<p>基础环境这样，用新语法去写，一切ok了。</p>
+<p>当初试验写新语法，在撸PhotoHub时候，按照阿里前端的那篇文章，搬来了很多babel插件。现在测试了下，用这个方式，babel的插件一个没有用到，已经可以支持node使用新语法，以及服务端的渲染了。</p>
+<p>全部代码已放入github，<a href="https://github.com/ThinkCats/ReactRouterServerRender" target="_blank" rel="noopener">传送门</a>，希望能给同样在大海中漂泊的小白们带来点亮光。。。</p>
+<p>一天晚上，整理了两篇文章，业已很困，酸奶和煤球都已经睡得呼呼了。</p>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2016/05/31/ES6-Promise-Generator/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2016/06/09/NodeJs-React-服务器端渲染开发环境/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+
+   
+      <div class="git"></div>
+   
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="https://github.com/ThinkCats"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              Git
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

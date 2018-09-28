@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>ES6 Promise &amp; Generator | ThinkCat Me</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="ES6," />
+  
+
+  <meta name="description" content="最开始从Promise做起，用它来解决回调问题。Generator 搞了好久，当时没懂是啥意思，看语法倒是蛮简单的，就是不知道怎么去解决回调问题的。 Generator 的具体语法，网上很多。这里主要是演示如何使用Generator 和 Promise 结合，解决 Callback Hell 的问题。 举个栗子，模拟一个场景。 如果我们要使用 js 去进行数据库的增删改查，会怎么写代码呢？ 肯定是">
+<meta name="keywords" content="ES6">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ES6 Promise &amp; Generator">
+<meta property="og:url" content="http://thinkcat.me/2016/05/31/ES6-Promise-Generator/index.html">
+<meta property="og:site_name" content="ThinkCat Me">
+<meta property="og:description" content="最开始从Promise做起，用它来解决回调问题。Generator 搞了好久，当时没懂是啥意思，看语法倒是蛮简单的，就是不知道怎么去解决回调问题的。 Generator 的具体语法，网上很多。这里主要是演示如何使用Generator 和 Promise 结合，解决 Callback Hell 的问题。 举个栗子，模拟一个场景。 如果我们要使用 js 去进行数据库的增删改查，会怎么写代码呢？ 肯定是">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-08T01:44:24.111Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ES6 Promise &amp; Generator">
+<meta name="twitter:description" content="最开始从Promise做起，用它来解决回调问题。Generator 搞了好久，当时没懂是啥意思，看语法倒是蛮简单的，就是不知道怎么去解决回调问题的。 Generator 的具体语法，网上很多。这里主要是演示如何使用Generator 和 Promise 结合，解决 Callback Hell 的问题。 举个栗子，模拟一个场景。 如果我们要使用 js 去进行数据库的增删改查，会怎么写代码呢？ 肯定是">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cben" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/css/personal-style.css">
+  
+
+  
+
+  
+
+  
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">主页</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">主页</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="https://github.com/ThinkCats"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            Git
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-最直观的方式-该栗子纯扯淡的伪代码"><span class="toc-text">1.最直观的方式(该栗子纯扯淡的伪代码)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-使用-Promise-该栗子也是纯扯淡的伪代码"><span class="toc-text">2.使用 Promise(该栗子也是纯扯淡的伪代码)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-使用-Generator-的方式（这个栗子是真实可以Run的栗子，不是啥伪代码了，免得被骂）"><span class="toc-text">3.使用 Generator 的方式（这个栗子是真实可以Run的栗子，不是啥伪代码了，免得被骂）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-使用-co-框架"><span class="toc-text">4.使用 co 框架</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-ES6-Promise-Generator" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">ES6 Promise &amp; Generator</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2016.05.31</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>ThinkCat</span>
+        </span>
+      
+
+      
+  <span class="article-category">
+    <i class="icon-list"></i>
+    <a class="article-category-link" href="/categories/JavaScript/">JavaScript</a>
+  </span>
+
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>最开始从Promise做起，用它来解决回调问题。Generator 搞了好久，当时没懂是啥意思，看语法倒是蛮简单的，就是不知道怎么去解决回调问题的。</p>
+<p>Generator 的具体语法，网上很多。这里主要是演示如何使用Generator 和 Promise 结合，解决 Callback Hell 的问题。</p>
+<p>举个栗子，模拟一个场景。</p>
+<p>如果我们要使用 js 去进行数据库的增删改查，会怎么写代码呢？ 肯定是先获取数据库的连接，然后查询到数据，在进行处理，再进行删改等操作。</p>
+<p>用 js 去实现代码：</p>
+<h5 id="1-最直观的方式-该栗子纯扯淡的伪代码"><a href="#1-最直观的方式-该栗子纯扯淡的伪代码" class="headerlink" title="1.最直观的方式(该栗子纯扯淡的伪代码)"></a>1.最直观的方式(该栗子纯扯淡的伪代码)</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">function op1&#123;</span><br><span class="line">  Db.getConnection((connection) =&gt;&#123;</span><br><span class="line">    //得到connection</span><br><span class="line">    connection.find((queryParam , table),(resultSet) =&gt;&#123;</span><br><span class="line">      //查询到resultSet数据</span><br><span class="line">      //好，拿到数据了，开始大刀阔斧，做事情。。</span><br><span class="line">      let processResult = MyProcess.doSomething();</span><br><span class="line">      //做完事了，该更新了</span><br><span class="line">      connection.update((processResult, table), (result) =&gt;&#123;</span><br><span class="line">          //更新完毕了，接着做更新后该做的其他事情</span><br><span class="line">          ....</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果这个处理比较长的话，那么代码要一直这么回调下去了，回调地狱嘛。</p>
+<h5 id="2-使用-Promise-该栗子也是纯扯淡的伪代码"><a href="#2-使用-Promise-该栗子也是纯扯淡的伪代码" class="headerlink" title="2.使用 Promise(该栗子也是纯扯淡的伪代码)"></a>2.使用 Promise(该栗子也是纯扯淡的伪代码)</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">let process = new Promise((resolve) =&gt; resolve(&apos;dbURL&apos;));</span><br><span class="line"></span><br><span class="line">//获取连接</span><br><span class="line">function getConnection(url)&#123;</span><br><span class="line">  //开始做点自己要做的，然后拿到结果，返回出来</span><br><span class="line">  return DBUtil.getConnection(url);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//查询</span><br><span class="line">function query(conn,param)&#123;</span><br><span class="line">  //查出来一堆东西，处理，做自己想做的事情</span><br><span class="line">  MyProcess.doSomething();</span><br><span class="line">  return result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//开始进入正题，处理主流程</span><br><span class="line">process.then((url) =&gt; getConnection(url)).then((connection) =&gt; query(connection,param)).then((result) =&gt;&#123;</span><br><span class="line">    //得到最终的结果result</span><br><span class="line">  &#125;).catch(err)&#123;</span><br><span class="line">    //捕获错误</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>同样的逻辑，这个流程看起来能明了点，也没有了那些长长的回调了，取而代之的是链式的 then 函数。一定程度上解决了 Callback Hell 。</p>
+<h5 id="3-使用-Generator-的方式（这个栗子是真实可以Run的栗子，不是啥伪代码了，免得被骂）"><a href="#3-使用-Generator-的方式（这个栗子是真实可以Run的栗子，不是啥伪代码了，免得被骂）" class="headerlink" title="3.使用 Generator 的方式（这个栗子是真实可以Run的栗子，不是啥伪代码了，免得被骂）"></a>3.使用 Generator 的方式（这个栗子是真实可以Run的栗子，不是啥伪代码了，免得被骂）</h5><p>这个栗子，用的是 mongodb 的库，在本地建了一个 test 库，还有一个 users 表（collection）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">import mongodb from &apos;mongodb&apos;;</span><br><span class="line"></span><br><span class="line">const MongoClient = mongodb.MongoClient;</span><br><span class="line">const DB_URL = &apos;mongodb://127.0.0.1:27017/test&apos;;</span><br><span class="line"></span><br><span class="line">function Connect(url)&#123;</span><br><span class="line">    MongoClient.connect(url,(err,db) =&gt;&#123;</span><br><span class="line">      console.log(&apos;db&apos;);</span><br><span class="line">      if (err)&#123;</span><br><span class="line">        console.error(err);</span><br><span class="line">        it.throw(new Error(&apos;Db Error&apos;+err.message));</span><br><span class="line">      &#125;</span><br><span class="line">      it.next(db);</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function query(db)&#123;</span><br><span class="line">    db.collection(&apos;users&apos;).find().toArray((err,doc) =&gt;&#123;</span><br><span class="line">      console.log(&apos;doc:&apos;,doc);</span><br><span class="line">        it.next(doc);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function* main()&#123;</span><br><span class="line">  try&#123;</span><br><span class="line">    let db = yield Connect(DB_URL);</span><br><span class="line">    console.log(&apos;now db:&apos;);</span><br><span class="line">    let doc = yield query(db);</span><br><span class="line">    console.log(&apos;now doc:&apos;,doc);</span><br><span class="line">  &#125;catch (err)&#123;</span><br><span class="line">    console.log(&apos;catch err:&apos;,err.message);</span><br><span class="line">    return;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">let it = main();</span><br><span class="line">it.next();</span><br></pre></td></tr></table></figure>
+<p>可能多数人和我一样，从网上的教程里看到的，测试 Generator 的时候，都是不断的调 next() 函数。 <code>这里在具体的每一步里面，都调用一次声明的 it [ main() 函数] 的 next（）函数，然后在入口，在掉一次 it.next()</code> ,这样，一连串的 next() 就会逐步触发了，整个流程就走下去了。</p>
+<p>关于传参，it.next() 可以这一步的结果返回出来。</p>
+<p>这样，代码貌似就清爽多了。回头一看，这不一股java的既视感。</p>
+<p>可能有人也发现了一个问题，要是多个人分工写代码的话，A 写Connect , B 写 Query ,那不得都得预先知道main() 这个函数被声明的变量名？ 这不扯淡的么。。。</p>
+<p>确实，上面代码太扯淡了。</p>
+<h5 id="4-使用-co-框架"><a href="#4-使用-co-框架" class="headerlink" title="4.使用 co 框架"></a>4.使用 co 框架</h5><p>第三步里面的代码太扯淡了，还有，到现在，还没有看到 Generator 和 Promise 一起用的栗子啊。</p>
+<p>所以，这里用 co 了，这东西是TJ大神写的，比较好用。当然，也可以自己写一个 runGenerator() ，网上栗子也蛮多的。</p>
+<p>改造上面的代码，结合 Promise：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">import mongodb from &apos;mongodb&apos;;</span><br><span class="line">import co from &apos;co&apos;;</span><br><span class="line"></span><br><span class="line">const MongoClient = mongodb.MongoClient;</span><br><span class="line">const DB_URL = &apos;mongodb://127.0.0.1:27017/test&apos;;</span><br><span class="line"></span><br><span class="line">function Connect(url)&#123;</span><br><span class="line">    return new Promise((resolve,reject) =&gt;&#123;</span><br><span class="line">        MongoClient.connect(url,(err,db) =&gt;&#123;</span><br><span class="line">            if (err)&#123;</span><br><span class="line">                reject(new Error(&apos;can not connect to db&apos;));</span><br><span class="line">            &#125;else &#123;</span><br><span class="line">             resolve(db);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">function query(db)&#123;</span><br><span class="line">    return new Promise((resolve,reject) =&gt;&#123;</span><br><span class="line">        db.collection(&apos;users&apos;).find().toArray((err,doc) =&gt;&#123;</span><br><span class="line">            if (err) reject(new Error(&apos;can not find users&apos;));</span><br><span class="line">            else  &#123;</span><br><span class="line">                resolve(doc);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function* main() &#123;</span><br><span class="line">    let db = yield Connect(DB_URL);</span><br><span class="line">    let doc = yield query(db);</span><br><span class="line">    console.log(&apos;main result:&apos;,doc);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">co(main()).catch((err) =&gt;&#123;</span><br><span class="line">    console.log(&apos;catch err:&apos;,err.message);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>这样，大家一起写代码的话，就个玩个的去吧 ！</p>
+<p>关于这两段代码的环境啥的，已经放在 github了，<a href="https://github.com/ThinkCats/GeneratorAsync" target="_blank" rel="noopener">传送门</a>。</p>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2016/05/03/Jsonp使用/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2016/06/07/React-React-Router-服务端渲染学习/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+
+   
+      <div class="git"></div>
+   
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="https://github.com/ThinkCats"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              Git
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
