@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>Clojure NS | ThinkCat Me</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="clojure  namespace," />
+  
+
+  <meta name="description" content="Table of Contents   1. use 2. require 3. reload &amp;amp; reload-all     ns &amp;#x7C7B;&amp;#x4F3C; java &amp;#x7684; import &amp;#x5305;&amp;#x7CFB;&amp;#x7EDF;&amp;#x3002;">
+<meta name="keywords" content="clojure  namespace">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Clojure NS">
+<meta property="og:url" content="http://thinkcat.me/2018/11/11/Ns/index.html">
+<meta property="og:site_name" content="ThinkCat Me">
+<meta property="og:description" content="Table of Contents   1. use 2. require 3. reload &amp;amp; reload-all     ns &amp;#x7C7B;&amp;#x4F3C; java &amp;#x7684; import &amp;#x5305;&amp;#x7CFB;&amp;#x7EDF;&amp;#x3002;">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-11-11T07:53:30.294Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Clojure NS">
+<meta name="twitter:description" content="Table of Contents   1. use 2. require 3. reload &amp;amp; reload-all     ns &amp;#x7C7B;&amp;#x4F3C; java &amp;#x7684; import &amp;#x5305;&amp;#x7CFB;&amp;#x7EDF;&amp;#x3002;">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cben" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/css/personal-style.css">
+  
+
+  
+
+  
+
+  
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">主页</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">主页</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="https://github.com/ThinkCats"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            Git
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#undefined"><span class="toc-text">Table of Contents</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#org4c46ead"><span class="toc-text">1 use</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#orgffb22bb"><span class="toc-text">2 require</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#org15c1562"><span class="toc-text">3 reload &amp; reload-all</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-Ns" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">Clojure NS</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2018.11.11</span>
+      </span>
+
+      
+        <span class="article-author">
+          <i class="icon-user"></i>
+          <span>ThinkCat</span>
+        </span>
+      
+
+      
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <div id="content">
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org4c46ead">1. use</a></li>
+<li><a href="#orgffb22bb">2. require</a></li>
+<li><a href="#org15c1562">3. reload &amp; reload-all</a></li>
+</ul>
+</div>
+</div>
+<p>
+ns &#x7C7B;&#x4F3C; java &#x7684; import &#x5305;&#x7CFB;&#x7EDF;&#x3002;
+</p>
+<a id="more"></a>
+
+<div id="outline-container-org4c46ead" class="outline-2">
+<h2 id="org4c46ead"><span class="section-number-2">1</span> use</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+&#x4F7F;&#x7528;&#x6837;&#x4F8B;&#xFF1A;
+</p>
+<div class="org-src-container">
+<figure class="highlight clojure"><table><tr><td class="code"><pre><span class="line"><span class="list">(<span class="keyword"><span class="built_in">ns</span></span> org.currylogic.damages.http.expenses)</span></span><br><span class="line"><span class="list">(<span class="keyword"><span class="built_in">use</span></span> &apos;org.danlarkin.json)</span></span><br><span class="line"><span class="list">(<span class="keyword"><span class="built_in">use</span></span> &apos;clojure.xml)</span></span><br><span class="line"></span><br><span class="line"><span class="list">(<span class="keyword"><span class="built_in">defn</span></span> import-transactions-xml-from-bank <span class="collection">[url]</span></span><br><span class="line">  <span class="list">(<span class="keyword"><span class="built_in">let</span></span> <span class="collection">[xml-document <span class="list">(<span class="keyword">parse</span> url)</span>]</span></span><br><span class="line">    <span class="comment">;; more code here</span></span><br><span class="line"><span class="list">(<span class="keyword"><span class="built_in">defn</span></span> totals-by-day <span class="collection">[start-date end-date]</span></span><br><span class="line">  <span class="list">(<span class="keyword"><span class="built_in">let</span></span> <span class="collection">[expenses-by-day <span class="list">(<span class="keyword">load-totals</span> start-date end-date)</span>]</span></span><br><span class="line">    <span class="list">(<span class="keyword">encode-to-str</span> expenses-by-day)</span>)</span>)</span></span></span></span><br></pre></td></tr></table></figure>
+</div>
+
+<p>
+use takes all public functions from the namespace and includes them in the current namespace. 
+</p>
+
+<p>
+encode-to-str &#x548C; parse &#x662F;&#x6765;&#x81EA;&#x4E8E;&#x5F15;&#x5165;&#x7684;&#x5916;&#x90E8;&#x51FD;&#x6570;&#xFF0C;&#x4F7F;&#x7528; use &#x53EF;&#x4EE5;&#x83B7;&#x53D6;&#x5230;&#x8FD9;&#x4E9B;&#x51FD;&#x6570;&#xFF0C;&#x4F46;&#x662F;&#x4F1A;&#x6478;&#x4E0D;&#x5230;&#x5934;&#x8111;&#xFF1A;&#x8FD9;&#x4E9B;&#x51FD;&#x6570;&#x662F;&#x5728;&#x54EA;&#x91CC;&#x5B9A;&#x4E49;&#x7684;&#xFF1F;
+</p>
+
+<p>
+&#x66F4;&#x7B80;&#x6D01;&#x7684;&#xFF0C;&#x4F7F;&#x7528; require.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgffb22bb" class="outline-2">
+<h2 id="orgffb22bb"><span class="section-number-2">2</span> require</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+&#x4F7F;&#x7528;&#x6837;&#x4F8B;:
+</p>
+<div class="org-src-container">
+<figure class="highlight clojure"><table><tr><td class="code"><pre><span class="line"><span class="list">(<span class="keyword"><span class="built_in">ns</span></span> org.currylogic.damages.http.expenses)</span></span><br><span class="line"><span class="list">(<span class="keyword">require</span> &apos;<span class="list">(<span class="keyword">org.danlarkin</span> <span class="collection">[json <span class="attribute">:as</span> json-lib]</span>)</span>)</span></span><br><span class="line"><span class="list">(<span class="keyword">require</span> &apos;<span class="list">(<span class="keyword">clojure</span> <span class="collection">[xml <span class="attribute">:as</span> xml-core]</span>)</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="list">(<span class="keyword"><span class="built_in">defn</span></span> import-transactions-xml-from-bank <span class="collection">[url]</span></span><br><span class="line">  <span class="list">(<span class="keyword"><span class="built_in">let</span></span> <span class="collection">[xml-document <span class="list">(<span class="keyword">xml-core/parse</span> url)</span>]</span></span><br><span class="line">    <span class="comment">;; more code here</span></span><br><span class="line"><span class="list">(<span class="keyword"><span class="built_in">defn</span></span> totals-by-day <span class="collection">[start-date end-date]</span></span><br><span class="line">  <span class="list">(<span class="keyword"><span class="built_in">let</span></span> <span class="collection">[expenses-by-day <span class="list">(<span class="keyword">load-totals</span> start-date end-date)</span>]</span></span><br><span class="line">    <span class="list">(<span class="keyword">json-lib/encode-to-str</span> expenses-by-day)</span>)</span>)</span></span></span></span><br></pre></td></tr></table></figure>
+</div>
+
+<p>
+&#x8FD9;&#x6837;&#x5728;&#x8C03;&#x7528;&#x5916;&#x90E8;&#x51FD;&#x6570;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x80FD;&#x660E;&#x786E;&#x77E5;&#x9053;&#x51FD;&#x6570;&#x6765;&#x6E90;&#x4E8E;&#x54EA;&#x91CC;&#xFF0C;&#x5E76;&#x4E14;&#x53EF;&#x4EE5;&#x4E3A;&#x5916;&#x90E8;&#x7684;ns&#x8BBE;&#x7F6E;&#x522B;&#x540D;&#x3002;
+</p>
+</div>
+</div>
+
+<div id="outline-container-org15c1562" class="outline-2">
+<h2 id="org15c1562"><span class="section-number-2">3</span> reload &amp; reload-all</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+&#x4F7F;&#x7528;&#x6837;&#x4F8B;:
+</p>
+<div class="org-src-container">
+<figure class="highlight clojure"><table><tr><td class="code"><pre><span class="line"><span class="list">(<span class="keyword"><span class="built_in">use</span></span> &apos;org.currylogic.damages.http.expenses <span class="attribute">:reload</span>)</span></span><br><span class="line"><span class="list">(<span class="keyword">require</span> &apos;<span class="list">(<span class="keyword">org.currylogic.damages.http</span> <span class="collection">[expenses <span class="attribute">:as</span> exp]</span>)</span> <span class="attribute">:reload</span>)</span></span><br></pre></td></tr></table></figure>
+</div>
+
+<p>
+&#x5F15;&#x5165;&#x5176;&#x4ED6; ns &#x4E2D;&#x7684;&#x51FD;&#x6570;&#xFF0C; &#x5F53;&#x8FD9;&#x4E9B;&#x51FD;&#x6570;&#x53D1;&#x751F;&#x6539;&#x52A8;&#xFF0C;&#x4F7F;&#x7528; reload &#x53EF;&#x4EE5;&#x5F97;&#x5230;&#x66F4;&#x65B0;&#x3002;(:reload can be replaced with :reload-all to reload all libraries that are used either directly or indirectly by the specified library.)
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: HeHe</p>
+<p class="date">Created: 2018-11-11 &#x65E5; 15:53</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer" target="_blank" rel="noopener">Validate</a></p>
+</div>
+
+    
+  </div>
+
+</article>
+
+
+   
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2018/10/17/clojure_let/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="hide pull-right" href="/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+
+   
+      <div class="git"></div>
+   
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="https://github.com/ThinkCats"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              Git
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
