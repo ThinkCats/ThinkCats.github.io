@@ -23,7 +23,7 @@
 <meta property="og:site_name" content="ThinkCat Me">
 <meta property="og:description" content="multimethods &amp;#x7528;&amp;#x6765;&amp;#x66FF;&amp;#x6362; cond&amp;#xFF0C;&amp;#x5199;&amp;#x8D77;&amp;#x6765;&amp;#x66F4;&amp;#x52A0;&amp;#x7684;&amp;#x7B80;&amp;#x6D01;&amp;#x3002;">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-11-11T12:22:28.267Z">
+<meta property="og:updated_time" content="2018-11-11T13:10:15.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Clojure MultiMethods">
 <meta name="twitter:description" content="multimethods &amp;#x7528;&amp;#x6765;&amp;#x66FF;&amp;#x6362; cond&amp;#xFF0C;&amp;#x5199;&amp;#x8D77;&amp;#x6765;&amp;#x66F4;&amp;#x52A0;&amp;#x7684;&amp;#x7B80;&amp;#x6D01;&amp;#x3002;">
@@ -154,6 +154,13 @@ multimethods &#x5BF9;&#x5E94;&#x7684;&#x5E94;&#x8BE5;&#x662F;java&#x7684;&#x591A
 </p>
 
 <p>
+&#x8BED;&#x6CD5;:
+</p>
+<div class="org-src-container">
+<figure class="highlight clojure"><table><tr><td class="code"><pre><span class="line"><span class="list">(<span class="keyword"><span class="built_in">defmulti</span></span> name dispatch-fn &amp; options)</span></span><br><span class="line"><span class="list">(<span class="keyword"><span class="built_in">defmethod</span></span> multifn dispatch-value &amp; fn-tail)</span></span><br></pre></td></tr></table></figure>
+</div>
+
+<p>
 &#x4F7F;&#x7528;&#x6837;&#x4F8B;:
 </p>
 <div class="org-src-container">
@@ -170,10 +177,14 @@ multimethods &#x5BF9;&#x5E94;&#x7684;&#x5E94;&#x8BE5;&#x662F;java&#x7684;&#x591A
 <div class="org-src-container">
 <figure class="highlight clojure"><table><tr><td class="code"><pre><span class="line"><span class="list">(<span class="keyword"><span class="built_in">defmulti</span></span> f <span class="attribute">:ref</span> <span class="attribute">:default</span> <span class="attribute">:dd</span>)</span></span><br><span class="line"><span class="list">(<span class="keyword"><span class="built_in">defmethod</span></span> f <span class="attribute">:dd</span> <span class="collection">[user]</span></span><br><span class="line">  <span class="list">(<span class="keyword">amount</span> <span class="number">0.3</span> user)</span>)</span></span><br></pre></td></tr></table></figure>
 </div>
+
+<p>
+&#x6309;&#x7167;&#x8BED;&#x6CD5;&#xFF0C;defmulti &#x4E2D;, name &#x4E4B;&#x540E;&#x662F;: dispatch-fn,&#x610F;&#x5473;&#x7740;&#x8FD9;&#x662F;&#x4E00;&#x4E2A;&#x5206;&#x6D3E;&#x51FD;&#x6570;&#xFF0C;&#x8FD9;&#x91CC;&#x53EF;&#x4EE5;&#x662F;&#x4E00;&#x4E2A;&#x51FD;&#x6570;&#xFF08;&#x8BE5;&#x51FD;&#x6570;&#x63A5;&#x6536; defmethod &#x7684;&#x53C2;&#x6570;&#xFF0C;&#x8FD4;&#x56DE;&#x503C;&#xFF0C;&#x4F5C;&#x4E3A; defmethod &#x7684; dispatch-value &#x4F7F;&#x7528;&#xFF09;&#x3002;
+</p>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: HeHe</p>
-<p class="date">Created: 2018-11-11 &#x65E5; 20:22</p>
+<p class="date">Created: 2018-11-11 &#x65E5; 21:10</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer" target="_blank" rel="noopener">Validate</a></p>
 </div>
 
