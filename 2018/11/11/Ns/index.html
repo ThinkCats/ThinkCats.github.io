@@ -15,18 +15,18 @@
     <meta name="keywords" content="clojure  namespace," />
   
 
-  <meta name="description" content="Table of Contents   1. use 2. require 3. reload &amp;amp; reload-all     ns &amp;#x7C7B;&amp;#x4F3C; java &amp;#x7684; import &amp;#x5305;&amp;#x7CFB;&amp;#x7EDF;&amp;#x3002;">
+  <meta name="description" content="Table of Contents   1. use 2. require 3. reload &amp;amp; reload-all 4. import 5. &amp;#x7B80;&amp;#x6D01;&amp;#x7684;&amp;#x65B9;&amp;#x5F0F;     ns &amp;#x7C7B;&amp;#x4F3C; java &amp;#x7684; import &amp;#x5305;&amp;#x7CFB;&amp;#x7EDF;&amp;#x3002;">
 <meta name="keywords" content="clojure  namespace">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Clojure NS">
 <meta property="og:url" content="http://thinkcat.me/2018/11/11/Ns/index.html">
 <meta property="og:site_name" content="ThinkCat Me">
-<meta property="og:description" content="Table of Contents   1. use 2. require 3. reload &amp;amp; reload-all     ns &amp;#x7C7B;&amp;#x4F3C; java &amp;#x7684; import &amp;#x5305;&amp;#x7CFB;&amp;#x7EDF;&amp;#x3002;">
+<meta property="og:description" content="Table of Contents   1. use 2. require 3. reload &amp;amp; reload-all 4. import 5. &amp;#x7B80;&amp;#x6D01;&amp;#x7684;&amp;#x65B9;&amp;#x5F0F;     ns &amp;#x7C7B;&amp;#x4F3C; java &amp;#x7684; import &amp;#x5305;&amp;#x7CFB;&amp;#x7EDF;&amp;#x3002;">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-11-11T07:53:30.294Z">
+<meta property="og:updated_time" content="2018-11-12T12:21:03.528Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Clojure NS">
-<meta name="twitter:description" content="Table of Contents   1. use 2. require 3. reload &amp;amp; reload-all     ns &amp;#x7C7B;&amp;#x4F3C; java &amp;#x7684; import &amp;#x5305;&amp;#x7CFB;&amp;#x7EDF;&amp;#x3002;">
+<meta name="twitter:description" content="Table of Contents   1. use 2. require 3. reload &amp;amp; reload-all 4. import 5. &amp;#x7B80;&amp;#x6D01;&amp;#x7684;&amp;#x65B9;&amp;#x5F0F;     ns &amp;#x7C7B;&amp;#x4F3C; java &amp;#x7684; import &amp;#x5305;&amp;#x7CFB;&amp;#x7EDF;&amp;#x3002;">
 
   
 
@@ -103,7 +103,7 @@
 
   <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#undefined"><span class="toc-text">Table of Contents</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#org4c46ead"><span class="toc-text">1 use</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#orgffb22bb"><span class="toc-text">2 require</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#org15c1562"><span class="toc-text">3 reload &amp; reload-all</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#undefined"><span class="toc-text">Table of Contents</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#org6c533d0"><span class="toc-text">1 use</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#org459f652"><span class="toc-text">2 require</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#orga310870"><span class="toc-text">3 reload &amp; reload-all</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#org47ed137"><span class="toc-text">4 import</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#org1d2c2f5"><span class="toc-text">5 简洁的方式</span></a></li></ol>
   </div>
 
 
@@ -149,9 +149,11 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#org4c46ead">1. use</a></li>
-<li><a href="#orgffb22bb">2. require</a></li>
-<li><a href="#org15c1562">3. reload &amp; reload-all</a></li>
+<li><a href="#org6c533d0">1. use</a></li>
+<li><a href="#org459f652">2. require</a></li>
+<li><a href="#orga310870">3. reload &amp; reload-all</a></li>
+<li><a href="#org47ed137">4. import</a></li>
+<li><a href="#org1d2c2f5">5. &#x7B80;&#x6D01;&#x7684;&#x65B9;&#x5F0F;</a></li>
 </ul>
 </div>
 </div>
@@ -160,8 +162,8 @@ ns &#x7C7B;&#x4F3C; java &#x7684; import &#x5305;&#x7CFB;&#x7EDF;&#x3002;
 </p>
 <a id="more"></a>
 
-<div id="outline-container-org4c46ead" class="outline-2">
-<h2 id="org4c46ead"><span class="section-number-2">1</span> use</h2>
+<div id="outline-container-org6c533d0" class="outline-2">
+<h2 id="org6c533d0"><span class="section-number-2">1</span> use</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 &#x4F7F;&#x7528;&#x6837;&#x4F8B;&#xFF1A;
@@ -184,8 +186,8 @@ encode-to-str &#x548C; parse &#x662F;&#x6765;&#x81EA;&#x4E8E;&#x5F15;&#x5165;&#x
 </div>
 </div>
 
-<div id="outline-container-orgffb22bb" class="outline-2">
-<h2 id="orgffb22bb"><span class="section-number-2">2</span> require</h2>
+<div id="outline-container-org459f652" class="outline-2">
+<h2 id="org459f652"><span class="section-number-2">2</span> require</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 &#x4F7F;&#x7528;&#x6837;&#x4F8B;:
@@ -200,8 +202,8 @@ encode-to-str &#x548C; parse &#x662F;&#x6765;&#x81EA;&#x4E8E;&#x5F15;&#x5165;&#x
 </div>
 </div>
 
-<div id="outline-container-org15c1562" class="outline-2">
-<h2 id="org15c1562"><span class="section-number-2">3</span> reload &amp; reload-all</h2>
+<div id="outline-container-orga310870" class="outline-2">
+<h2 id="orga310870"><span class="section-number-2">3</span> reload &amp; reload-all</h2>
 <div class="outline-text-2" id="text-3">
 <p>
 &#x4F7F;&#x7528;&#x6837;&#x4F8B;:
@@ -215,10 +217,35 @@ encode-to-str &#x548C; parse &#x662F;&#x6765;&#x81EA;&#x4E8E;&#x5F15;&#x5165;&#x
 </p>
 </div>
 </div>
+
+<div id="outline-container-org47ed137" class="outline-2">
+<h2 id="org47ed137"><span class="section-number-2">4</span> import</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+&#x4F7F;&#x7528;&#x6837;&#x4F8B;&#xFF1A;
+</p>
+<div class="org-src-container">
+<figure class="highlight clojure"><table><tr><td class="code"><pre><span class="line"><span class="list">(<span class="keyword"><span class="built_in">import</span></span> &apos;<span class="list">(<span class="keyword">org.apache.hadoop.hbase.client</span> HTable Scan Scanner)</span></span><br><span class="line">	&apos;<span class="list">(<span class="keyword">org.apache.hadoop.hbase.filter</span> RegExpRowFilter StopRowFilter)</span>)</span></span><br></pre></td></tr></table></figure>
+</div>
+
+<p>
+import &#x7528;&#x4E8E;&#x5BFC;&#x5165; java &#x5305;&#x3002;
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1d2c2f5" class="outline-2">
+<h2 id="org1d2c2f5"><span class="section-number-2">5</span> &#x7B80;&#x6D01;&#x7684;&#x65B9;&#x5F0F;</h2>
+<div class="outline-text-2" id="text-5">
+<div class="org-src-container">
+<figure class="highlight clojure"><table><tr><td class="code"><pre><span class="line"><span class="list">(<span class="keyword"><span class="built_in">ns</span></span> my-great-project.core</span><br><span class="line">  <span class="string">&quot;This namespace is CRAZY!&quot;</span></span><br><span class="line">  <span class="list">(<span class="attribute">:use</span> <span class="collection">[clojure.string <span class="attribute">:only</span> <span class="collection">[split join]</span>]</span> <span class="attribute">:reload</span>)</span></span><br><span class="line">  <span class="list">(<span class="attribute">:require</span> clojure.stacktrace</span><br><span class="line">	    <span class="collection">[clojure.test <span class="attribute">:as</span> test]</span>)</span></span><br><span class="line">  <span class="list">(<span class="attribute">:import</span> <span class="list">(<span class="keyword">java.util</span> Date GregorianCalendar)</span>)</span>)</span></span><br></pre></td></tr></table></figure>
+</div>
+</div>
+</div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: HeHe</p>
-<p class="date">Created: 2018-11-11 &#x65E5; 15:53</p>
+<p class="date">Created: 2018-11-12 &#x4E00; 20:21</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer" target="_blank" rel="noopener">Validate</a></p>
 </div>
 
