@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!--  5 04, 2020 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kotlin &amp; Vertx 构建web服务</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="ThinkCat" />
+<meta name="keywords" content="Kotlin, vertx post" />
+<link rel='icon' type='image/x-icon' href='/images/favicon.ico'/>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel='stylesheet' href='https://code.cdn.mozilla.net/fonts/fira.css'>
+<link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
+<link rel='stylesheet' href='/css/custom.css' type='text/css'/>
+<link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="/"> UP </a>
+ |
+ <a accesskey="H" href="/"> HOME </a>
+</div><header id="top" class="status">
+
+ <!-- <div class='intro'>
+ <img src='/images/about/profile.png' alt='ThinkCat' class='no-border'/>
+<h3>ThinkCat</h3>
+ <p>一个简单的开发者</p> 
+</div>
+-->
+
+<div class='nav'>
+<ul>
+<li><b> ThinkCat </b> </li>
+<li>&nbsp;&nbsp;</li>
+<li><a href='/'>Blog</a>.</li>
+<li><a href='/about/'>About</a></li>
+</ul>
+</div>
+</header>
+<main id="content">
+<h1 class="title">Kotlin &amp; Vertx 构建web服务
+<br />
+<span class="subtitle">发布于  7 22, 2016 by ThinkCat.</span>
+</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org1455567">感想</a>
+<ul>
+<li><a href="#orgb45a363">Kotlin</a></li>
+<li><a href="#org71c55dd">Vertx</a></li>
+</ul>
+</li>
+<li><a href="#orgddfed0c">Kotlin &amp; Vertx</a>
+<ul>
+<li><a href="#org28a6c36">1.maven 配置</a></li>
+<li><a href="#orgdf4a795">2.程序入口</a></li>
+<li><a href="#orgdda4345">3.路由设置</a></li>
+<li><a href="#org08b4cdd">4. 还有一个bean 对象</a></li>
+</ul>
+</li>
+<li><a href="#orge3b9974">另外一些感想</a></li>
+</ul>
+</div>
+</div>
+
+<section id="outline-container-org1455567" class="outline-2">
+<h2 id="org1455567">感想</h2>
+<div class="outline-text-2" id="text-org1455567">
+<p>
+<b>Kotlin 是一门好语言，值得大家了解一下。</b>
+</p>
+
+<p>
+<b>Vertx 是一个好框架，也值得大家了解一下。</b>
+</p>
+</div>
+
+<div id="outline-container-orgb45a363" class="outline-3">
+<h3 id="orgb45a363">Kotlin</h3>
+<div class="outline-text-3" id="text-orgb45a363">
+<p>
+写过js，也写过一点点go，主力一直是java。用了kotlin，貌似找到了常用语言的平衡点了。
+</p>
+
+<p>
+Kotlin 拥有一些偏函数式的语法（java8 也引入了一些），提供了相当多便捷的api与一些高阶函数。从两天的试用，以及今天搞得这个 Vertx web 项目，从中体会到最爽的有两点：
+</p>
+
+<ul class="org-ul">
+<li>支持“带接收者得函数字面值”(允许你直接指定函数的receiver的类型)这一特性。这个特性，在go里面经常看到。然而，java没有，java8也没有&#x2026;</li>
+<li>支持扩展函数（或许是我见识短，这功能爆炸了）</li>
+</ul>
+
+<p>
+一直很期待可以指定receiver这个功能。有了这个特性，那么写的函数，可以直接被调用者使用。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org71c55dd" class="outline-3">
+<h3 id="org71c55dd">Vertx</h3>
+<div class="outline-text-3" id="text-org71c55dd">
+<p>
+vertx 风格和node的express框架思想一致的，换了一种java的实现。不得不说，node的express 启发了很多其他语言的web框架设计。java的vertx，以及go里面的很多web框架(martin&#x2026;)，很多都有express的影子(难道是我先入为主？)
+</p>
+
+<p>
+相比传统的基于Servlet的java web框架，vertx这种基于封装底层通信的框架，在速度上和内存占用上比较有优势。曾经为了在768M内存的docker容器上跑web应用，先是用相对较轻量级的spring-boot,勉强可以跑。然后又用了Node 的 express，这个毫无压力。
+</p>
+
+<p>
+终于有一个java版本的这种web框架，整个项目打完包，包括依赖的 lib，整个才4-5M的大小（主要是lib大小），太轻量了。
+</p>
+
+<p>
+下面就看看 Kotlin + Vertx 写的web项目，展示下kotlin的魅力。你要是比较懒的话，想直接check out代码，github库[在这里](<a href="https://github.com/ThinkCats/Vertx.git">https://github.com/ThinkCats/Vertx.git</a>)。
+</p>
+</div>
+</div>
+</section>
+
+<section id="outline-container-orgddfed0c" class="outline-2">
+<h2 id="orgddfed0c">Kotlin &amp; Vertx</h2>
+<div class="outline-text-2" id="text-orgddfed0c">
+</div>
+<div id="outline-container-org28a6c36" class="outline-3">
+<h3 id="org28a6c36">1.maven 配置</h3>
+<div class="outline-text-3" id="text-org28a6c36">
+<p>
+按照kotlin和vertx官方的配置。
+</p>
+<pre class="example">
+  &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+    &lt;groupId&gt;vertx&lt;/groupId&gt;
+    &lt;artifactId&gt;com.vertx&lt;/artifactId&gt;
+    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+    &lt;build&gt;
+	&lt;plugins&gt;
+
+	    &lt;plugin&gt;
+		&lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+		&lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+		&lt;configuration&gt;
+		    &lt;source&gt;1.8&lt;/source&gt;
+		    &lt;target&gt;1.8&lt;/target&gt;
+		&lt;/configuration&gt;
+	    &lt;/plugin&gt;
+
+	    &lt;plugin&gt;
+		&lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+		&lt;artifactId&gt;maven-shade-plugin&lt;/artifactId&gt;
+		&lt;version&gt;2.3&lt;/version&gt;
+		&lt;executions&gt;
+		    &lt;execution&gt;
+			&lt;phase&gt;package&lt;/phase&gt;
+			&lt;goals&gt;
+			    &lt;goal&gt;shade&lt;/goal&gt;
+			&lt;/goals&gt;
+			&lt;configuration&gt;
+			    &lt;transformers&gt;
+				&lt;transformer
+					implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"&gt;
+				    &lt;manifestEntries&gt;
+					&lt;Main-Class&gt;com.tt.vertx.HelloWorlds&lt;/Main-Class&gt;
+					&lt;Main-Verticle&gt;com.tt.vertx.HelloWorlds&lt;/Main-Verticle&gt;
+				    &lt;/manifestEntries&gt;
+				&lt;/transformer&gt;
+			    &lt;/transformers&gt;
+			    &lt;artifactSet/&gt;
+			    &lt;outputFile&gt;${project.build.directory}/${project.artifactId}-${project.version}-fat.jar&lt;/outputFile&gt;
+			&lt;/configuration&gt;
+		    &lt;/execution&gt;
+		&lt;/executions&gt;
+	    &lt;/plugin&gt;
+	    &lt;plugin&gt;
+		&lt;groupId&gt;org.jetbrains.kotlin&lt;/groupId&gt;
+		&lt;artifactId&gt;kotlin-maven-plugin&lt;/artifactId&gt;
+		&lt;version&gt;${kotlin.version}&lt;/version&gt;
+		&lt;executions&gt;
+		    &lt;execution&gt;
+			&lt;id&gt;compile&lt;/id&gt;
+			&lt;phase&gt;process-sources&lt;/phase&gt;
+			&lt;goals&gt;
+			    &lt;goal&gt;compile&lt;/goal&gt;
+			&lt;/goals&gt;
+			&lt;configuration&gt;
+			    &lt;sourceDirs&gt;
+				&lt;source&gt;src/main/java&lt;/source&gt;
+			    &lt;/sourceDirs&gt;
+			&lt;/configuration&gt;
+		    &lt;/execution&gt;
+		    &lt;execution&gt;
+			&lt;id&gt;test-compile&lt;/id&gt;
+			&lt;phase&gt;process-test-sources&lt;/phase&gt;
+			&lt;goals&gt;
+			    &lt;goal&gt;test-compile&lt;/goal&gt;
+			&lt;/goals&gt;
+			&lt;configuration&gt;
+			    &lt;sourceDirs&gt;&lt;/sourceDirs&gt;
+			&lt;/configuration&gt;
+		    &lt;/execution&gt;
+		&lt;/executions&gt;
+	    &lt;/plugin&gt;
+
+	&lt;/plugins&gt;
+    &lt;/build&gt;
+
+    &lt;dependencies&gt;
+	&lt;dependency&gt;
+	    &lt;groupId&gt;io.vertx&lt;/groupId&gt;
+	    &lt;artifactId&gt;vertx-web&lt;/artifactId&gt;
+	    &lt;version&gt;3.2.1&lt;/version&gt;
+	&lt;/dependency&gt;
+	&lt;dependency&gt;
+	    &lt;groupId&gt;org.jetbrains.kotlin&lt;/groupId&gt;
+	    &lt;artifactId&gt;kotlin-stdlib&lt;/artifactId&gt;
+	    &lt;version&gt;${kotlin.version}&lt;/version&gt;
+	&lt;/dependency&gt;
+    &lt;/dependencies&gt;
+    &lt;properties&gt;
+	&lt;kotlin.version&gt;1.0.3&lt;/kotlin.version&gt;
+    &lt;/properties&gt;
+
+&lt;/project&gt;
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgdf4a795" class="outline-3">
+<h3 id="orgdf4a795">2.程序入口</h3>
+<div class="outline-text-3" id="text-orgdf4a795">
+<p>
+和spring-boot 一样，vertx 的程序入口也是一个静态的main函数。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">class</span>  <span class="org-type">HelloWorlds</span> : AbstractVerticle() {
+
+    <span class="org-type">companion</span> <span class="org-variable-name">object</span>{
+        <span class="org-c-annotation">@JvmStatic</span> <span class="org-type">fun</span> <span class="org-function-name">main</span>(args: <span class="org-type">Array</span>&lt;<span class="org-type">String</span>&gt;){
+            <span class="org-type">var</span> <span class="org-variable-name">vertx</span> = Vertx.vertx()
+            vertx.deployVerticle(<span class="org-type">HelloWorlds</span>())
+        }
+    }
+
+    override <span class="org-type">fun</span> <span class="org-function-name">start</span>() {
+        <span class="org-type">var</span> <span class="org-variable-name">router</span> = customRouter(vertx)
+        println(<span class="org-string">"server running on 8888"</span>)
+        vertx.createHttpServer().requestHandler({ handler -&gt; router.accept(handler)}).listen(8888)
+    }
+}
+</pre>
+</div>
+
+<p>
+如果写过nodejs应用，这段代码看起来就很简单了。继承vertx的启动类，在启动的时候，设置路由，绑定http server的端口。
+</p>
+
+<p>
+<b>注意</b>
+</p>
+<ul class="org-ul">
+<li>和普通的kotlin运行类不一样，入口主类需要打jar包的时候，主方法（main）一定是要是java的标准静态方法. 需要加 @JvmStatic 标注一下。否则运行打出来的jar包，会找不到静态主入口。</li>
+</ul>
+
+<p>
+在这里，封装了一下路由，提取到了单独的文件中。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdda4345" class="outline-3">
+<h3 id="orgdda4345">3.路由设置</h3>
+<div class="outline-text-3" id="text-orgdda4345">
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-type">fun</span> <span class="org-function-name">customRouter</span>(vertx : Vertx) : Router {
+    <span class="org-type">var</span> <span class="org-variable-name">router</span> = Router.router(vertx)
+    router.route(<span class="org-string">"/"</span>).handler({c -&gt; c.response().html().end(<span class="org-string">"hello world"</span>)})
+    router.route(<span class="org-string">"/json"</span>).handler({c -&gt; c.response().json().end(Json.encode(Entity(<span class="org-string">"name"</span>,<span class="org-string">"sss"</span>)))})
+    <span class="org-keyword">return</span> router
+}
+
+<span class="org-type">fun</span> HttpServerResponse.<span class="org-function-name">html</span>() : HttpServerResponse {
+    <span class="org-keyword">return</span> <span class="org-keyword">this</span>.putHeader(<span class="org-string">"content-type"</span>,<span class="org-string">"text/html"</span>)
+}
+
+<span class="org-type">fun</span> HttpServerResponse.<span class="org-function-name">json</span>() : HttpServerResponse {
+    <span class="org-keyword">return</span> <span class="org-keyword">this</span>.putHeader(<span class="org-string">"content-type"</span>,<span class="org-string">"application/json; charset=utf-8"</span>)
+}
+</pre>
+</div>
+
+<p>
+让我觉得kotlin拯救了我的地方就在这一段路由代码里。
+</p>
+
+<p>
+先看一下，之前用纯java写的路由版本是什么样的吧，对比一下。
+</p>
+
+<p>
+java版本：
+</p>
+<div class="org-src-container">
+<pre class="src src-java">router.route(<span class="org-string">"/"</span>).handler(context -&gt; context.response().putHeader(<span class="org-string">"content-type"</span>,<span class="org-string">"text/html"</span>).end(<span class="org-string">"hello world"</span>));
+  router.route(<span class="org-string">"/json"</span>).handler(context -&gt; {
+      context.response().putHeader(<span class="org-string">"content-type"</span>,<span class="org-string">"application/json; charset=utf-8"</span>)
+              .end(Json.encodePrettily(<span class="org-keyword">new</span> <span class="org-type">Entity</span>(<span class="org-string">"hello"</span>,<span class="org-string">"world"</span>)));
+  });
+
+</pre>
+</div>
+
+<p>
+在java版本里面，给每个请求加header的时候，是要加 <code>.putHeader("content-type","xxxx")</code> 的。
+</p>
+
+<p>
+试想一下，如果我们有上百个路由的话，每个头里面都要指定这些header，多痛苦。根据经验，我们可能想把它提出来，当做一个方法。于是我们需要写一个工具类之类的，给`context.response()`的结果 HttpServerResponse 加上header，然后再返回这个 HttpServerResponse，最直观的大概写法应该是：
+</p>
+
+
+<p>
+<code>SomeUtil.setHeader(context.response()).end('xxx')</code>
+</p>
+
+<p>
+不管怎么说，因为java的语法限制，我们貌似只能这么写（如果有更好的方法，请大家共享一下）。
+</p>
+
+<p>
+看一下kotlin版本的，把加header的操作提了出来，弄成了两个函数。这两个函数是函数接收字面量和扩展函数的结合体，使用扩展函数，这是个，也必须声明一个函数的接受者类型。
+我们定义html() 和 json() 函数， 这两个方法只能用HttpServerResponse 去执行它，并且返回执行后的该 HttpServerResponse。 在扩展函数里面，this指向的是该函数的调用者。语法官方有详细文档，就少说了（好多语法我也没有看完 ORZ ）。
+</p>
+
+<p>
+这个特性超级好用，尤其是在这种链式的调用里面，我们不用在去另写写转换方法，不用在把要转换的对象当参数来回传递了。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org08b4cdd" class="outline-3">
+<h3 id="org08b4cdd">4. 还有一个bean 对象</h3>
+<div class="outline-text-3" id="text-org08b4cdd">
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-type">data</span> <span class="org-keyword">class</span> Entity(<span class="org-type">var</span> <span class="org-variable-name">name</span>:String,<span class="org-type">var</span> <span class="org-variable-name">description</span>:String){}
+</pre>
+</div>
+
+<p>
+第一次写这个bean的时候，我写错了，无论如何，在路由里面，就是无法取到该bean构造后的值。看了官方文档才知道，这个类是需要加一个data前缀的，这样才会生成 equals ，hashCode ，Setter, Getter 等这些方法。
+</p>
+</div>
+</div>
+</section>
+
+<section id="outline-container-orge3b9974" class="outline-2">
+<h2 id="orge3b9974">另外一些感想</h2>
+<div class="outline-text-2" id="text-orge3b9974">
+<p>
+主要代码都在这里了，完整的代码[在这里](<a href="https://github.com/ThinkCats/Vertx.git">https://github.com/ThinkCats/Vertx.git</a>)。
+</p>
+
+<p>
+用kotlin , 感觉很幸福，相见恨晚。
+</p>
+
+<p>
+代码写的少，对java 是一种强力的补充。它和java之间，完全可以相互调用，是一门很不错的语言，以后可以慢慢用起来了，还有很多东西值得去探索。
+</p>
+
+<p>
+还有一点还是提一提吧，kotlin亲爹jetbrains, Idea 亲爹也是 jetbrains。Idea对自家的这门语言支持的相当的不错，大家都可以试试。另： 放弃Eclipse吧，别再折磨自己啦。
+</p>
+
+<p>
+好久没写这么长的文章了，现在国内kotlin相关的东西也不多，希望这篇能有点作用。国内好多文字都随意转载，经常见到不署名原作作者地址的。知识靠传播才能影响更多人，也希望大家转载的话标注一下文章的原地址。
+</p>
+</div>
+</section>
+</main>
+<footer id="postamble" class="status">
+<div class='footer'>
+Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
+Last updated on  5 04, 2020 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)
+</div>
+</footer>
+</body>
+</html>

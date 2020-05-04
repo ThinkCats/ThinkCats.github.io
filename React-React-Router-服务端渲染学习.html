@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--  5 04, 2020 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>React &amp; React Router 服务端渲染学习</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="wanglei">
+<meta name="keywords" content="JavaScript">
+<link rel='icon' type='image/x-icon' href='/images/favicon.ico'/>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel='stylesheet' href='https://code.cdn.mozilla.net/fonts/fira.css'>
+<link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
+<link rel='stylesheet' href='/css/custom.css' type='text/css'/>
+<link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="/"> UP </a>
+ |
+ <a accesskey="H" href="/"> HOME </a>
+</div><header id="top" class="status">
+
+ <!-- <div class='intro'>
+ <img src='/images/about/profile.png' alt='ThinkCat' class='no-border'/>
+<h3>ThinkCat</h3>
+ <p>一个简单的开发者</p> 
+</div>
+-->
+
+<div class='nav'>
+<ul>
+<li><b> ThinkCat </b> </li>
+<li>&nbsp;&nbsp;</li>
+<li><a href='/'>Blog</a>.</li>
+<li><a href='/about/'>About</a></li>
+</ul>
+</div>
+</header>
+<main id="content">
+<header>
+<h1 class="title">React &amp; React Router 服务端渲染学习</h1>
+</header><nav id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orga03aa43">吐槽下</a></li>
+<li><a href="#org9fe6cc7">基础的环境</a></li>
+</ul>
+</div>
+</nav>
+
+<section id="outline-container-orga03aa43" class="outline-2">
+<h2 id="orga03aa43">吐槽下</h2>
+<div class="outline-text-2" id="text-orga03aa43">
+<p>
+发现 NodeJs 用 Es6 来写东西，是个大坑啊 ！！ 我死活不知道是哪里出问题了，NodeJs 愣是解析不到 JSX 了。
+</p>
+
+<p>
+已经纠结了两个晚上了。
+</p>
+
+<p>
+来babel 的世界一看， 我好像掉入了一片大海，左右看不到岸，任由风浪推着我到处飘摇。。。 记得上次出现这感觉，还是刚进入大学，学习 C 的时候，直到我遇到了Java。对啊，我是Java程序员啊，怎么混入JavaScript的世界了，赶紧写几行JavaScript压压惊 。。。
+</p>
+
+<p>
+好了，现在从最简单的程序开始写起，一步一步来，看看到底哪一步出什么问题了，看看各种babel工具是干嘛的。
+</p>
+
+<p>
+。。。（省略各种纠结的解决方案 ，ORZ。。。）
+</p>
+
+<p>
+经过好久的纠结排查中，终于发现问题在 route的引用上。
+</p>
+
+
+<p>
+<b>React Router 配置的 route 是 jsx 的语法，在 node 环境中，引入该语法的文件，如果直接引用过来，会报语法异常，所以需要加上 babel-core 里面的 register 这个 hook 进行转换。</b>
+</p>
+
+<p>
+阮一峰的博客里面，有提及到这个 register ， 但是他用的babel-register，而我使用 babel-core里面的register ，也可以成功跑起来。暂未知两个具体区别是什么。待之后探究。
+</p>
+
+<p>
+目前最简单的一个 React Router 的服务端框架已经可以展现出来了。
+</p>
+</div>
+</section>
+
+<section id="outline-container-org9fe6cc7" class="outline-2">
+<h2 id="org9fe6cc7">基础的环境</h2>
+<div class="outline-text-2" id="text-org9fe6cc7">
+<p>
+packge.json:
+</p>
+<div class="org-src-container">
+<pre class="src src-json">{{
+  "name": "react-router-startup",
+  "description": "A Startup Devlopment Kit for React Router",
+  "version": "1.0.0",
+  "devDependencies": {
+    "babel-cli": "^6.9.0",
+    "babel-core": "^6.9.1",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-react": "^6.5.0",
+    "babel-watch": "^2.0.2"
+  },
+  "dependencies": {
+    "express": "^4.13.4",
+    "react": "^15.1.0",
+    "react-dom": "^15.1.0",
+    "react-router": "^2.4.1",
+    "swig": "^1.4.2"
+  },
+  "scripts": {
+    "start": "babel-node app.js",
+    "dev": "babel-watch app.js"
+  }
+}
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>babel-cli 里面有个 babel-node ,比较重要的工具。</li>
+<li>babel-watch 动态监视文件变化</li>
+<li>babel-preset-es2015 es2015转换</li>
+<li>babel-preset-react react转换</li>
+</ul>
+
+<p>
+app.js:
+</p>
+<div class="org-src-container">
+<pre class="src src-js"><span class="org-comment-delimiter">// </span><span class="org-comment">Babel 6 Compile</span>
+require(<span class="org-string">'babel-core/register'</span>)({
+   presets: [<span class="org-string">'es2015'</span>, <span class="org-string">'react'</span>]
+});
+
+<span class="org-keyword">import</span> express from <span class="org-string">'express'</span>;
+<span class="org-keyword">import</span> React from <span class="org-string">'react'</span>;
+<span class="org-keyword">import</span> ReactDOM from <span class="org-string">'react-dom/server'</span>;
+<span class="org-keyword">import</span> {match ,RouterContext} from <span class="org-string">'react-router'</span>;
+<span class="org-keyword">import</span> swig from <span class="org-string">'swig'</span>;
+<span class="org-keyword">var</span> <span class="org-variable-name">route</span> = require(<span class="org-string">'./view/route'</span>); <span class="org-comment-delimiter">//</span><span class="org-comment">&#27880;&#24847;&#36825;&#19968;&#27573;&#24618;&#24618;&#30340;&#24341;&#29992;</span>
+
+<span class="org-keyword">const</span> <span class="org-variable-name">app</span> = express();
+
+<span class="org-comment-delimiter">//</span><span class="org-comment">&#26381;&#21153;&#31471;&#28210;&#26579;</span>
+app.use((req,res) =&gt; {
+   match({routes:route.<span class="org-keyword">default</span> , location:req.url},(error, redirectLocation, renderProps) =&gt; {
+      <span class="org-keyword">if</span> (error) {
+         res.status(500).send(error.message)
+      } <span class="org-keyword">else</span> <span class="org-keyword">if</span> (redirectLocation) {
+         res.redirect(302, redirectLocation.pathname + redirectLocation.search)
+      } <span class="org-keyword">else</span> <span class="org-keyword">if</span> (renderProps) {
+         <span class="org-keyword">var</span> <span class="org-variable-name">html</span> = ReactDOM.renderToString(React.createElement(RouterContext, renderProps));
+         <span class="org-keyword">var</span> <span class="org-variable-name">page</span> = swig.renderFile(<span class="org-string">'template/index.html'</span>,{html:html});
+         res.status(200).send(page);
+      } <span class="org-keyword">else</span> {
+         res.status(404).send(<span class="org-string">'Not found'</span>)
+      }
+   });
+});
+
+app.listen(3000,()=&gt;{
+   console.log(<span class="org-string">'server running'</span>);
+});
+</pre>
+</div>
+
+
+<p>
+route.js:
+</p>
+<div class="org-src-container">
+<pre class="src src-js"><span class="org-keyword">import</span> React from <span class="org-string">'react'</span>;
+<span class="org-keyword">import</span> {Route} from <span class="org-string">'react-router'</span>;
+<span class="org-keyword">import</span> App from <span class="org-string">'./component/App'</span>;
+<span class="org-keyword">import</span> Home from <span class="org-string">'./component/Home'</span>;
+<span class="org-keyword">import</span> Content from <span class="org-string">'./component/Content'</span>;
+
+<span class="org-keyword">export</span> <span class="org-keyword">default</span> (
+    &lt;Route component={App}&gt;
+        &lt;Route path=<span class="org-string">"/"</span> component={Home}/&gt;
+        &lt;Route path=<span class="org-string">"/content"</span> component={Content}/&gt;
+    &lt;/Route&gt;
+)
+
+</pre>
+</div>
+
+<p>
+基础环境这样，用新语法去写，一切ok了。
+</p>
+
+<p>
+当初试验写新语法，在撸PhotoHub时候，按照阿里前端的那篇文章，搬来了很多babel插件。现在测试了下，用这个方式，babel的插件一个没有用到，已经可以支持node使用新语法，以及服务端的渲染了。
+</p>
+
+<p>
+全部代码已放入github，[传送门](<a href="https://github.com/ThinkCats/ReactRouterServerRender">https://github.com/ThinkCats/ReactRouterServerRender</a>)，希望能给同样在大海中漂泊的小白们带来点亮光。。。
+</p>
+
+<p>
+一天晚上，整理了两篇文章，业已很困，酸奶和煤球都已经睡得呼呼了。
+</p>
+</div>
+</section>
+</main>
+<footer id="postamble" class="status">
+<div class='footer'>
+Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
+Last updated on  5 04, 2020 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)
+</div>
+</footer>
+</body>
+</html>
