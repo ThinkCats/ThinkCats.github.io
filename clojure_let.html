@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--  5 04, 2020 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clojure系列- 好用的「let」和「_」</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="wanglei">
+<meta name="keywords" content="clojure">
+<link rel='icon' type='image/x-icon' href='/images/favicon.ico'/>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel='stylesheet' href='https://code.cdn.mozilla.net/fonts/fira.css'>
+<link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
+<link rel='stylesheet' href='/css/custom.css' type='text/css'/>
+<link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="/"> UP </a>
+ |
+ <a accesskey="H" href="/"> HOME </a>
+</div><header id="top" class="status">
+
+ <!-- <div class='intro'>
+ <img src='/images/about/profile.png' alt='ThinkCat' class='no-border'/>
+<h3>ThinkCat</h3>
+ <p>一个简单的开发者</p> 
+</div>
+-->
+
+<div class='nav'>
+<ul>
+<li><b> ThinkCat </b> </li>
+<li>&nbsp;&nbsp;</li>
+<li><a href='/'>Blog</a>.</li>
+<li><a href='/about/'>About</a></li>
+</ul>
+</div>
+</header>
+<main id="content">
+<header>
+<h1 class="title">Clojure系列- 好用的「let」和「_」</h1>
+</header><nav id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgeaa84e8">let</a></li>
+<li><a href="#org170c518">_</a></li>
+</ul>
+</div>
+</nav>
+<p>
+let 应该天生就是为了使代码清晰而生的。
+</p>
+<!-- more -->
+
+<section id="outline-container-orgeaa84e8" class="outline-2">
+<h2 id="orgeaa84e8">let</h2>
+<div class="outline-text-2" id="text-orgeaa84e8">
+<p>
+let 是为了绑定变量用的，这个变量可以是任何的结构，包括函数。
+</p>
+
+<p>
+当前有个函数（摘自《clojure in action》），形式是这样的：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-clojure">(defn average-pets []
+  (/ (apply + (map :number-pets (vals users))) (count users)))
+</pre>
+</div>
+
+<p>
+其中用到的users结构是这样的:
+</p>
+<div class="org-src-container">
+<pre class="src src-clojure">(def users {"www" {:password "one" :no 12}
+	    "zzz" {:password "lala" :no 44}})
+</pre>
+</div>
+
+<p>
+看上去这个average-pets比较复杂，主要是计算的时候，取了各种数据。用let的话，就隔离开了同时计算和取值的这种问题。改造后的:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-clojure">(defn average-pets-2 []
+  (let [user-data (vals users)
+	number-pets (map :no user-data)
+	total (apply + number-pets)
+	count-user (count users)]
+	(/ total count-user)))
+</pre>
+</div>
+<p>
+这样就把取值和计算分开了。
+</p>
+</div>
+</section>
+<section id="outline-container-org170c518" class="outline-2">
+<h2 id="org170c518">_</h2>
+<div class="outline-text-2" id="text-org170c518">
+<p>
+在let中，这个vector的内容必须是成对出现的,假如我们只需要在let中，println输出一下某个绑定的字段值，这个时候其实不需要为该print的form指定绑定名，用下划线&ldquo;_&rdquo;来替代。
+</p>
+<div class="org-src-container">
+<pre class="src src-clojure">(defn average-pets-2 []
+  (let [user-data (vals users)
+	number-pets (map :no user-data)
+	_ (println "no:" number-pets)
+	total (apply + number-pets)
+	_ (println "total:" total)
+	count-user (count users)]
+	(/ total count-user)))
+(average-pets-2)
+;; 运行会输出:
+;; no: (12 44)
+;; total: 56
+
+</pre>
+</div>
+</div>
+</section>
+</main>
+<footer id="postamble" class="status">
+<div class='footer'>
+Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
+Last updated on  5 04, 2020 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)
+</div>
+</footer>
+</body>
+</html>
