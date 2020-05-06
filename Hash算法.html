@@ -95,10 +95,39 @@ for the JavaScript code in this tag.
 散列函数是将字符串或者数字作为输入，通过计算输出一个整数，理想的散列函数输出非常均匀分布在可能的输出域，特别是当输入非常相似的时候。
 </p>
 
+<p>
+最近准备对线上的数据库进行分表的操作，整理方案的时候，看到最常用的还是采用对特定业务标识做 <code>hash+mod</code> 的方式。
+</p>
+
+<p>
+于是也打算做这个方案，首要的是hash算法问题。有各种的实现，发现神器 guava 里面有一个 <code>Hashing</code> 类，包含 sha256, crc32, murmur3 等各种校验与hash实现。
+</p>
+
+<p>
+测试下来，发现 murmur3 的版本中，会存在hash值是负数的情况，这种就取绝对值了。
+</p>
+
 <div class="org-src-container">
-<pre class="src src-latex"><span class="org-tex-math">$p = \sum\limits_{n=1}^Na_n$</span>
+<pre class="src src-java"><span class="org-keyword">public</span> <span class="org-keyword">static</span> <span class="org-type">void</span> <span class="org-function-name">main</span>(<span class="org-type">String</span>[] <span class="org-variable-name">args</span>) {
+    <span class="org-type">HashFunction</span> <span class="org-variable-name">hashFunction</span> = Hashing.murmur3_128();
+    <span class="org-type">long</span> <span class="org-variable-name">a</span> = System.currentTimeMillis();
+    <span class="org-type">int</span> <span class="org-variable-name">count</span> = 0;
+    <span class="org-keyword">for</span> (<span class="org-type">int</span> <span class="org-variable-name">i</span> = 0;i&lt; 1000000;i++) {
+        <span class="org-type">HashCode</span> <span class="org-variable-name">hashCode</span> = hashFunction.hashInt(i);
+        <span class="org-keyword">if</span> (hashCode.asInt() &lt; 0) {
+            System.out.println(<span class="org-string">"Found:"</span> + i);
+            count++;
+        }
+    }
+    System.out.println(<span class="org-string">"all:"</span> + count);
+    System.out.println(System.currentTimeMillis() - a);
+}
 </pre>
 </div>
+
+<p>
+散列函数介绍： <a href="https://zh.wikipedia.org/wiki/%E6%95%A3%E5%88%97%E5%87%BD%E6%95%B8">https://zh.wikipedia.org/wiki/%E6%95%A3%E5%88%97%E5%87%BD%E6%95%B8</a>
+</p>
 </main>
 <footer id="postamble" class="status">
 <div class='footer'>
