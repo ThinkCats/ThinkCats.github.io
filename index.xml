@@ -14,8 +14,8 @@
   <link>http://example.com/</link>
   <description><![CDATA[]]></description>
   <language>en</language>
-  <pubDate>Mon, 04 May 2020 09:29:45 +0800</pubDate>
-  <lastBuildDate>Mon, 04 May 2020 09:29:45 +0800</lastBuildDate>
+  <pubDate>Wed, 06 May 2020 20:40:15 +0800</pubDate>
+  <lastBuildDate>Wed, 06 May 2020 20:40:15 +0800</lastBuildDate>
   <generator>Emacs 26.3 Org-mode 9.3.6</generator>
   <webMaster>wanglei@HeHe-2.local (wanglei)</webMaster>
   <image>
@@ -25,6 +25,7 @@
   </image>
 
   <ul class="org-ul">
+    <li>2020, 5,06   <a href="Hash算法.html">Hash算法</a></li>
     <li>2018,11,17   <a href="clojure_java.html">Clojure 与 Java 交互</a></li>
     <li>2018,11,11   <a href="Ns.html">Clojure NS</a></li>
     <li>2018,11,11   <a href="MultiMethod.html">Clojure MultiMethods</a></li>
