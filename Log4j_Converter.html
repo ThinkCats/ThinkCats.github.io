@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!--  6 12, 2020 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Log4j自定义Converter</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="ThinkCat" />
+<meta name="keywords" content="Log4j2, Java post" />
+<link rel='icon' type='image/x-icon' href='/images/favicon.ico'/>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel='stylesheet' href='https://code.cdn.mozilla.net/fonts/fira.css'>
+<link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
+<link rel='stylesheet' href='/css/custom.css' type='text/css'/>
+<link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="/"> UP </a>
+ |
+ <a accesskey="H" href="/"> HOME </a>
+</div><header id="top" class="status">
+
+ <!-- <div class='intro'>
+ <img src='/images/about/profile.png' alt='ThinkCat' class='no-border'/>
+<h3>ThinkCat</h3>
+ <p>一个简单的开发者</p> 
+</div>
+-->
+
+<div class='nav'>
+<ul>
+<li><b> ThinkCat </b> </li>
+<li>&nbsp;&nbsp;</li>
+<li><a href='/'>Blog</a>.</li>
+<li><a href='/about/'>About</a></li>
+</ul>
+</div>
+</header>
+<main id="content">
+<h1 class="title">Log4j自定义Converter
+<br />
+<span class="subtitle">发布于  6 12, 2020 by ThinkCat.</span>
+</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orge06f0b7">缘由</a></li>
+<li><a href="#orgabb6dec">实现</a>
+<ul>
+<li><a href="#org49f2090">依赖项</a></li>
+<li><a href="#org5c8adc3">自定义Converter</a></li>
+<li><a href="#org6b0d082">配置log4j2.xml</a></li>
+<li><a href="#org3f21232">测试验证</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<section id="outline-container-orge06f0b7" class="outline-2">
+<h2 id="orge06f0b7">缘由</h2>
+<div class="outline-text-2" id="text-orge06f0b7">
+<p>
+新公司的基础框架不是太好用，和前公司比，还是差了不少。由于接手的都是老系统，所有东西，都是用的很久之前的，好多很原生的东西，包括JDBC、reids操作，都是裸操作连接。
+</p>
+
+<p>
+前两天还出了一个任务中，使用了JDBC连接，没有归还连接池，导致的bug&#x2026; ORZ&#x2026;
+</p>
+
+<p>
+其中基础的日志链路追踪，和前公司比，真是差了不少。加上老系统代码比较杂，追踪问题特别麻烦，日志中也很难看到连续的东西。于是打算把TraceId这种东西，加到每个日志里面，方便按每个请求查链路日志。
+</p>
+</div>
+</section>
+
+<section id="outline-container-orgabb6dec" class="outline-2">
+<h2 id="orgabb6dec">实现</h2>
+<div class="outline-text-2" id="text-orgabb6dec">
+<p>
+拿SpringBoot做了一个小demo来验证了一下，代码很简单。
+</p>
+</div>
+
+<div id="outline-container-org49f2090" class="outline-3">
+<h3 id="org49f2090">依赖项</h3>
+<div class="outline-text-3" id="text-org49f2090">
+<p>
+首先引入日志依赖：
+</p>
+<div class="org-src-container">
+<pre class="src src-xml"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">dependency</span><span class="org-nxml-tag-delimiter">&gt;</span>
+  <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">groupId</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">org.springframework.boot</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">groupId</span><span class="org-nxml-tag-delimiter">&gt;</span>
+  <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">artifactId</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">spring-boot-starter</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">artifactId</span><span class="org-nxml-tag-delimiter">&gt;</span>
+  <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">exclusions</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-comment-delimiter">&lt;!--</span><span class="org-comment">&#25490;&#38500;logback</span><span class="org-comment-delimiter">--&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">exclusion</span><span class="org-nxml-tag-delimiter">&gt;</span>
+      <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">groupId</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">org.springframework.boot</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">groupId</span><span class="org-nxml-tag-delimiter">&gt;</span>
+      <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">artifactId</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">spring-boot-starter-logging</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">artifactId</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">exclusion</span><span class="org-nxml-tag-delimiter">&gt;</span>
+  <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">exclusions</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">dependency</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">dependency</span><span class="org-nxml-tag-delimiter">&gt;</span>
+  <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">groupId</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">org.springframework.boot</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">groupId</span><span class="org-nxml-tag-delimiter">&gt;</span>
+  <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">artifactId</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">spring-boot-starter-log4j2</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">artifactId</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">dependency</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">dependency</span><span class="org-nxml-tag-delimiter">&gt;</span>
+  <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">groupId</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">org.projectlombok</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">groupId</span><span class="org-nxml-tag-delimiter">&gt;</span>
+  <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">artifactId</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">lombok</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">artifactId</span><span class="org-nxml-tag-delimiter">&gt;</span>
+  <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">version</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">1.18.8</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">version</span><span class="org-nxml-tag-delimiter">&gt;</span>
+  <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">scope</span><span class="org-nxml-tag-delimiter">&gt;</span><span class="org-nxml-text">provided</span><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">scope</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">dependency</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+
+<p>
+由于公司现有用的都是 log4j2 的组件，所以依赖中要排除掉 spring boot 默认用的logback组件，然后引入 log4j2 依赖。另外平时使用 lombok 习惯了，也引入一下。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5c8adc3" class="outline-3">
+<h3 id="org5c8adc3">自定义Converter</h3>
+<div class="outline-text-3" id="text-org5c8adc3">
+<p>
+代码如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">package</span> org.<span class="org-constant">example</span>;
+
+<span class="org-keyword">import</span> <span class="org-constant">org</span>.<span class="org-constant">apache</span>.<span class="org-constant">logging</span>.<span class="org-constant">log4j</span>.<span class="org-constant">core</span>.<span class="org-type">LogEvent</span>;
+<span class="org-keyword">import</span> <span class="org-constant">org</span>.<span class="org-constant">apache</span>.<span class="org-constant">logging</span>.<span class="org-constant">log4j</span>.<span class="org-constant">core</span>.<span class="org-constant">config</span>.<span class="org-constant">plugins</span>.<span class="org-type">Plugin</span>;
+<span class="org-keyword">import</span> <span class="org-constant">org</span>.<span class="org-constant">apache</span>.<span class="org-constant">logging</span>.<span class="org-constant">log4j</span>.<span class="org-constant">core</span>.<span class="org-constant">pattern</span>.<span class="org-type">ConverterKeys</span>;
+<span class="org-keyword">import</span> <span class="org-constant">org</span>.<span class="org-constant">apache</span>.<span class="org-constant">logging</span>.<span class="org-constant">log4j</span>.<span class="org-constant">core</span>.<span class="org-constant">pattern</span>.<span class="org-type">LogEventPatternConverter</span>;
+
+<span class="org-c-annotation">@Plugin</span>(name = <span class="org-string">"TradeConverter"</span>,category = <span class="org-string">"Converter"</span>)
+<span class="org-c-annotation">@ConverterKeys</span>({<span class="org-string">"traceId"</span>})
+<span class="org-keyword">public</span> <span class="org-keyword">class</span> <span class="org-type">TraceConverter</span> <span class="org-keyword">extends</span> <span class="org-type">LogEventPatternConverter</span> {
+    <span class="org-keyword">protected</span> <span class="org-function-name">TraceConverter</span>(<span class="org-type">String</span> <span class="org-variable-name">name</span>, <span class="org-type">String</span> <span class="org-variable-name">style</span>) {
+        <span class="org-keyword">super</span>(name, style);
+    }
+
+    <span class="org-keyword">public</span> <span class="org-keyword">static</span> <span class="org-type">TraceConverter</span> <span class="org-function-name">newInstance</span>(<span class="org-keyword">final</span> <span class="org-type">String</span>[] <span class="org-variable-name">options</span>) {
+        <span class="org-keyword">return</span> <span class="org-keyword">new</span> <span class="org-type">TraceConverter</span>(<span class="org-string">"traceId"</span>, <span class="org-string">"traceId"</span>);
+    }
+
+
+    <span class="org-c-annotation">@Override</span>
+    <span class="org-keyword">public</span> <span class="org-type">void</span> <span class="org-function-name">format</span>(<span class="org-type">LogEvent</span> <span class="org-variable-name">logEvent</span>, <span class="org-type">StringBuilder</span> <span class="org-variable-name">stringBuilder</span>) {
+        stringBuilder.append(getTraceId());
+    }
+
+    <span class="org-keyword">private</span> <span class="org-type">String</span> <span class="org-function-name">getTraceId</span>(){
+        <span class="org-comment-delimiter">//</span><span class="org-comment">&#36825;&#37324;&#23454;&#38469;&#20174;&#22522;&#30784;&#26694;&#26550;&#33719;&#21462;&#35831;&#27714;&#30340;TraceId</span>
+        <span class="org-keyword">return</span> <span class="org-string">"TestTraceId"</span>;
+    }
+}
+
+</pre>
+</div>
+
+<p>
+实际还是很简单的，继承 LogEventPatternConverter 就可以了。
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6b0d082" class="outline-3">
+<h3 id="org6b0d082">配置log4j2.xml</h3>
+<div class="outline-text-3" id="text-org6b0d082">
+<p>
+找了一份比较齐全的配置文件：
+</p>
+<div class="org-src-container">
+<pre class="src src-xml"><span class="org-string"><span class="org-nxml-processing-instruction-delimiter">&lt;?</span></span><span class="org-string"><span class="org-nxml-processing-instruction-target">xml</span></span><span class="org-string"> </span><span class="org-string"><span class="org-nxml-processing-instruction-content">version="1.0" encoding="UTF-8"</span></span><span class="org-string"><span class="org-nxml-processing-instruction-delimiter">?&gt;</span></span>
+<span class="org-comment-delimiter">&lt;!--</span><span class="org-comment">&#26085;&#24535;&#32423;&#21035;&#20197;&#21450;&#20248;&#20808;&#32423;&#25490;&#24207;: OFF &gt; FATAL &gt; ERROR &gt; WARN &gt; INFO &gt; DEBUG &gt; TRACE &gt; ALL </span><span class="org-comment-delimiter">--&gt;</span>
+<span class="org-comment-delimiter">&lt;!--</span><span class="org-comment">Configuration&#21518;&#38754;&#30340;status&#65292;&#36825;&#20010;&#29992;&#20110;&#35774;&#32622;log4j2&#33258;&#36523;&#20869;&#37096;&#30340;&#20449;&#24687;&#36755;&#20986;&#65292;&#21487;&#20197;&#19981;&#35774;&#32622;&#65292;&#24403;&#35774;&#32622;&#25104;trace&#26102;&#65292;&#20320;&#20250;&#30475;&#21040;log4j2&#20869;&#37096;&#21508;&#31181;&#35814;&#32454;&#36755;&#20986;</span><span class="org-comment-delimiter">--&gt;</span>
+<span class="org-comment-delimiter">&lt;!--</span><span class="org-comment">monitorInterval&#65306;Log4j&#33021;&#22815;&#33258;&#21160;&#26816;&#27979;&#20462;&#25913;&#37197;&#32622; &#25991;&#20214;&#21644;&#37325;&#26032;&#37197;&#32622;&#26412;&#36523;&#65292;&#35774;&#32622;&#38388;&#38548;&#31186;&#25968;</span><span class="org-comment-delimiter">--&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">configuration</span> <span class="org-nxml-attribute-local-name">status</span>=<span class="org-string">"WARN"</span> <span class="org-nxml-attribute-local-name">monitorInterval</span>=<span class="org-string">"30"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-comment-delimiter">&lt;!--</span><span class="org-comment">&#20808;&#23450;&#20041;&#25152;&#26377;&#30340;appender</span><span class="org-comment-delimiter">--&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">appenders</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-comment-delimiter">&lt;!--</span><span class="org-comment">&#36825;&#20010;&#36755;&#20986;&#25511;&#21046;&#21488;&#30340;&#37197;&#32622;</span><span class="org-comment-delimiter">--&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">console</span> <span class="org-nxml-attribute-local-name">name</span>=<span class="org-string">"Console"</span> <span class="org-nxml-attribute-local-name">target</span>=<span class="org-string">"SYSTEM_OUT"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-comment-delimiter">&lt;!--</span><span class="org-comment">&#36755;&#20986;&#26085;&#24535;&#30340;&#26684;&#24335;</span><span class="org-comment-delimiter">--&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">PatternLayout</span> <span class="org-nxml-attribute-local-name">pattern</span>=<span class="org-string">"[%d{HH:mm:ss:SSS}] [%p] ----[%traceId]  ------ %l - %m%n"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">console</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-comment-delimiter">&lt;!--</span><span class="org-comment">&#25991;&#20214;&#20250;&#25171;&#21360;&#20986;&#25152;&#26377;&#20449;&#24687;&#65292;&#36825;&#20010;log&#27599;&#27425;&#36816;&#34892;&#31243;&#24207;&#20250;&#33258;&#21160;&#28165;&#31354;&#65292;&#30001;append&#23646;&#24615;&#20915;&#23450;&#65292;&#36825;&#20010;&#20063;&#25402;&#26377;&#29992;&#30340;&#65292;&#36866;&#21512;&#20020;&#26102;&#27979;&#35797;&#29992;</span><span class="org-comment-delimiter">--&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">File</span> <span class="org-nxml-attribute-local-name">name</span>=<span class="org-string">"log"</span> <span class="org-nxml-attribute-local-name">fileName</span>=<span class="org-string">"log/test.log"</span> <span class="org-nxml-attribute-local-name">append</span>=<span class="org-string">"false"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">PatternLayout</span> <span class="org-nxml-attribute-local-name">pattern</span>=<span class="org-string">"%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">File</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-comment-delimiter">&lt;!-- </span><span class="org-comment">&#36825;&#20010;&#20250;&#25171;&#21360;&#20986;&#25152;&#26377;&#30340;info&#21450;&#20197;&#19979;&#32423;&#21035;&#30340;&#20449;&#24687;&#65292;&#27599;&#27425;&#22823;&#23567;&#36229;&#36807;size&#65292;&#21017;&#36825;size&#22823;&#23567;&#30340;&#26085;&#24535;&#20250;&#33258;&#21160;&#23384;&#20837;&#25353;&#24180;&#20221;-&#26376;&#20221;&#24314;&#31435;&#30340;&#25991;&#20214;&#22841;&#19979;&#38754;&#24182;&#36827;&#34892;&#21387;&#32553;&#65292;&#20316;&#20026;&#23384;&#26723;</span><span class="org-comment-delimiter">--&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">RollingFile</span> <span class="org-nxml-attribute-local-name">name</span>=<span class="org-string">"RollingFileInfo"</span> <span class="org-nxml-attribute-local-name">fileName</span>=<span class="org-string">"${sys:user.home}/logs/info.log"</span>
+                     <span class="org-nxml-attribute-local-name">filePattern</span>=<span class="org-string">"${sys:user.home}/logs/$${date:yyyy-MM}/info-%d{yyyy-MM-dd}-%i.log"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-comment-delimiter">&lt;!--</span><span class="org-comment">&#25511;&#21046;&#21488;&#21482;&#36755;&#20986;level&#21450;&#20197;&#19978;&#32423;&#21035;&#30340;&#20449;&#24687;&#65288;onMatch&#65289;&#65292;&#20854;&#20182;&#30340;&#30452;&#25509;&#25298;&#32477;&#65288;onMismatch&#65289;</span><span class="org-comment-delimiter">--&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">ThresholdFilter</span> <span class="org-nxml-attribute-local-name">level</span>=<span class="org-string">"info"</span> <span class="org-nxml-attribute-local-name">onMatch</span>=<span class="org-string">"ACCEPT"</span> <span class="org-nxml-attribute-local-name">onMismatch</span>=<span class="org-string">"DENY"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">PatternLayout</span> <span class="org-nxml-attribute-local-name">pattern</span>=<span class="org-string">"[%d{HH:mm:ss:SSS}] [%p] - %l - %m%n"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">Policies</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">TimeBasedTriggeringPolicy</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">SizeBasedTriggeringPolicy</span> <span class="org-nxml-attribute-local-name">size</span>=<span class="org-string">"100 MB"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">Policies</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">RollingFile</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">RollingFile</span> <span class="org-nxml-attribute-local-name">name</span>=<span class="org-string">"RollingFileWarn"</span> <span class="org-nxml-attribute-local-name">fileName</span>=<span class="org-string">"${sys:user.home}/logs/warn.log"</span>
+                     <span class="org-nxml-attribute-local-name">filePattern</span>=<span class="org-string">"${sys:user.home}/logs/$${date:yyyy-MM}/warn-%d{yyyy-MM-dd}-%i.log"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">ThresholdFilter</span> <span class="org-nxml-attribute-local-name">level</span>=<span class="org-string">"warn"</span> <span class="org-nxml-attribute-local-name">onMatch</span>=<span class="org-string">"ACCEPT"</span> <span class="org-nxml-attribute-local-name">onMismatch</span>=<span class="org-string">"DENY"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">PatternLayout</span> <span class="org-nxml-attribute-local-name">pattern</span>=<span class="org-string">"[%d{HH:mm:ss:SSS}] [%p] - %l - %m%n"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">Policies</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">TimeBasedTriggeringPolicy</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">SizeBasedTriggeringPolicy</span> <span class="org-nxml-attribute-local-name">size</span>=<span class="org-string">"100 MB"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">Policies</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-comment-delimiter">&lt;!-- </span><span class="org-comment">DefaultRolloverStrategy&#23646;&#24615;&#22914;&#19981;&#35774;&#32622;&#65292;&#21017;&#40664;&#35748;&#20026;&#26368;&#22810;&#21516;&#19968;&#25991;&#20214;&#22841;&#19979;7&#20010;&#25991;&#20214;&#65292;&#36825;&#37324;&#35774;&#32622;&#20102;20 </span><span class="org-comment-delimiter">--&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">DefaultRolloverStrategy</span> <span class="org-nxml-attribute-local-name">max</span>=<span class="org-string">"20"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">RollingFile</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">RollingFile</span> <span class="org-nxml-attribute-local-name">name</span>=<span class="org-string">"RollingFileError"</span> <span class="org-nxml-attribute-local-name">fileName</span>=<span class="org-string">"${sys:user.home}/logs/error.log"</span>
+                     <span class="org-nxml-attribute-local-name">filePattern</span>=<span class="org-string">"${sys:user.home}/logs/$${date:yyyy-MM}/error-%d{yyyy-MM-dd}-%i.log"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">ThresholdFilter</span> <span class="org-nxml-attribute-local-name">level</span>=<span class="org-string">"error"</span> <span class="org-nxml-attribute-local-name">onMatch</span>=<span class="org-string">"ACCEPT"</span> <span class="org-nxml-attribute-local-name">onMismatch</span>=<span class="org-string">"DENY"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">PatternLayout</span> <span class="org-nxml-attribute-local-name">pattern</span>=<span class="org-string">"[%d{HH:mm:ss:SSS}] [%p] - %l - %m%n"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">Policies</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">TimeBasedTriggeringPolicy</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+                <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">SizeBasedTriggeringPolicy</span> <span class="org-nxml-attribute-local-name">size</span>=<span class="org-string">"100 MB"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">Policies</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">RollingFile</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">appenders</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-comment-delimiter">&lt;!--</span><span class="org-comment">&#28982;&#21518;&#23450;&#20041;logger&#65292;&#21482;&#26377;&#23450;&#20041;&#20102;logger&#24182;&#24341;&#20837;&#30340;appender&#65292;appender&#25165;&#20250;&#29983;&#25928;</span><span class="org-comment-delimiter">--&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">loggers</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-comment-delimiter">&lt;!--</span><span class="org-comment">&#36807;&#28388;&#25481;spring&#21644;mybatis&#30340;&#19968;&#20123;&#26080;&#29992;&#30340;DEBUG&#20449;&#24687;</span><span class="org-comment-delimiter">--&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">logger</span> <span class="org-nxml-attribute-local-name">name</span>=<span class="org-string">"org.springframework"</span> <span class="org-nxml-attribute-local-name">level</span>=<span class="org-string">"INFO"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">logger</span> <span class="org-nxml-attribute-local-name">name</span>=<span class="org-string">"org.mybatis"</span> <span class="org-nxml-attribute-local-name">level</span>=<span class="org-string">"INFO"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">root</span> <span class="org-nxml-attribute-local-name">level</span>=<span class="org-string">"all"</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">appender-ref</span> <span class="org-nxml-attribute-local-name">ref</span>=<span class="org-string">"Console"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">appender-ref</span> <span class="org-nxml-attribute-local-name">ref</span>=<span class="org-string">"RollingFileInfo"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">appender-ref</span> <span class="org-nxml-attribute-local-name">ref</span>=<span class="org-string">"RollingFileWarn"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+            <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">appender-ref</span> <span class="org-nxml-attribute-local-name">ref</span>=<span class="org-string">"RollingFileError"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+        <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">root</span><span class="org-nxml-tag-delimiter">&gt;</span>
+    <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">loggers</span><span class="org-nxml-tag-delimiter">&gt;</span>
+<span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">configuration</span><span class="org-nxml-tag-delimiter">&gt;</span>
+
+</pre>
+</div>
+
+<p>
+重点在于配置的 PatternLayout :
+</p>
+<div class="org-src-container">
+<pre class="src src-xml"><span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">PatternLayout</span> <span class="org-nxml-attribute-local-name">pattern</span>=<span class="org-string">"[%d{HH:mm:ss:SSS}] [%p] ----[%traceId]  ------ %l - %m%n"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3f21232" class="outline-3">
+<h3 id="org3f21232">测试验证</h3>
+<div class="outline-text-3" id="text-org3f21232">
+<p>
+启动一下，打个日志看看。
+</p>
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">package</span> org.<span class="org-constant">example</span>;
+
+<span class="org-keyword">import</span> <span class="org-constant">lombok</span>.<span class="org-constant">extern</span>.<span class="org-constant">log4j</span>.<span class="org-type">Log4j2</span>;
+<span class="org-keyword">import</span> <span class="org-constant">lombok</span>.<span class="org-constant">extern</span>.<span class="org-constant">slf4j</span>.<span class="org-type">Slf4j</span>;
+<span class="org-keyword">import</span> <span class="org-constant">org</span>.<span class="org-constant">springframework</span>.<span class="org-constant">boot</span>.<span class="org-type">SpringApplication</span>;
+<span class="org-keyword">import</span> <span class="org-constant">org</span>.<span class="org-constant">springframework</span>.<span class="org-constant">boot</span>.<span class="org-constant">autoconfigure</span>.<span class="org-type">SpringBootApplication</span>;
+
+<span class="org-doc">/**</span>
+<span class="org-doc"> * Hello world!</span>
+<span class="org-doc"> */</span>
+<span class="org-c-annotation">@Log4j2</span>
+<span class="org-c-annotation">@SpringBootApplication</span>
+<span class="org-keyword">public</span> <span class="org-keyword">class</span> <span class="org-type">App</span> {
+
+    <span class="org-keyword">public</span> <span class="org-keyword">static</span> <span class="org-type">void</span> <span class="org-function-name">main</span>(<span class="org-type">String</span>[] <span class="org-variable-name">args</span>) {
+
+        SpringApplication.run(App.<span class="org-keyword">class</span>, args);
+        log.error(<span class="org-string">"Hello World"</span>);
+        log.info(<span class="org-string">"Hello World"</span>);
+    }
+}
+
+</pre>
+</div>
+
+<p>
+Console 的输出格式如下:
+</p>
+<blockquote>
+<p>
+  .   <span class="underline">__</span>          _            <span class="underline">_ _ _
+ /\\ / __</span>&rsquo;_ <span class="underline">_ _ _(</span>)_ <span class="underline">_  _</span> _ \ \ \ \
+( ( )\___ | &rsquo;_ | &rsquo;<span class="underline">| | &rsquo;</span> \/ <span class="underline">` | \ \ \ \
+ \\/  __</span>)| |_)| | | | | || (<span class="underline">| |  ) ) ) )
+  &rsquo;  |____| .__|_| |_|_| |</span>\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v2.2.7.RELEASE)
+</p>
+
+<p>
+[22:04:19:068] [INFO] -&#x2014;[TestTraceId]  -&#x2013;&#x2014; org.springframework.boot.StartupInfoLogger.logStarting(StartupInfoLogger.java:55) - Starting App on HeHe-2.local with PID 25792 ..
+[22:04:19:071] [DEBUG] -&#x2014;[TestTraceId]  -&#x2013;&#x2014; org.springframework.boot.StartupInfoLogger.logStarting(StartupInfoLogger.java:56) - Running with Spring Boot v2.2.7.RELEASE, Spring v5.2.6.RELEASE
+[22:04:19:072] [INFO] -&#x2014;[TestTraceId]  -&#x2013;&#x2014; org.springframework.boot.SpringApplication.logStartupProfileInfo(SpringApplication.java:651) - No active profile set, falling back to default profiles: default
+[22:04:19:423] [INFO] -&#x2014;[TestTraceId]  -&#x2013;&#x2014; org.springframework.boot.StartupInfoLogger.logStarted(StartupInfoLogger.java:61) - Started App in 0.557 seconds (JVM running for 1.165)
+[22:04:19:424] [ERROR] -&#x2014;[TestTraceId]  -&#x2013;&#x2014; org.example.App.main(App.java:18) - Hello World
+[22:04:19:424] [INFO] -&#x2014;[TestTraceId]  -&#x2013;&#x2014; org.example.App.main(App.java:19) - Hello World
+</p>
+
+<p>
+Process finished with exit code 0
+</p>
+</blockquote>
+
+<p>
+已经可以正常输出拿到的 TestTraceId 信息了。至此，完成。
+</p>
+</div>
+</div>
+</section>
+</main>
+<footer id="postamble" class="status">
+<div class='footer'>
+Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
+Last updated on  6 12, 2020 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)
+</div>
+</footer>
+</body>
+</html>
