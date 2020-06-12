@@ -333,30 +333,24 @@ for the JavaScript code in this tag.
 <p>
 Console 的输出格式如下:
 </p>
-<blockquote>
-<p>
-  .   <span class="underline">__</span>          _            <span class="underline">_ _ _
- /\\ / __</span>&rsquo;_ <span class="underline">_ _ _(</span>)_ <span class="underline">_  _</span> _ \ \ \ \
-( ( )\___ | &rsquo;_ | &rsquo;<span class="underline">| | &rsquo;</span> \/ <span class="underline">` | \ \ \ \
- \\/  __</span>)| |_)| | | | | || (<span class="underline">| |  ) ) ) )
-  &rsquo;  |____| .__|_| |_|_| |</span>\__, | / / / /
+<pre class="example">
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::        (v2.2.7.RELEASE)
-</p>
 
-<p>
-[22:04:19:068] [INFO] -&#x2014;[TestTraceId]  -&#x2013;&#x2014; org.springframework.boot.StartupInfoLogger.logStarting(StartupInfoLogger.java:55) - Starting App on HeHe-2.local with PID 25792 ..
-[22:04:19:071] [DEBUG] -&#x2014;[TestTraceId]  -&#x2013;&#x2014; org.springframework.boot.StartupInfoLogger.logStarting(StartupInfoLogger.java:56) - Running with Spring Boot v2.2.7.RELEASE, Spring v5.2.6.RELEASE
-[22:04:19:072] [INFO] -&#x2014;[TestTraceId]  -&#x2013;&#x2014; org.springframework.boot.SpringApplication.logStartupProfileInfo(SpringApplication.java:651) - No active profile set, falling back to default profiles: default
-[22:04:19:423] [INFO] -&#x2014;[TestTraceId]  -&#x2013;&#x2014; org.springframework.boot.StartupInfoLogger.logStarted(StartupInfoLogger.java:61) - Started App in 0.557 seconds (JVM running for 1.165)
-[22:04:19:424] [ERROR] -&#x2014;[TestTraceId]  -&#x2013;&#x2014; org.example.App.main(App.java:18) - Hello World
-[22:04:19:424] [INFO] -&#x2014;[TestTraceId]  -&#x2013;&#x2014; org.example.App.main(App.java:19) - Hello World
-</p>
+[22:04:19:068] [INFO] ----[TestTraceId]  ------ org.springframework.boot.StartupInfoLogger.logStarting(StartupInfoLogger.java:55) - Starting App on HeHe-2.local with PID 25792 ..
+[22:04:19:071] [DEBUG] ----[TestTraceId]  ------ org.springframework.boot.StartupInfoLogger.logStarting(StartupInfoLogger.java:56) - Running with Spring Boot v2.2.7.RELEASE, Spring v5.2.6.RELEASE
+[22:04:19:072] [INFO] ----[TestTraceId]  ------ org.springframework.boot.SpringApplication.logStartupProfileInfo(SpringApplication.java:651) - No active profile set, falling back to default profiles: default
+[22:04:19:423] [INFO] ----[TestTraceId]  ------ org.springframework.boot.StartupInfoLogger.logStarted(StartupInfoLogger.java:61) - Started App in 0.557 seconds (JVM running for 1.165)
+[22:04:19:424] [ERROR] ----[TestTraceId]  ------ org.example.App.main(App.java:18) - Hello World
+[22:04:19:424] [INFO] ----[TestTraceId]  ------ org.example.App.main(App.java:19) - Hello World
 
-<p>
 Process finished with exit code 0
-</p>
-</blockquote>
+</pre>
 
 <p>
 已经可以正常输出拿到的 TestTraceId 信息了。至此，完成。
