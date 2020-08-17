@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!--  8 17, 2020 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Org-Mode Capture 使用</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="ThinkCat" />
+<meta name="keywords" content="emacs, org-mode post" />
+<link rel='icon' type='image/x-icon' href='/images/favicon.ico'/>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel='stylesheet' href='https://code.cdn.mozilla.net/fonts/fira.css'>
+<link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
+<link rel='stylesheet' href='/css/custom.css' type='text/css'/>
+<link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="/"> UP </a>
+ |
+ <a accesskey="H" href="/"> HOME </a>
+</div><header id="top" class="status">
+
+ <!-- <div class='intro'>
+ <img src='/images/about/profile.png' alt='ThinkCat' class='no-border'/>
+<h3>ThinkCat</h3>
+ <p>一个简单的开发者</p> 
+</div>
+-->
+
+<div class='nav'>
+<ul>
+<li><b> ThinkCat </b> </li>
+<li>&nbsp;&nbsp;</li>
+<li><a href='/'>Blog</a>.</li>
+<li><a href='/about/'>About</a></li>
+</ul>
+</div>
+</header>
+<main id="content">
+<h1 class="title">Org-Mode Capture 使用
+<br />
+<span class="subtitle">发布于  8 17, 2020 by ThinkCat.</span>
+</h1>
+<p>
+好久不拿org-mode写文字，总是忘记一些快捷键。
+</p>
+
+<p>
+现在都是通过emacs来编辑文章，并且一站式发布到github page。虽然这套工作流用了比较久，但是架不住懒，不写东西，还是容易忘。记录一下。
+</p>
+
+<p>
+工作流：
+</p>
+<ol class="org-ol">
+<li>C-c c，启用org-mode的capture。这个就是预制的文章模板，预定义了title，keywords，tags。</li>
+<li>执行make [options] 命令预览或者发布到github page。</li>
+</ol>
+
+<p>
+配置还是列一下，做个备份（虽然git里面已经有了）。
+</p>
+
+
+<ol class="org-ol">
+<li>emacs 配置：</li>
+</ol>
+<div class="org-src-container">
+<pre class="src src-lisp"><span class="org-comment-delimiter">;;</span><span class="org-comment">org</span>
+(setq org-html-validation-link nil)
+(setq org-html-postamble nil)
+(setq org-startup-indented t)
+(setq org-startup-with-inline-images t)
+(setq org-image-actual-width '(300))
+(setq truncate-lines t)
+(add-hook 'org-mode-hook 'toggle-truncate-lines)
+(use-package org-bullets
+  <span class="org-builtin">:ensure</span> t
+  <span class="org-builtin">:config</span>
+  (add-hook 'org-mode-hook (<span class="org-keyword">lambda</span> () (org-bullets-mode 1)))
+  )
+(global-set-key (kbd <span class="org-string">"C-c a"</span>) 'org-agenda)
+
+<span class="org-comment-delimiter">;; </span><span class="org-comment">org capture</span>
+(<span class="org-keyword">defun</span> <span class="org-function-name">create-blog-post</span> ()
+        <span class="org-doc">"Create an org file in ~/source/myblog/posts."</span>
+        (interactive)
+        (<span class="org-keyword">let</span> ((name (read-string <span class="org-string">"Filename: "</span>)))
+        (expand-file-name (format <span class="org-string">"%s.org"</span> name) <span class="org-string">"~/Documents/Blog/myblog/posts/"</span>)))
+(setq org-capture-templates
+        '((<span class="org-string">"p"</span> <span class="org-string">"Post"</span> plain
+                (file create-blog-post)
+                (file <span class="org-string">"~/Documents/Blog/myblog/capture-template/post.orgcaptmpl"</span>))))
+(define-key global-map (kbd <span class="org-string">"C-c c"</span>)
+  (<span class="org-keyword">lambda</span> () (interactive) (org-capture nil <span class="org-string">"p"</span>)))
+
+</pre>
+</div>
+
+<ol class="org-ol">
+<li>makefile 配置：</li>
+</ol>
+<pre class="example">
+
+.PHONY: publish
+
+EMACS = /Applications/Emacs.app/Contents/MacOS/Emacs
+
+ifndef EMACS
+EMACS = "emacs"
+endif
+
+all: publish deploy sources
+
+publish: publish.el
+	@echo "Publishing... with current Emacs configurations."
+	${EMACS} --batch --load publish.el --funcall org-publish-all
+
+preview: 
+	@python3.7 -m http.server --directory=public
+
+deploy:
+	@echo "Copy CNAME"
+	@cp CNAME public/
+	@echo "Copy CNAME Ok"
+	@echo "Start Push Git Page"
+	@cp -rf public/* ~/tmp/public/
+	@cd ~/tmp/public &amp;&amp; git add . &amp;&amp; git commit -m "update" &amp;&amp; git push
+	@echo "Push Git Page Ok"
+
+publish_no_init: publish.el
+	@echo "Publishing... with --no-init."
+	${EMACS} --batch --no-init --load publish.el --funcall org-publish-all
+
+sources:
+	@echo "Backup Source"
+	@git add . &amp;&amp; git commit -m "update" &amp;&amp; git push
+
+clean:
+	@echo "Cleaning up.."
+	@rm -rvf *.elc
+	@rm -rvf public
+	@rm -rvf ~/.org-timestamps/*
+
+</pre>
+</main>
+<footer id="postamble" class="status">
+<div class='footer'>
+Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
+Last updated on  8 17, 2020 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)
+</div>
+</footer>
+</body>
+</html>

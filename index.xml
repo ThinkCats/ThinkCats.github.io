@@ -14,8 +14,8 @@
   <link>http://example.com/</link>
   <description><![CDATA[]]></description>
   <language>en</language>
-  <pubDate>Fri, 12 Jun 2020 22:25:06 +0800</pubDate>
-  <lastBuildDate>Fri, 12 Jun 2020 22:25:06 +0800</lastBuildDate>
+  <pubDate>Mon, 17 Aug 2020 20:33:55 +0800</pubDate>
+  <lastBuildDate>Mon, 17 Aug 2020 20:33:55 +0800</lastBuildDate>
   <generator>Emacs 26.3 Org-mode 9.3.6</generator>
   <webMaster>wanglei@HeHe-2.local (wanglei)</webMaster>
   <image>
@@ -25,6 +25,7 @@
   </image>
 
   <ul class="org-ul">
+    <li>2020, 8,17   <a href="Org-Mode-Capture.html">Org-Mode Capture 使用</a></li>
     <li>2020, 6,12   <a href="Log4j_Converter.html">Log4j自定义Converter</a></li>
     <li>2020, 5,22   <a href="MySql_Sharding.html">Mysql分表</a></li>
     <li>2020, 5,06   <a href="Hash算法.html">Hash算法</a></li>
