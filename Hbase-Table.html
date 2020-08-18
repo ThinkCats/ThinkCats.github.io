@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!--  8 18, 2020 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hbase 数据模型笔记(1)</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="ThinkCat" />
+<meta name="keywords" content="hbase post" />
+<link rel='icon' type='image/x-icon' href='/images/favicon.ico'/>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel='stylesheet' href='https://code.cdn.mozilla.net/fonts/fira.css'>
+<link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
+<link rel='stylesheet' href='/css/custom.css' type='text/css'/>
+<link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="/"> UP </a>
+ |
+ <a accesskey="H" href="/"> HOME </a>
+</div><header id="top" class="status">
+
+ <!-- <div class='intro'>
+ <img src='/images/about/profile.png' alt='ThinkCat' class='no-border'/>
+<h3>ThinkCat</h3>
+ <p>一个简单的开发者</p> 
+</div>
+-->
+
+<div class='nav'>
+<ul>
+<li><b> ThinkCat </b> </li>
+<li>&nbsp;&nbsp;</li>
+<li><a href='/'>Blog</a>.</li>
+<li><a href='/about/'>About</a></li>
+</ul>
+</div>
+</header>
+<main id="content">
+<h1 class="title">Hbase 数据模型笔记(1)
+<br />
+<span class="subtitle">发布于  8 17, 2020 by ThinkCat.</span>
+</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgcae55af">基础</a></li>
+<li><a href="#org32cac89">表</a></li>
+<li><a href="#org79a71c6">行</a></li>
+<li><a href="#orgc469d66">列族</a></li>
+<li><a href="#org4434bd7">Cells</a></li>
+<li><a href="#orgacd8503">操作</a></li>
+</ul>
+</div>
+</div>
+
+<section id="outline-container-orgcae55af" class="outline-2">
+<h2 id="orgcae55af">基础</h2>
+<div class="outline-text-2" id="text-orgcae55af">
+<ol class="org-ol">
+<li>应用程序是以表的方式在HBase存储数据的</li>
+<li>表是由行和列构成的，所有的列是从属于某一个列族的</li>
+<li>行和列的交叉点称之为cell,cell是版本化的。cell的内容是不可分割的字节数组</li>
+<li>HBase的表是按key排序的，排序方式之针对字节的。所有的表都必须要有主键-key</li>
+</ol>
+</div>
+</section>
+
+<section id="outline-container-org32cac89" class="outline-2">
+<h2 id="org32cac89">表</h2>
+<div class="outline-text-2" id="text-org32cac89">
+<p>
+表是在schema声明的时候定义的。
+</p>
+</div>
+</section>
+
+<section id="outline-container-org79a71c6" class="outline-2">
+<h2 id="org79a71c6">行</h2>
+<div class="outline-text-2" id="text-org79a71c6">
+<p>
+行键是不可分割的字节数组。行是按字典排序由低到高存储在表中的。一个空的数组是用来标识表空间的起始或者结尾。
+</p>
+</div>
+</section>
+
+<section id="outline-container-orgc469d66" class="outline-2">
+<h2 id="orgc469d66">列族</h2>
+<div class="outline-text-2" id="text-orgc469d66">
+<ol class="org-ol">
+<li>在HBase是列族一些列的集合。一个列族所有列成员是有着相同的前缀。</li>
+<li>列族必须在表建立的时候声明。column就不需要了，随时可以新建。</li>
+<li>在物理上，一个的列族成员在文件系统上都是存储在一起。</li>
+</ol>
+</div>
+</section>
+
+<section id="outline-container-org4434bd7" class="outline-2">
+<h2 id="org4434bd7">Cells</h2>
+<div class="outline-text-2" id="text-org4434bd7">
+<p>
+A {row, column, version} 元组就是一个HBase中的一个 cell。Cell的内容是不可分割的字节数组。
+</p>
+</div>
+</section>
+
+<section id="outline-container-orgacd8503" class="outline-2">
+<h2 id="orgacd8503">操作</h2>
+<div class="outline-text-2" id="text-orgacd8503">
+<p>
+操作有四种：
+</p>
+<ol class="org-ol">
+<li>Get: 返回特定行的属性，通过 HTable.get 执行</li>
+<li>Put: 向表新增行（key如果不存在），或者是更新行（key已经存在）,通过 HTable.put (writeBuffer) 或 HTable.batch (non-writeBuffer)执行</li>
+<li>Delete: 从表中删除一行，通过HTable.delete 执行</li>
+<li><p>
+Scan: 允许多行特定属性迭代
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-type">HTable</span> <span class="org-variable-name">htable</span> = ...      <span class="org-comment-delimiter">// </span><span class="org-comment">instantiate HTable</span>
+
+Scan scan = <span class="org-keyword">new</span> <span class="org-type">Scan</span>();
+scan.addColumn(Bytes.toBytes(<span class="org-string">"cf"</span>),Bytes.toBytes(<span class="org-string">"attr"</span>));
+scan.setStartRow( Bytes.toBytes(<span class="org-string">"row"</span>));                   <span class="org-comment-delimiter">// </span><span class="org-comment">start key is inclusive</span>
+scan.setStopRow( Bytes.toBytes(<span class="org-string">"row"</span> +  (<span class="org-type">char</span>)0));  <span class="org-comment-delimiter">// </span><span class="org-comment">stop key is exclusive</span>
+<span class="org-type">ResultScanner</span> <span class="org-variable-name">rs</span> = htable.getScanner(scan);
+<span class="org-keyword">try</span> {
+  <span class="org-keyword">for</span> (<span class="org-type">Result</span> <span class="org-variable-name">r</span> = rs.next(); r != <span class="org-constant">null</span>; r = rs.next()) {
+  <span class="org-comment-delimiter">// </span><span class="org-comment">process result...</span>
+} <span class="org-keyword">finally</span> {
+  rs.close();  <span class="org-comment-delimiter">// </span><span class="org-comment">always close the ResultScanner!</span>
+}
+</pre>
+</div>
+
+<p>
+Hbase 没有修改数据的合适方法，通过创建名为墓碑(tombstones)的新标志进行处理。这些墓碑和死去的值，在主紧缩时清除。
+</p></li>
+</ol>
+</div>
+</section>
+</main>
+<footer id="postamble" class="status">
+<div class='footer'>
+Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
+Last updated on  8 18, 2020 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)
+</div>
+</footer>
+</body>
+</html>
