@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!--  8 18, 2020 -->
+<!--  8 19, 2020 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Feed Flow基础设计</title>
@@ -97,6 +97,7 @@ for the JavaScript code in this tag.
 <ul>
 <li><a href="#orgc4265f8">功能</a></li>
 <li><a href="#org623b9d8">设计</a></li>
+<li><a href="#org59b5d9e">预估量：1000w用户</a></li>
 <li><a href="#org4430b3d">方案</a>
 <ul>
 <li><a href="#org011f0a7">基础架构</a>
@@ -109,15 +110,16 @@ for the JavaScript code in this tag.
 <li><a href="#orga0d6fad">Account</a></li>
 <li><a href="#orga36e718">Follow</a></li>
 <li><a href="#orga4c4ca0">Focus</a></li>
-<li><a href="#org4be7ff6">Feed</a></li>
-<li><a href="#org14a111a">Feed<sub>Comment</sub></a></li>
+<li><a href="#orgc3c86cf">Feed</a></li>
+<li><a href="#org3978661">Feed_Comment</a></li>
 <li><a href="#orgb2f1014">IM [TODO]</a></li>
 </ul>
 </li>
 <li><a href="#org61b0a49">缓存数据</a>
 <ul>
-<li><a href="#org7f2bc46">手机验证码</a></li>
-<li><a href="#org0773548">点赞数据</a></li>
+<li><a href="#org18c0526">1.手机验证码</a></li>
+<li><a href="#orged84b56">2.点赞数据</a></li>
+<li><a href="#orgbadb192">3.用户推荐feed队列，上限1000</a></li>
 </ul>
 </li>
 <li><a href="#org22c2546">接口设计</a>
@@ -125,6 +127,7 @@ for the JavaScript code in this tag.
 <li><a href="#org5036a9e">基本原则</a></li>
 <li><a href="#orgfc7cd1c">通用返回</a></li>
 <li><a href="#org2c9d7f2">账号</a></li>
+<li><a href="#orgcc6bbeb">Feed</a></li>
 </ul>
 </li>
 </ul>
@@ -154,9 +157,25 @@ for the JavaScript code in this tag.
 <h2 id="org623b9d8">设计</h2>
 <div class="outline-text-2" id="text-org623b9d8">
 <ol class="org-ol">
-<li>用户账号体系统一，以mobile为唯一区分</li>
-<li>feed流采用拉模式</li>
-<li>聊天采用推模式</li>
+<li>用户账号体系统一以mobile为唯一区分</li>
+<li>feed推模式：feed产生后，推送到不同的用户队列下</li>
+<li>推荐feed，feed_id推送到用户的redis队列中，队列保持固定大小，新的feed放到前面</li>
+<li>一条feed推送时候，可以按一定的规则，推送到不同的用户下</li>
+<li>读取过的feed从队列中移除，一个feed仅被浏览一次。队列变小时候，发起推送补充。</li>
+<li>推荐feed，翻页查询的时候，无需偏移量，仅需要limit</li>
+<li>关注feed，按focus关注关系表，关联到feed表中的account_id,查询feed(多线程并发查询，并发量与分表数相同，考虑使用countDownLatch模式)。</li>
+<li>分表策略：feed表按account_id分表</li>
+</ol>
+</div>
+</section>
+
+<section id="outline-container-org59b5d9e" class="outline-2">
+<h2 id="org59b5d9e">预估量：1000w用户</h2>
+<div class="outline-text-2" id="text-org59b5d9e">
+<ol class="org-ol">
+<li>对应1000w的用户推荐feed队列，每个队列上限1000，内存不超过4G</li>
+<li>每个用户平均产生1000条feed，共100亿数据，分表256张，平均单表5000w数据量，优化索引，可以支持</li>
+<li>服务器CPU，内存性能，TODO</li>
 </ol>
 </div>
 </section>
@@ -174,7 +193,7 @@ for the JavaScript code in this tag.
 <div class="outline-text-4" id="text-orge20b775">
 <ol class="org-ol">
 <li>持久化： mysql</li>
-<li>缓存： redis</li>
+<li>缓存队列： redis</li>
 </ol>
 </div>
 </div>
@@ -229,7 +248,7 @@ for the JavaScript code in this tag.
 </tr>
 
 <tr>
-<td class="org-left">nick<sub>name</sub></td>
+<td class="org-left">nick_name</td>
 <td class="org-left">varchar(30)</td>
 <td class="org-left">default:xxx</td>
 </tr>
@@ -247,27 +266,34 @@ for the JavaScript code in this tag.
 </tr>
 
 <tr>
-<td class="org-left">status<sub>desc</sub></td>
+<td class="org-left">area</td>
 <td class="org-left">char(100)</td>
 <td class="org-left">&#xa0;</td>
 </tr>
 
 <tr>
-<td class="org-left">create<sub>time</sub></td>
+<td class="org-left">status_desc</td>
+<td class="org-left">char(100)</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">create_time</td>
 <td class="org-left">datetime</td>
 <td class="org-left">&#xa0;</td>
 </tr>
 
 <tr>
-<td class="org-left">update<sub>time</sub></td>
+<td class="org-left">update_time</td>
 <td class="org-left">datetime</td>
 <td class="org-left">&#xa0;</td>
 </tr>
 </tbody>
 </table>
-</div>
-</div>
 
+<hr />
+</div>
+</div>
 <div id="outline-container-orga36e718" class="outline-4">
 <h4 id="orga36e718">Follow</h4>
 <div class="outline-text-4" id="text-orga36e718">
@@ -296,24 +322,26 @@ for the JavaScript code in this tag.
 </tr>
 
 <tr>
-<td class="org-left">account<sub>id</sub></td>
+<td class="org-left">account_id</td>
 <td class="org-left">bigint</td>
 <td class="org-left">&#xa0;</td>
 </tr>
 
 <tr>
-<td class="org-left">follower<sub>id</sub></td>
+<td class="org-left">follower_id</td>
 <td class="org-left">bigint</td>
 <td class="org-left">fans account id</td>
 </tr>
 
 <tr>
-<td class="org-left">create<sub>time</sub></td>
+<td class="org-left">create_time</td>
 <td class="org-left">datetime</td>
 <td class="org-left">&#xa0;</td>
 </tr>
 </tbody>
 </table>
+
+<hr />
 </div>
 </div>
 
@@ -345,30 +373,32 @@ for the JavaScript code in this tag.
 </tr>
 
 <tr>
-<td class="org-left">account<sub>id</sub></td>
+<td class="org-left">account_id</td>
 <td class="org-left">bigint</td>
 <td class="org-left">&#xa0;</td>
 </tr>
 
 <tr>
-<td class="org-left">focus<sub>id</sub></td>
+<td class="org-left">focus_id</td>
 <td class="org-left">bigint</td>
 <td class="org-left">focus account id</td>
 </tr>
 
 <tr>
-<td class="org-left">create<sub>time</sub></td>
+<td class="org-left">create_time</td>
 <td class="org-left">datetime</td>
 <td class="org-left">&#xa0;</td>
 </tr>
 </tbody>
 </table>
+
+<hr />
 </div>
 </div>
 
-<div id="outline-container-org4be7ff6" class="outline-4">
-<h4 id="org4be7ff6">Feed</h4>
-<div class="outline-text-4" id="text-org4be7ff6">
+<div id="outline-container-orgc3c86cf" class="outline-4">
+<h4 id="orgc3c86cf">Feed</h4>
+<div class="outline-text-4" id="text-orgc3c86cf">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -394,14 +424,32 @@ for the JavaScript code in this tag.
 </tr>
 
 <tr>
+<td class="org-left">account_id</td>
+<td class="org-left">bigint</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
 <td class="org-left">body</td>
 <td class="org-left">text</td>
 <td class="org-left">&#xa0;</td>
 </tr>
 
 <tr>
-<td class="org-left">aaccount<sub>id</sub></td>
-<td class="org-left">bigint</td>
+<td class="org-left">files</td>
+<td class="org-left">text</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">area</td>
+<td class="org-left">varchar(50)</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">topic_ids</td>
+<td class="org-left">varchar(100)</td>
 <td class="org-left">&#xa0;</td>
 </tr>
 
@@ -412,24 +460,25 @@ for the JavaScript code in this tag.
 </tr>
 
 <tr>
-<td class="org-left">create<sub>time</sub></td>
+<td class="org-left">create_time</td>
 <td class="org-left">datetime</td>
 <td class="org-left">&#xa0;</td>
 </tr>
 
 <tr>
-<td class="org-left">soft<sub>del</sub><sub>time</sub></td>
+<td class="org-left">soft_del_time</td>
 <td class="org-left">datetime</td>
 <td class="org-left">&#xa0;</td>
 </tr>
 </tbody>
 </table>
-</div>
-</div>
 
-<div id="outline-container-org14a111a" class="outline-4">
-<h4 id="org14a111a">Feed<sub>Comment</sub></h4>
-<div class="outline-text-4" id="text-org14a111a">
+<hr />
+</div>
+</div>
+<div id="outline-container-org3978661" class="outline-4">
+<h4 id="org3978661">Feed_Comment</h4>
+<div class="outline-text-4" id="text-org3978661">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -467,19 +516,19 @@ for the JavaScript code in this tag.
 </tr>
 
 <tr>
-<td class="org-left">account<sub>id</sub></td>
+<td class="org-left">account_id</td>
 <td class="org-left">bigint</td>
 <td class="org-left">&#xa0;</td>
 </tr>
 
 <tr>
-<td class="org-left">create<sub>time</sub></td>
+<td class="org-left">create_time</td>
 <td class="org-left">datetime</td>
 <td class="org-left">&#xa0;</td>
 </tr>
 
 <tr>
-<td class="org-left">update<sub>time</sub></td>
+<td class="org-left">update_time</td>
 <td class="org-left">datetime</td>
 <td class="org-left">&#xa0;</td>
 </tr>
@@ -487,6 +536,7 @@ for the JavaScript code in this tag.
 </table>
 </div>
 </div>
+
 
 <div id="outline-container-orgb2f1014" class="outline-4">
 <h4 id="orgb2f1014">IM [TODO]</h4>
@@ -497,19 +547,27 @@ for the JavaScript code in this tag.
 <h3 id="org61b0a49">缓存数据</h3>
 <div class="outline-text-3" id="text-org61b0a49">
 </div>
-<div id="outline-container-org7f2bc46" class="outline-4">
-<h4 id="org7f2bc46">手机验证码</h4>
-<div class="outline-text-4" id="text-org7f2bc46">
+<div id="outline-container-org18c0526" class="outline-4">
+<h4 id="org18c0526">1.手机验证码</h4>
+<div class="outline-text-4" id="text-org18c0526">
 <p>
-key: mobile, value(String): verify<sub>code</sub>
+key: mobile, value(String): verify_code
 </p>
 </div>
 </div>
-<div id="outline-container-org0773548" class="outline-4">
-<h4 id="org0773548">点赞数据</h4>
-<div class="outline-text-4" id="text-org0773548">
+<div id="outline-container-orged84b56" class="outline-4">
+<h4 id="orged84b56">2.点赞数据</h4>
+<div class="outline-text-4" id="text-orged84b56">
 <p>
-key: feed<sub>id</sub>, value(List): 点赞的账号id 
+key: feed_id, value(List): 点赞的账号id
+</p>
+</div>
+</div>
+<div id="outline-container-orgbadb192" class="outline-4">
+<h4 id="orgbadb192">3.用户推荐feed队列，上限1000</h4>
+<div class="outline-text-4" id="text-orgbadb192">
+<p>
+key：account_id, value(List): feed_id
 </p>
 </div>
 </div>
@@ -644,6 +702,7 @@ url:[Post]  /api/account/regist
 <p>
 出参： 通用返回
 </p>
+<hr />
 </div>
 </li>
 
@@ -709,10 +768,10 @@ url:[Post] /api/account/login
 <p>
 出参： 通用返回+业务数据 T&lt;String&gt;: token
 </p>
+
+<hr />
 </div>
 </li>
-
-
 <li><a id="orge1eea77"></a>更新基本信息<br />
 <div class="outline-text-5" id="text-orge1eea77">
 <p>
@@ -769,9 +828,10 @@ url:[Post] /api/account/update
 <p>
 出参： 通用返回
 </p>
+
+<hr />
 </div>
 </li>
-
 <li><a id="orgd496ec1"></a>换绑手机<br />
 <div class="outline-text-5" id="text-orgd496ec1">
 <p>
@@ -822,9 +882,10 @@ url:[Post] /api/account/bindMobile
 <p>
 出参： 通用返回
 </p>
+
+<hr />
 </div>
 </li>
-
 <li><a id="orgfc20640"></a>查询账号信息<br />
 <div class="outline-text-5" id="text-orgfc20640">
 <p>
@@ -882,6 +943,80 @@ url:[Get] /api/account/{accountId}
 <td class="org-left">String</td>
 <td class="org-left">&#xa0;</td>
 </tr>
+
+<tr>
+<td class="org-left">area</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">status_desc</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-orgcc6bbeb" class="outline-4">
+<h4 id="orgcc6bbeb">Feed</h4>
+<div class="outline-text-4" id="text-orgcc6bbeb">
+</div>
+<ul class="org-ul">
+<li><a id="org4827746"></a>发表内容<br />
+<div class="outline-text-5" id="text-org4827746">
+<p>
+url: [Post] /api/feed/post
+</p>
+
+<p>
+入参：
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">body</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">files</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">area</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">topics</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -894,7 +1029,7 @@ url:[Get] /api/account/{accountId}
 <footer id="postamble" class="status">
 <div class='footer'>
 Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
-Last updated on  8 18, 2020 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)
+Last updated on  8 19, 2020 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)
 </div>
 </footer>
 </body>
