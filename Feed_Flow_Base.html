@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!--  8 19, 2020 -->
+<!--  8 22, 2020 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Feed Flow基础设计</title>
@@ -110,8 +110,10 @@ for the JavaScript code in this tag.
 <li><a href="#orga0d6fad">Account</a></li>
 <li><a href="#orga36e718">Follow</a></li>
 <li><a href="#orga4c4ca0">Focus</a></li>
-<li><a href="#orgc3c86cf">Feed</a></li>
+<li><a href="#orgcc6bbeb">Feed</a></li>
 <li><a href="#org3978661">Feed_Comment</a></li>
+<li><a href="#org4dfab62">Feed_Like_Account</a></li>
+<li><a href="#org2fab55e">Comment_Like_Account</a></li>
 <li><a href="#orgb2f1014">IM [TODO]</a></li>
 </ul>
 </li>
@@ -127,7 +129,9 @@ for the JavaScript code in this tag.
 <li><a href="#org5036a9e">基本原则</a></li>
 <li><a href="#orgfc7cd1c">通用返回</a></li>
 <li><a href="#org2c9d7f2">账号</a></li>
-<li><a href="#orgcc6bbeb">Feed</a></li>
+<li><a href="#orgca9dd05">Feed</a></li>
+<li><a href="#org78a4470">Comment</a></li>
+<li><a href="#org531e112">Like</a></li>
 </ul>
 </li>
 </ul>
@@ -165,6 +169,7 @@ for the JavaScript code in this tag.
 <li>推荐feed，翻页查询的时候，无需偏移量，仅需要limit</li>
 <li>关注feed，按focus关注关系表，关联到feed表中的account_id,查询feed(多线程并发查询，并发量与分表数相同，考虑使用countDownLatch模式)。</li>
 <li>分表策略：feed表按account_id分表</li>
+<li>采用redis队列维护推荐feed，队列需要保证进去过的feed，极少会再次进来(拉取后从队列中移除，触发推送补充，补充尽量随机从不同分表中获取feed,采用布隆过滤器)</li>
 </ol>
 </div>
 </section>
@@ -256,6 +261,12 @@ for the JavaScript code in this tag.
 <tr>
 <td class="org-left">avatar</td>
 <td class="org-left">text</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">sex</td>
+<td class="org-left">tinyint</td>
 <td class="org-left">&#xa0;</td>
 </tr>
 
@@ -396,9 +407,9 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-orgc3c86cf" class="outline-4">
-<h4 id="orgc3c86cf">Feed</h4>
-<div class="outline-text-4" id="text-orgc3c86cf">
+<div id="outline-container-orgcc6bbeb" class="outline-4">
+<h4 id="orgcc6bbeb">Feed</h4>
+<div class="outline-text-4" id="text-orgcc6bbeb">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -450,6 +461,24 @@ for the JavaScript code in this tag.
 <tr>
 <td class="org-left">topic_ids</td>
 <td class="org-left">varchar(100)</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">visible_type</td>
+<td class="org-left">tinyint</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">likeCount</td>
+<td class="org-left">int</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">commentCount</td>
+<td class="org-left">int</td>
 <td class="org-left">&#xa0;</td>
 </tr>
 
@@ -517,6 +546,118 @@ for the JavaScript code in this tag.
 
 <tr>
 <td class="org-left">account_id</td>
+<td class="org-left">bigint</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">create_time</td>
+<td class="org-left">datetime</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">update_time</td>
+<td class="org-left">datetime</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+</div>
+</div>
+<div id="outline-container-org4dfab62" class="outline-4">
+<h4 id="org4dfab62">Feed_Like_Account</h4>
+<div class="outline-text-4" id="text-org4dfab62">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">id</td>
+<td class="org-left">bigint</td>
+<td class="org-left">key</td>
+</tr>
+
+<tr>
+<td class="org-left">feedId</td>
+<td class="org-left">bigint</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">likeAccountId</td>
+<td class="org-left">bigint</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">create_time</td>
+<td class="org-left">datetime</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">update_time</td>
+<td class="org-left">datetime</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+</div>
+</div>
+<div id="outline-container-org2fab55e" class="outline-4">
+<h4 id="org2fab55e">Comment_Like_Account</h4>
+<div class="outline-text-4" id="text-org2fab55e">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">id</td>
+<td class="org-left">bigint</td>
+<td class="org-left">key</td>
+</tr>
+
+<tr>
+<td class="org-left">commentId</td>
+<td class="org-left">bigint</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">likeAccountId</td>
 <td class="org-left">bigint</td>
 <td class="org-left">&#xa0;</td>
 </tr>
@@ -962,9 +1103,9 @@ url:[Get] /api/account/{accountId}
 </ul>
 </div>
 
-<div id="outline-container-orgcc6bbeb" class="outline-4">
-<h4 id="orgcc6bbeb">Feed</h4>
-<div class="outline-text-4" id="text-orgcc6bbeb">
+<div id="outline-container-orgca9dd05" class="outline-4">
+<h4 id="orgca9dd05">Feed</h4>
+<div class="outline-text-4" id="text-orgca9dd05">
 </div>
 <ul class="org-ul">
 <li><a id="org4827746"></a>发表内容<br />
@@ -1017,6 +1158,360 @@ url: [Post] /api/feed/post
 <td class="org-left">String</td>
 <td class="org-left">&#xa0;</td>
 </tr>
+
+<tr>
+<td class="org-left">visibleType</td>
+<td class="org-left">Integer</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+</div>
+</li>
+<li><a id="org054d710"></a>拉取内容/列表<br />
+<div class="outline-text-5" id="text-org054d710">
+<p>
+url: [Get] /api/feed /[list]
+</p>
+
+<p>
+入参：
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">type</td>
+<td class="org-left">Integer</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">offset</td>
+<td class="org-left">Integer</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">size</td>
+<td class="org-left">Integer</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>
+出参：业务数据 [List]&lt;T&gt;
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">body</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">files</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">area</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">topics</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">likeCount</td>
+<td class="org-left">Integer</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">commentCount</td>
+<td class="org-left">Integer</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">postTime</td>
+<td class="org-left">Date</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org78a4470" class="outline-4">
+<h4 id="org78a4470">Comment</h4>
+<div class="outline-text-4" id="text-org78a4470">
+</div>
+<ul class="org-ul">
+<li><a id="orga7b33ae"></a>发布评论<br />
+<div class="outline-text-5" id="text-orga7b33ae">
+<p>
+url:[Post] /api/comment
+</p>
+
+<p>
+入参：
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">feedId</td>
+<td class="org-left">Long</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">writerAccount</td>
+<td class="org-left">Long</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">comment</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">files</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">likeCount</td>
+<td class="org-left">Integer</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>
+出参：通用返回
+</p>
+
+<hr />
+</div>
+</li>
+<li><a id="orgeb56075"></a>获取评论<br />
+<div class="outline-text-5" id="text-orgeb56075">
+<p>
+url: [Get] /api/comment/list
+</p>
+
+<p>
+入参：
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">feedId</td>
+<td class="org-left">Long</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">accountId</td>
+<td class="org-left">Long</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">offset</td>
+<td class="org-left">Integer</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">size</td>
+<td class="org-left">Integer</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+出参: 业务数据 T
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">feedId</td>
+<td class="org-left">Long</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">writerAccount</td>
+<td class="org-left">Long</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">comment</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">files</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">likeCount</td>
+<td class="org-left">Integer</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org531e112" class="outline-4">
+<h4 id="org531e112">Like</h4>
+<div class="outline-text-4" id="text-org531e112">
+</div>
+<ul class="org-ul">
+<li><a id="orgabcbf75"></a>点赞<br />
+<div class="outline-text-5" id="text-orgabcbf75">
+<p>
+url:[Post] /api/like
+</p>
+
+<p>
+入参:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">likeId</td>
+<td class="org-left">Long</td>
+<td class="org-left">feedId or CommentId</td>
+</tr>
+
+<tr>
+<td class="org-left">likeType</td>
+<td class="org-left">Integer</td>
+<td class="org-left">feed or comment</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -1029,7 +1524,7 @@ url: [Post] /api/feed/post
 <footer id="postamble" class="status">
 <div class='footer'>
 Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
-Last updated on  8 19, 2020 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)
+Last updated on  8 20, 2020 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)
 </div>
 </footer>
 </body>
