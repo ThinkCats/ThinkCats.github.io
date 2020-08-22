@@ -14,8 +14,8 @@
   <link>http://example.com/</link>
   <description><![CDATA[]]></description>
   <language>en</language>
-  <pubDate>Sat, 22 Aug 2020 11:11:42 +0800</pubDate>
-  <lastBuildDate>Sat, 22 Aug 2020 11:11:42 +0800</lastBuildDate>
+  <pubDate>Sat, 22 Aug 2020 13:02:29 +0800</pubDate>
+  <lastBuildDate>Sat, 22 Aug 2020 13:02:29 +0800</lastBuildDate>
   <generator>Emacs 26.3 Org-mode 9.3.6</generator>
   <webMaster>wanglei@HeHe-2.local (wanglei)</webMaster>
   <image>
@@ -25,6 +25,7 @@
   </image>
 
   <ul class="org-ul">
+    <li>2020, 8,22   <a href="Feed_Flow_Redis.html">Feed Flow 准备工作 - 推荐设计</a></li>
     <li>2020, 8,18   <a href="Feed_Flow_Base.html">Feed Flow基础设计</a></li>
     <li>2020, 8,17   <a href="Hbase-Table.html">Hbase 数据模型笔记(1)</a></li>
     <li>2020, 8,17   <a href="Org-Mode-Capture.html">Org-Mode Capture 使用</a></li>
