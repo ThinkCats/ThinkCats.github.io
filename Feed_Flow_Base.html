@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!--  8 22, 2020 -->
+<!--  5 11, 2021 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Feed Flow基础设计</title>
@@ -17,50 +17,26 @@
 <link rel='stylesheet' href='/css/custom.css' type='text/css'/>
 <link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
 <script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
 <!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
 </script>
 </head>
 <body>
@@ -110,7 +86,7 @@ for the JavaScript code in this tag.
 <li><a href="#orga0d6fad">Account</a></li>
 <li><a href="#orga36e718">Follow</a></li>
 <li><a href="#orga4c4ca0">Focus</a></li>
-<li><a href="#orgcc6bbeb">Feed</a></li>
+<li><a href="#orgca9dd05">Feed</a></li>
 <li><a href="#org3978661">Feed_Comment</a></li>
 <li><a href="#org4dfab62">Feed_Like_Account</a></li>
 <li><a href="#org2fab55e">Comment_Like_Account</a></li>
@@ -122,6 +98,7 @@ for the JavaScript code in this tag.
 <li><a href="#org18c0526">1.手机验证码</a></li>
 <li><a href="#orged84b56">2.点赞数据</a></li>
 <li><a href="#orgbadb192">3.用户推荐feed队列，上限1000</a></li>
+<li><a href="#orgfe76cc8">4.用户在线状态</a></li>
 </ul>
 </li>
 <li><a href="#org22c2546">接口设计</a>
@@ -129,7 +106,7 @@ for the JavaScript code in this tag.
 <li><a href="#org5036a9e">基本原则</a></li>
 <li><a href="#orgfc7cd1c">通用返回</a></li>
 <li><a href="#org2c9d7f2">账号</a></li>
-<li><a href="#orgca9dd05">Feed</a></li>
+<li><a href="#orgcc0945a">Feed</a></li>
 <li><a href="#org78a4470">Comment</a></li>
 <li><a href="#org531e112">Like</a></li>
 </ul>
@@ -407,9 +384,9 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-orgcc6bbeb" class="outline-4">
-<h4 id="orgcc6bbeb">Feed</h4>
-<div class="outline-text-4" id="text-orgcc6bbeb">
+<div id="outline-container-orgca9dd05" class="outline-4">
+<h4 id="orgca9dd05">Feed</h4>
+<div class="outline-text-4" id="text-orgca9dd05">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -692,7 +669,7 @@ for the JavaScript code in this tag.
 <h4 id="org18c0526">1.手机验证码</h4>
 <div class="outline-text-4" id="text-org18c0526">
 <p>
-key: mobile, value(String): verify_code
+key: type + mobile, value(String): verify_code
 </p>
 </div>
 </div>
@@ -700,7 +677,7 @@ key: mobile, value(String): verify_code
 <h4 id="orged84b56">2.点赞数据</h4>
 <div class="outline-text-4" id="text-orged84b56">
 <p>
-key: feed_id, value(List): 点赞的账号id
+key: type + feed_id, value(List): 点赞的账号id
 </p>
 </div>
 </div>
@@ -708,7 +685,15 @@ key: feed_id, value(List): 点赞的账号id
 <h4 id="orgbadb192">3.用户推荐feed队列，上限1000</h4>
 <div class="outline-text-4" id="text-orgbadb192">
 <p>
-key：account_id, value(List): feed_id
+key：type + account_id, value(List): feed_id
+</p>
+</div>
+</div>
+<div id="outline-container-orgfe76cc8" class="outline-4">
+<h4 id="orgfe76cc8">4.用户在线状态</h4>
+<div class="outline-text-4" id="text-orgfe76cc8">
+<p>
+key: type + account_id, 有时效性，过期则认为不在线
 </p>
 </div>
 </div>
@@ -1103,9 +1088,9 @@ url:[Get] /api/account/{accountId}
 </ul>
 </div>
 
-<div id="outline-container-orgca9dd05" class="outline-4">
-<h4 id="orgca9dd05">Feed</h4>
-<div class="outline-text-4" id="text-orgca9dd05">
+<div id="outline-container-orgcc0945a" class="outline-4">
+<h4 id="orgcc0945a">Feed</h4>
+<div class="outline-text-4" id="text-orgcc0945a">
 </div>
 <ul class="org-ul">
 <li><a id="org4827746"></a>发表内容<br />
@@ -1524,7 +1509,7 @@ url:[Post] /api/like
 <footer id="postamble" class="status">
 <div class='footer'>
 Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
-Last updated on  8 20, 2020 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)
+Last updated on  8 23, 2020 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.4.5)
 </div>
 </footer>
 </body>

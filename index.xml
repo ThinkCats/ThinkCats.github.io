@@ -14,9 +14,9 @@
   <link>http://example.com/</link>
   <description><![CDATA[]]></description>
   <language>en</language>
-  <pubDate>Sat, 22 Aug 2020 13:42:53 +0800</pubDate>
-  <lastBuildDate>Sat, 22 Aug 2020 13:42:53 +0800</lastBuildDate>
-  <generator>Emacs 26.3 Org-mode 9.3.6</generator>
+  <pubDate>Tue, 11 May 2021 23:40:13 +0800</pubDate>
+  <lastBuildDate>Tue, 11 May 2021 23:40:13 +0800</lastBuildDate>
+  <generator>Emacs 26.3 Org-mode 9.4.5</generator>
   <webMaster>wanglei@HeHe-2.local (wanglei)</webMaster>
   <image>
     <url>https://orgmode.org/img/org-mode-unicorn-logo.png</url>
@@ -25,6 +25,7 @@
   </image>
 
   <ul class="org-ul">
+    <li>2021, 5,11   <a href="recent-life-2021.html">【生活】2021年了，最近生活</a></li>
     <li>2020, 8,22   <a href="Feed_Flow_Redis.html">Feed Flow 准备工作 - 推荐设计</a></li>
     <li>2020, 8,18   <a href="Feed_Flow_Base.html">Feed Flow基础设计</a></li>
     <li>2020, 8,17   <a href="Hbase-Table.html">Hbase 数据模型笔记(1)</a></li>
