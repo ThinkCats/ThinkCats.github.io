@@ -1,64 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!--  5 04, 2020 -->
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--  3 22, 2023 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>NodeJs 支持Es6</title>
-<meta name="generator" content="Org mode">
-<meta name="author" content="wanglei">
-<meta name="keywords" content="nodejs">
+<meta name="author" content="HeHe" />
+<meta name="keywords" content="nodejs" />
+<meta name="generator" content="Org Mode" />
 <link rel='icon' type='image/x-icon' href='/images/favicon.ico'/>
 <meta name='viewport' content='width=device-width, initial-scale=1'>
 <link rel='stylesheet' href='https://code.cdn.mozilla.net/fonts/fira.css'>
 <link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
 <link rel='stylesheet' href='/css/custom.css' type='text/css'/>
 <link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
 </script>
 </head>
 <body>
@@ -84,15 +58,15 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 </header>
-<main id="content">
+<main id="content" class="content">
 <header>
 <h1 class="title">NodeJs 支持Es6</h1>
-</header><nav id="table-of-contents">
+</header><nav id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
+<div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org6663562">1. 使用mjs文件扩展名</a></li>
-<li><a href="#org82e67a9">2. 使用loader</a></li>
+<li><a href="#org8b52ccf">1. 使用mjs文件扩展名</a></li>
+<li><a href="#org78b4f71">2. 使用loader</a></li>
 </ul>
 </div>
 </nav>
@@ -102,9 +76,9 @@ Node10现在是最新版本,es6也是可以支持了.
 
 <!- more -->
 
-<section id="outline-container-org6663562" class="outline-2">
-<h2 id="org6663562">1. 使用mjs文件扩展名</h2>
-<div class="outline-text-2" id="text-org6663562">
+<section id="outline-container-org8b52ccf" class="outline-2">
+<h2 id="org8b52ccf">1. 使用mjs文件扩展名</h2>
+<div class="outline-text-2" id="text-org8b52ccf">
 <p>
 js文件以mjs作为扩展名的话，可以这样来直接执行：
 </p>
@@ -119,9 +93,9 @@ js文件以mjs作为扩展名的话，可以这样来直接执行：
 </div>
 </section>
 
-<section id="outline-container-org82e67a9" class="outline-2">
-<h2 id="org82e67a9">2. 使用loader</h2>
-<div class="outline-text-2" id="text-org82e67a9">
+<section id="outline-container-org78b4f71" class="outline-2">
+<h2 id="org78b4f71">2. 使用loader</h2>
+<div class="outline-text-2" id="text-org78b4f71">
 <p>
 命令格式如下:
 </p>
@@ -185,7 +159,7 @@ baseURL.pathname = <span class="org-string">`${process.cwd()}/`</span>;
 bash-shell里面，这样设置:
 </p>
 <div class="org-src-container">
-<pre class="src src-shell"><span class="org-builtin">export</span> <span class="org-variable-name">NODE_OPTIONS</span> =<span class="org-string">'--experimental-modules  --loader YOUR_PATH/loader.mjs'</span>
+<pre class="src src-shell"><span class="org-builtin">export</span> NODE_OPTIONS =<span class="org-string">'--experimental-modules  --loader YOUR_PATH/loader.mjs'</span>
 </pre>
 </div>
 
@@ -198,7 +172,7 @@ bash-shell里面，这样设置:
 <footer id="postamble" class="status">
 <div class='footer'>
 Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
-Last updated on  5 04, 2020 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)
+Last updated on  7 22, 2022 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
 </div>
 </footer>
 </body>
