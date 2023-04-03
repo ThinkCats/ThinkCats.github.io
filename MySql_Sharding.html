@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!--  3 22, 2023 -->
+<!--  4 03, 2023 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Mysql分表</title>
@@ -69,15 +69,15 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org76f45f4">传统数据集</a></li>
-<li><a href="#org94be524">数据分片(Sharding)</a></li>
+<li><a href="#org8c0c2b5">传统数据集</a></li>
+<li><a href="#org7699776">数据分片(Sharding)</a></li>
 </ul>
 </div>
 </div>
 
-<section id="outline-container-org76f45f4" class="outline-2">
-<h2 id="org76f45f4">传统数据集</h2>
-<div class="outline-text-2" id="text-org76f45f4">
+<section id="outline-container-org8c0c2b5" class="outline-2">
+<h2 id="org8c0c2b5">传统数据集</h2>
+<div class="outline-text-2" id="text-org8c0c2b5">
 <ol class="org-ol">
 <li>由于关系型数据库大多采用B+树类型的索引，在数据量超过阈值的情况下，索引深度的增加也将使得磁盘访问的IO次数增加，进而导致查询性能的下降；同时，高并发访问请求也使得集中式数据库成为系统的最大瓶颈。</li>
 <li>当一个数据库实例中的数据达到阈值以上，对于DBA的运维压力就会增大。数据备份和恢复的时间成本都将随着数据量的大小而愈发不可控。一般来讲，单一数据库实例的数据的阈值在1TB之内，是比较合理的范围。</li>
@@ -85,9 +85,9 @@
 </div>
 </section>
 
-<section id="outline-container-org94be524" class="outline-2">
-<h2 id="org94be524">数据分片(Sharding)</h2>
-<div class="outline-text-2" id="text-org94be524">
+<section id="outline-container-org7699776" class="outline-2">
+<h2 id="org7699776">数据分片(Sharding)</h2>
+<div class="outline-text-2" id="text-org7699776">
 <p>
 数据分片指按照某个维度将存放在单一数据库中的数据分散地存放至多个数据库或表中以达到提升性能瓶颈以及可用性的效果。
 </p>
@@ -97,7 +97,7 @@
 <footer id="postamble" class="status">
 <div class='footer'>
 Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
-Last updated on  7 22, 2022 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
+Last updated on  2 07, 2023 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
 </div>
 </footer>
 </body>

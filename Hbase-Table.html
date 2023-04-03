@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!--  3 22, 2023 -->
+<!--  4 03, 2023 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Hbase 数据模型笔记(1)</title>
@@ -69,19 +69,19 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org799c6f8">基础</a></li>
-<li><a href="#orgaa9f513">表</a></li>
-<li><a href="#orgf5e6064">行</a></li>
-<li><a href="#org0a23a49">列族</a></li>
-<li><a href="#orgad01228">Cells</a></li>
-<li><a href="#orgd2ed469">操作</a></li>
+<li><a href="#org37bf1b7">基础</a></li>
+<li><a href="#org53d3328">表</a></li>
+<li><a href="#orgde16c85">行</a></li>
+<li><a href="#org5de0af6">列族</a></li>
+<li><a href="#orgcae6f65">Cells</a></li>
+<li><a href="#org9d4cac0">操作</a></li>
 </ul>
 </div>
 </div>
 
-<section id="outline-container-org799c6f8" class="outline-2">
-<h2 id="org799c6f8">基础</h2>
-<div class="outline-text-2" id="text-org799c6f8">
+<section id="outline-container-org37bf1b7" class="outline-2">
+<h2 id="org37bf1b7">基础</h2>
+<div class="outline-text-2" id="text-org37bf1b7">
 <ol class="org-ol">
 <li>应用程序是以表的方式在HBase存储数据的</li>
 <li>表是由行和列构成的，所有的列是从属于某一个列族的</li>
@@ -91,27 +91,27 @@
 </div>
 </section>
 
-<section id="outline-container-orgaa9f513" class="outline-2">
-<h2 id="orgaa9f513">表</h2>
-<div class="outline-text-2" id="text-orgaa9f513">
+<section id="outline-container-org53d3328" class="outline-2">
+<h2 id="org53d3328">表</h2>
+<div class="outline-text-2" id="text-org53d3328">
 <p>
 表是在schema声明的时候定义的。
 </p>
 </div>
 </section>
 
-<section id="outline-container-orgf5e6064" class="outline-2">
-<h2 id="orgf5e6064">行</h2>
-<div class="outline-text-2" id="text-orgf5e6064">
+<section id="outline-container-orgde16c85" class="outline-2">
+<h2 id="orgde16c85">行</h2>
+<div class="outline-text-2" id="text-orgde16c85">
 <p>
 行键是不可分割的字节数组。行是按字典排序由低到高存储在表中的。一个空的数组是用来标识表空间的起始或者结尾。
 </p>
 </div>
 </section>
 
-<section id="outline-container-org0a23a49" class="outline-2">
-<h2 id="org0a23a49">列族</h2>
-<div class="outline-text-2" id="text-org0a23a49">
+<section id="outline-container-org5de0af6" class="outline-2">
+<h2 id="org5de0af6">列族</h2>
+<div class="outline-text-2" id="text-org5de0af6">
 <ol class="org-ol">
 <li>在HBase是列族一些列的集合。一个列族所有列成员是有着相同的前缀。</li>
 <li>列族必须在表建立的时候声明。column就不需要了，随时可以新建。</li>
@@ -120,18 +120,18 @@
 </div>
 </section>
 
-<section id="outline-container-orgad01228" class="outline-2">
-<h2 id="orgad01228">Cells</h2>
-<div class="outline-text-2" id="text-orgad01228">
+<section id="outline-container-orgcae6f65" class="outline-2">
+<h2 id="orgcae6f65">Cells</h2>
+<div class="outline-text-2" id="text-orgcae6f65">
 <p>
 A {row, column, version} 元组就是一个HBase中的一个 cell。Cell的内容是不可分割的字节数组。
 </p>
 </div>
 </section>
 
-<section id="outline-container-orgd2ed469" class="outline-2">
-<h2 id="orgd2ed469">操作</h2>
-<div class="outline-text-2" id="text-orgd2ed469">
+<section id="outline-container-org9d4cac0" class="outline-2">
+<h2 id="org9d4cac0">操作</h2>
+<div class="outline-text-2" id="text-org9d4cac0">
 <p>
 操作有四种：
 </p>
@@ -170,7 +170,7 @@ Hbase 没有修改数据的合适方法，通过创建名为墓碑(tombstones)�
 <footer id="postamble" class="status">
 <div class='footer'>
 Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
-Last updated on  7 22, 2022 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
+Last updated on  2 07, 2023 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
 </div>
 </footer>
 </body>

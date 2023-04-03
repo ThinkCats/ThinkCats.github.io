@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!--  3 22, 2023 -->
+<!--  4 03, 2023 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Log4j自定义Converter</title>
@@ -69,22 +69,22 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org5cbe180">缘由</a></li>
-<li><a href="#org1420134">实现</a>
+<li><a href="#org7a785c6">缘由</a></li>
+<li><a href="#orgee5400b">实现</a>
 <ul>
-<li><a href="#org6535f44">依赖项</a></li>
-<li><a href="#orgeca1440">自定义Converter</a></li>
-<li><a href="#org776c73e">配置log4j2.xml</a></li>
-<li><a href="#orga9c4332">测试验证</a></li>
+<li><a href="#org1b1d6eb">依赖项</a></li>
+<li><a href="#orgdb558ae">自定义Converter</a></li>
+<li><a href="#org45bae9c">配置log4j2.xml</a></li>
+<li><a href="#orge194a2e">测试验证</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<section id="outline-container-org5cbe180" class="outline-2">
-<h2 id="org5cbe180">缘由</h2>
-<div class="outline-text-2" id="text-org5cbe180">
+<section id="outline-container-org7a785c6" class="outline-2">
+<h2 id="org7a785c6">缘由</h2>
+<div class="outline-text-2" id="text-org7a785c6">
 <p>
 新公司的基础框架不是太好用，和前公司比，还是差了不少。由于接手的都是老系统，所有东西，都是用的很久之前的，好多很原生的东西，包括JDBC、reids操作，都是裸操作连接。
 </p>
@@ -99,17 +99,17 @@
 </div>
 </section>
 
-<section id="outline-container-org1420134" class="outline-2">
-<h2 id="org1420134">实现</h2>
-<div class="outline-text-2" id="text-org1420134">
+<section id="outline-container-orgee5400b" class="outline-2">
+<h2 id="orgee5400b">实现</h2>
+<div class="outline-text-2" id="text-orgee5400b">
 <p>
 拿SpringBoot做了一个小demo来验证了一下，代码很简单。
 </p>
 </div>
 
-<div id="outline-container-org6535f44" class="outline-3">
-<h3 id="org6535f44">依赖项</h3>
-<div class="outline-text-3" id="text-org6535f44">
+<div id="outline-container-org1b1d6eb" class="outline-3">
+<h3 id="org1b1d6eb">依赖项</h3>
+<div class="outline-text-3" id="text-org1b1d6eb">
 <p>
 首先引入日志依赖：
 </p>
@@ -144,9 +144,9 @@
 </div>
 </div>
 
-<div id="outline-container-orgeca1440" class="outline-3">
-<h3 id="orgeca1440">自定义Converter</h3>
-<div class="outline-text-3" id="text-orgeca1440">
+<div id="outline-container-orgdb558ae" class="outline-3">
+<h3 id="orgdb558ae">自定义Converter</h3>
+<div class="outline-text-3" id="text-orgdb558ae">
 <p>
 代码如下：
 </p>
@@ -190,9 +190,9 @@
 </div>
 </div>
 
-<div id="outline-container-org776c73e" class="outline-3">
-<h3 id="org776c73e">配置log4j2.xml</h3>
-<div class="outline-text-3" id="text-org776c73e">
+<div id="outline-container-org45bae9c" class="outline-3">
+<h3 id="org45bae9c">配置log4j2.xml</h3>
+<div class="outline-text-3" id="text-org45bae9c">
 <p>
 找了一份比较齐全的配置文件：
 </p>
@@ -272,9 +272,9 @@
 </div>
 </div>
 
-<div id="outline-container-orga9c4332" class="outline-3">
-<h3 id="orga9c4332">测试验证</h3>
-<div class="outline-text-3" id="text-orga9c4332">
+<div id="outline-container-orge194a2e" class="outline-3">
+<h3 id="orge194a2e">测试验证</h3>
+<div class="outline-text-3" id="text-orge194a2e">
 <p>
 启动一下，打个日志看看。
 </p>
@@ -336,7 +336,7 @@ Process finished with exit code 0
 <footer id="postamble" class="status">
 <div class='footer'>
 Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
-Last updated on  7 22, 2022 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
+Last updated on  2 07, 2023 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
 </div>
 </footer>
 </body>

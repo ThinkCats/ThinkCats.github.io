@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!--  3 22, 2023 -->
+<!--  4 03, 2023 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Clojure垃圾函数系列-「letfn」</title>
@@ -69,8 +69,8 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org180a7b3">函数样例</a></li>
-<li><a href="#orga3e32d8">说明一下</a></li>
+<li><a href="#orgc60eeba">函数样例</a></li>
+<li><a href="#org54e6cda">说明一下</a></li>
 </ul>
 </div>
 </div>
@@ -80,9 +80,9 @@ letfn实际上是一个可有可无的函数，它的存在大概是想再拯救
 <!-- more -->
 
 
-<section id="outline-container-org180a7b3" class="outline-2">
-<h2 id="org180a7b3">函数样例</h2>
-<div class="outline-text-2" id="text-org180a7b3">
+<section id="outline-container-orgc60eeba" class="outline-2">
+<h2 id="orgc60eeba">函数样例</h2>
+<div class="outline-text-2" id="text-orgc60eeba">
 <div class="org-src-container">
 <pre class="src src-clojure">;;样例1
 (letfn [(plus [x] (+ 2 x)) (gg [y] (- 22 y))]
@@ -117,9 +117,9 @@ letfn实际上是一个可有可无的函数，它的存在大概是想再拯救
 </div>
 </section>
 
-<section id="outline-container-orga3e32d8" class="outline-2">
-<h2 id="orga3e32d8">说明一下</h2>
-<div class="outline-text-2" id="text-orga3e32d8">
+<section id="outline-container-org54e6cda" class="outline-2">
+<h2 id="org54e6cda">说明一下</h2>
+<div class="outline-text-2" id="text-org54e6cda">
 <p>
 letfn允许像解构绑定数据一样，去声明一个函数。当然，可以不用这么写，可以直接把函数写到外部，然后去调用。
 </p>
@@ -137,7 +137,7 @@ letfn允许像解构绑定数据一样，去声明一个函数。当然，可以
 <footer id="postamble" class="status">
 <div class='footer'>
 Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
-Last updated on  7 22, 2022 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
+Last updated on  2 07, 2023 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
 </div>
 </footer>
 </body>

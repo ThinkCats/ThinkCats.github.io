@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!--  3 22, 2023 -->
+<!--  4 03, 2023 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Feed Flow 准备工作 - 推荐设计</title>
@@ -69,20 +69,20 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgd8ab9b5">重复率低的推荐</a>
+<li><a href="#org70f902e">重复率低的推荐</a>
 <ul>
-<li><a href="#org7df99d6">实现</a></li>
-<li><a href="#orgd028d4f">流程</a>
+<li><a href="#org6b68bb4">实现</a></li>
+<li><a href="#orgdd35943">流程</a>
 <ul>
-<li><a href="#org1c2c659">推送消息</a></li>
-<li><a href="#org2c54be5">拉取消息</a></li>
-<li><a href="#orge698b2b">复杂情况</a></li>
+<li><a href="#org81b3cdb">推送消息</a></li>
+<li><a href="#org0e7db97">拉取消息</a></li>
+<li><a href="#orgbacf798">复杂情况</a></li>
 </ul>
 </li>
-<li><a href="#orgb711d41">Redis 布隆过滤器模块</a>
+<li><a href="#orgdac2d2f">Redis 布隆过滤器模块</a>
 <ul>
-<li><a href="#org4ff91f1">安装</a></li>
-<li><a href="#orgafd3100">启动</a></li>
+<li><a href="#org24ec3cb">安装</a></li>
+<li><a href="#org24b38c0">启动</a></li>
 </ul>
 </li>
 </ul>
@@ -91,13 +91,13 @@
 </div>
 </div>
 
-<section id="outline-container-orgd8ab9b5" class="outline-2">
-<h2 id="orgd8ab9b5">重复率低的推荐</h2>
-<div class="outline-text-2" id="text-orgd8ab9b5">
+<section id="outline-container-org70f902e" class="outline-2">
+<h2 id="org70f902e">重复率低的推荐</h2>
+<div class="outline-text-2" id="text-org70f902e">
 </div>
-<div id="outline-container-org7df99d6" class="outline-3">
-<h3 id="org7df99d6">实现</h3>
-<div class="outline-text-3" id="text-org7df99d6">
+<div id="outline-container-org6b68bb4" class="outline-3">
+<h3 id="org6b68bb4">实现</h3>
+<div class="outline-text-3" id="text-org6b68bb4">
 <p>
 为了简单快速做到推荐的内容，用户浏览后，就不会或者极少概率再次看到。采用布隆过滤器方式。
 </p>
@@ -113,16 +113,16 @@
 </div>
 
 
-<div id="outline-container-orgd028d4f" class="outline-3">
-<h3 id="orgd028d4f">流程</h3>
-<div class="outline-text-3" id="text-orgd028d4f">
+<div id="outline-container-orgdd35943" class="outline-3">
+<h3 id="orgdd35943">流程</h3>
+<div class="outline-text-3" id="text-orgdd35943">
 <p>
 用户拉取到了信息，那么这条信息就可以标记为已读。用户队列正常发送最新信息，放入前也保证信息是不包括已读的。
 </p>
 </div>
-<div id="outline-container-org1c2c659" class="outline-4">
-<h4 id="org1c2c659">推送消息</h4>
-<div class="outline-text-4" id="text-org1c2c659">
+<div id="outline-container-org81b3cdb" class="outline-4">
+<h4 id="org81b3cdb">推送消息</h4>
+<div class="outline-text-4" id="text-org81b3cdb">
 <ol class="org-ol">
 <li>消息产生：推给receiverId, 该用户必须在线，不在线不推送。检查（receiverId+feedId）是否是已读的，非已读的，才会往receiverId的队列中放消息（最新消息）</li>
 
@@ -131,9 +131,9 @@
 </div>
 </div>
 
-<div id="outline-container-org2c54be5" class="outline-4">
-<h4 id="org2c54be5">拉取消息</h4>
-<div class="outline-text-4" id="text-org2c54be5">
+<div id="outline-container-org0e7db97" class="outline-4">
+<h4 id="org0e7db97">拉取消息</h4>
+<div class="outline-text-4" id="text-org0e7db97">
 <p>
 拉取到消息，标记消息已读。同时将拉取的消息从队列中移除，再发起【补充推送】。
 </p>
@@ -145,9 +145,9 @@ redis里面创建了一个10亿数量的已读集合，0.0001误差率的过滤�
 </div>
 
 
-<div id="outline-container-orge698b2b" class="outline-4">
-<h4 id="orge698b2b">复杂情况</h4>
-<div class="outline-text-4" id="text-orge698b2b">
+<div id="outline-container-orgbacf798" class="outline-4">
+<h4 id="orgbacf798">复杂情况</h4>
+<div class="outline-text-4" id="text-orgbacf798">
 <p>
 产生消息的数据量，远远低于拉取量，会导致用户队列中内容为空，即是：无新增的消息。
 </p>
@@ -155,13 +155,13 @@ redis里面创建了一个10亿数量的已读集合，0.0001误差率的过滤�
 </div>
 </div>
 
-<div id="outline-container-orgb711d41" class="outline-3">
-<h3 id="orgb711d41">Redis 布隆过滤器模块</h3>
-<div class="outline-text-3" id="text-orgb711d41">
+<div id="outline-container-orgdac2d2f" class="outline-3">
+<h3 id="orgdac2d2f">Redis 布隆过滤器模块</h3>
+<div class="outline-text-3" id="text-orgdac2d2f">
 </div>
-<div id="outline-container-org4ff91f1" class="outline-4">
-<h4 id="org4ff91f1">安装</h4>
-<div class="outline-text-4" id="text-org4ff91f1">
+<div id="outline-container-org24ec3cb" class="outline-4">
+<h4 id="org24ec3cb">安装</h4>
+<div class="outline-text-4" id="text-org24ec3cb">
 <div class="org-src-container">
 <pre class="src src-shell">git clone https://github.com/RedisBloom/RedisBloom.git
 <span class="org-builtin">cd</span> RedisBloom
@@ -171,9 +171,9 @@ make
 </div>
 </div>
 
-<div id="outline-container-orgafd3100" class="outline-4">
-<h4 id="orgafd3100">启动</h4>
-<div class="outline-text-4" id="text-orgafd3100">
+<div id="outline-container-org24b38c0" class="outline-4">
+<h4 id="org24b38c0">启动</h4>
+<div class="outline-text-4" id="text-org24b38c0">
 <p>
 安装后，在 RedisBloom 目录中，生成 redisbloom.so 文件，拷贝到 redis 目录下，启动 redis 时候进行加载。
 </p>
@@ -198,7 +198,7 @@ make
 <footer id="postamble" class="status">
 <div class='footer'>
 Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
-Last updated on  7 22, 2022 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
+Last updated on  2 07, 2023 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
 </div>
 </footer>
 </body>

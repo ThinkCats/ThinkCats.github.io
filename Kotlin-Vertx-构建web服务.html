@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!--  3 22, 2023 -->
+<!--  4 03, 2023 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kotlin &amp; Vertx 构建web服务</title>
@@ -69,28 +69,28 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org2c8e604">感想</a>
+<li><a href="#org0bde622">感想</a>
 <ul>
-<li><a href="#org3f0c7b6">Kotlin</a></li>
-<li><a href="#orgf4dd2ee">Vertx</a></li>
+<li><a href="#orgb14c126">Kotlin</a></li>
+<li><a href="#orgaa50f32">Vertx</a></li>
 </ul>
 </li>
-<li><a href="#orgb7f423a">Kotlin &amp; Vertx</a>
+<li><a href="#org3c90c4d">Kotlin &amp; Vertx</a>
 <ul>
-<li><a href="#orgd94fcdb">1.maven 配置</a></li>
-<li><a href="#org8b57419">2.程序入口</a></li>
-<li><a href="#org4486d8a">3.路由设置</a></li>
-<li><a href="#org7b6e2c6">4. 还有一个bean 对象</a></li>
+<li><a href="#orgc8453d3">1.maven 配置</a></li>
+<li><a href="#org56c0fef">2.程序入口</a></li>
+<li><a href="#org5f63f2c">3.路由设置</a></li>
+<li><a href="#org7dd96cc">4. 还有一个bean 对象</a></li>
 </ul>
 </li>
-<li><a href="#org79c85ce">另外一些感想</a></li>
+<li><a href="#orge7d7a09">另外一些感想</a></li>
 </ul>
 </div>
 </div>
 
-<section id="outline-container-org2c8e604" class="outline-2">
-<h2 id="org2c8e604">感想</h2>
-<div class="outline-text-2" id="text-org2c8e604">
+<section id="outline-container-org0bde622" class="outline-2">
+<h2 id="org0bde622">感想</h2>
+<div class="outline-text-2" id="text-org0bde622">
 <p>
 <b>Kotlin 是一门好语言，值得大家了解一下。</b>
 </p>
@@ -100,9 +100,9 @@
 </p>
 </div>
 
-<div id="outline-container-org3f0c7b6" class="outline-3">
-<h3 id="org3f0c7b6">Kotlin</h3>
-<div class="outline-text-3" id="text-org3f0c7b6">
+<div id="outline-container-orgb14c126" class="outline-3">
+<h3 id="orgb14c126">Kotlin</h3>
+<div class="outline-text-3" id="text-orgb14c126">
 <p>
 写过js，也写过一点点go，主力一直是java。用了kotlin，貌似找到了常用语言的平衡点了。
 </p>
@@ -122,9 +122,9 @@ Kotlin 拥有一些偏函数式的语法（java8 也引入了一些），提供�
 </div>
 </div>
 
-<div id="outline-container-orgf4dd2ee" class="outline-3">
-<h3 id="orgf4dd2ee">Vertx</h3>
-<div class="outline-text-3" id="text-orgf4dd2ee">
+<div id="outline-container-orgaa50f32" class="outline-3">
+<h3 id="orgaa50f32">Vertx</h3>
+<div class="outline-text-3" id="text-orgaa50f32">
 <p>
 vertx 风格和node的express框架思想一致的，换了一种java的实现。不得不说，node的express 启发了很多其他语言的web框架设计。java的vertx，以及go里面的很多web框架(martin&#x2026;)，很多都有express的影子(难道是我先入为主？)
 </p>
@@ -144,13 +144,13 @@ vertx 风格和node的express框架思想一致的，换了一种java的实现�
 </div>
 </section>
 
-<section id="outline-container-orgb7f423a" class="outline-2">
-<h2 id="orgb7f423a">Kotlin &amp; Vertx</h2>
-<div class="outline-text-2" id="text-orgb7f423a">
+<section id="outline-container-org3c90c4d" class="outline-2">
+<h2 id="org3c90c4d">Kotlin &amp; Vertx</h2>
+<div class="outline-text-2" id="text-org3c90c4d">
 </div>
-<div id="outline-container-orgd94fcdb" class="outline-3">
-<h3 id="orgd94fcdb">1.maven 配置</h3>
-<div class="outline-text-3" id="text-orgd94fcdb">
+<div id="outline-container-orgc8453d3" class="outline-3">
+<h3 id="orgc8453d3">1.maven 配置</h3>
+<div class="outline-text-3" id="text-orgc8453d3">
 <p>
 按照kotlin和vertx官方的配置。
 </p>
@@ -256,9 +256,9 @@ vertx 风格和node的express框架思想一致的，换了一种java的实现�
 </div>
 </div>
 
-<div id="outline-container-org8b57419" class="outline-3">
-<h3 id="org8b57419">2.程序入口</h3>
-<div class="outline-text-3" id="text-org8b57419">
+<div id="outline-container-org56c0fef" class="outline-3">
+<h3 id="org56c0fef">2.程序入口</h3>
+<div class="outline-text-3" id="text-org56c0fef">
 <p>
 和spring-boot 一样，vertx 的程序入口也是一个静态的main函数。
 </p>
@@ -299,9 +299,9 @@ vertx 风格和node的express框架思想一致的，换了一种java的实现�
 </div>
 </div>
 
-<div id="outline-container-org4486d8a" class="outline-3">
-<h3 id="org4486d8a">3.路由设置</h3>
-<div class="outline-text-3" id="text-org4486d8a">
+<div id="outline-container-org5f63f2c" class="outline-3">
+<h3 id="org5f63f2c">3.路由设置</h3>
+<div class="outline-text-3" id="text-org5f63f2c">
 <div class="org-src-container">
 <pre class="src src-java"><span class="org-type">fun</span> <span class="org-function-name">customRouter</span>(vertx : Vertx) : Router {
     <span class="org-type">var</span> <span class="org-variable-name">router</span> = Router.router(vertx)
@@ -369,9 +369,9 @@ java版本：
 </div>
 </div>
 
-<div id="outline-container-org7b6e2c6" class="outline-3">
-<h3 id="org7b6e2c6">4. 还有一个bean 对象</h3>
-<div class="outline-text-3" id="text-org7b6e2c6">
+<div id="outline-container-org7dd96cc" class="outline-3">
+<h3 id="org7dd96cc">4. 还有一个bean 对象</h3>
+<div class="outline-text-3" id="text-org7dd96cc">
 <div class="org-src-container">
 <pre class="src src-java"><span class="org-type">data</span> <span class="org-keyword">class</span> Entity(<span class="org-type">var</span> <span class="org-variable-name">name</span>:String,<span class="org-type">var</span> <span class="org-variable-name">description</span>:String){}
 </pre>
@@ -384,9 +384,9 @@ java版本：
 </div>
 </section>
 
-<section id="outline-container-org79c85ce" class="outline-2">
-<h2 id="org79c85ce">另外一些感想</h2>
-<div class="outline-text-2" id="text-org79c85ce">
+<section id="outline-container-orge7d7a09" class="outline-2">
+<h2 id="orge7d7a09">另外一些感想</h2>
+<div class="outline-text-2" id="text-orge7d7a09">
 <p>
 主要代码都在这里了，完整的代码[在这里](<a href="https://github.com/ThinkCats/Vertx.git">https://github.com/ThinkCats/Vertx.git</a>)。
 </p>
@@ -412,7 +412,7 @@ java版本：
 <footer id="postamble" class="status">
 <div class='footer'>
 Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
-Last updated on  7 22, 2022 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
+Last updated on  2 07, 2023 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
 </div>
 </footer>
 </body>

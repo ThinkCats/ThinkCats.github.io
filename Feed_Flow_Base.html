@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!--  3 22, 2023 -->
+<!--  4 03, 2023 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Feed Flow基础设计</title>
@@ -69,44 +69,44 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgdfb27b2">功能</a></li>
-<li><a href="#org5aa48db">设计</a></li>
-<li><a href="#orge713689">预估量：1000w用户</a></li>
-<li><a href="#org34ccadf">方案</a>
+<li><a href="#org0f4c62e">功能</a></li>
+<li><a href="#org119d134">设计</a></li>
+<li><a href="#orgb4255bc">预估量：1000w用户</a></li>
+<li><a href="#org98342e6">方案</a>
 <ul>
-<li><a href="#orgd6cf7a8">基础架构</a>
+<li><a href="#org7950b79">基础架构</a>
 <ul>
-<li><a href="#org31ec16c">工具</a></li>
+<li><a href="#orgcf23060">工具</a></li>
 </ul>
 </li>
-<li><a href="#org96229a0">持久化数据</a>
+<li><a href="#org99312d4">持久化数据</a>
 <ul>
-<li><a href="#org9c68e39">Account</a></li>
-<li><a href="#org88b19d7">Follow</a></li>
-<li><a href="#org91cb870">Focus</a></li>
-<li><a href="#org0f444a8">Feed</a></li>
-<li><a href="#orgf9c2f1a">Feed_Comment</a></li>
-<li><a href="#org95f6d20">Feed_Like_Account</a></li>
-<li><a href="#org3a0d9ba">Comment_Like_Account</a></li>
-<li><a href="#org28405fa">IM [TODO]</a></li>
+<li><a href="#orgf0ad4da">Account</a></li>
+<li><a href="#orgbfcebba">Follow</a></li>
+<li><a href="#orge54f372">Focus</a></li>
+<li><a href="#org54f61f7">Feed</a></li>
+<li><a href="#org8187582">Feed_Comment</a></li>
+<li><a href="#org49b5c96">Feed_Like_Account</a></li>
+<li><a href="#org9254026">Comment_Like_Account</a></li>
+<li><a href="#orgd7026fc">IM [TODO]</a></li>
 </ul>
 </li>
-<li><a href="#org2846de9">缓存数据</a>
+<li><a href="#orgdb33624">缓存数据</a>
 <ul>
-<li><a href="#org7f974f4">1.手机验证码</a></li>
-<li><a href="#org7fcb29e">2.点赞数据</a></li>
-<li><a href="#org807c033">3.用户推荐feed队列，上限1000</a></li>
-<li><a href="#orgedf0cce">4.用户在线状态</a></li>
+<li><a href="#org6a868b9">1.手机验证码</a></li>
+<li><a href="#orgf659877">2.点赞数据</a></li>
+<li><a href="#org8a599bc">3.用户推荐feed队列，上限1000</a></li>
+<li><a href="#org9c4cc9e">4.用户在线状态</a></li>
 </ul>
 </li>
-<li><a href="#orgdf681a7">接口设计</a>
+<li><a href="#orgebd327b">接口设计</a>
 <ul>
-<li><a href="#org5dc49de">基本原则</a></li>
-<li><a href="#org4ac0899">通用返回</a></li>
-<li><a href="#org72689b7">账号</a></li>
-<li><a href="#orgf574ed4">Feed</a></li>
-<li><a href="#org50e6648">Comment</a></li>
-<li><a href="#orge1b7df3">Like</a></li>
+<li><a href="#orga246001">基本原则</a></li>
+<li><a href="#orgd0c6e0e">通用返回</a></li>
+<li><a href="#orge3e1b4a">账号</a></li>
+<li><a href="#org92c064a">Feed</a></li>
+<li><a href="#orgd25e938">Comment</a></li>
+<li><a href="#org2bf9006">Like</a></li>
 </ul>
 </li>
 </ul>
@@ -115,9 +115,9 @@
 </div>
 </div>
 
-<section id="outline-container-orgdfb27b2" class="outline-2">
-<h2 id="orgdfb27b2">功能</h2>
-<div class="outline-text-2" id="text-orgdfb27b2">
+<section id="outline-container-org0f4c62e" class="outline-2">
+<h2 id="org0f4c62e">功能</h2>
+<div class="outline-text-2" id="text-org0f4c62e">
 <p>
 做一个feed流项目，类似微博、朋友圈的功能，用户量预估比较小。主要有：
 </p>
@@ -132,9 +132,9 @@
 </div>
 </section>
 
-<section id="outline-container-org5aa48db" class="outline-2">
-<h2 id="org5aa48db">设计</h2>
-<div class="outline-text-2" id="text-org5aa48db">
+<section id="outline-container-org119d134" class="outline-2">
+<h2 id="org119d134">设计</h2>
+<div class="outline-text-2" id="text-org119d134">
 <ol class="org-ol">
 <li>用户账号体系统一以mobile为唯一区分</li>
 <li>feed推模式：feed产生后，推送到不同的用户队列下</li>
@@ -149,9 +149,9 @@
 </div>
 </section>
 
-<section id="outline-container-orge713689" class="outline-2">
-<h2 id="orge713689">预估量：1000w用户</h2>
-<div class="outline-text-2" id="text-orge713689">
+<section id="outline-container-orgb4255bc" class="outline-2">
+<h2 id="orgb4255bc">预估量：1000w用户</h2>
+<div class="outline-text-2" id="text-orgb4255bc">
 <ol class="org-ol">
 <li>对应1000w的用户推荐feed队列，每个队列上限1000，内存不超过4G</li>
 <li>每个用户平均产生1000条feed，共100亿数据，分表256张，平均单表5000w数据量，优化索引，可以支持</li>
@@ -160,17 +160,17 @@
 </div>
 </section>
 
-<section id="outline-container-org34ccadf" class="outline-2">
-<h2 id="org34ccadf">方案</h2>
-<div class="outline-text-2" id="text-org34ccadf">
+<section id="outline-container-org98342e6" class="outline-2">
+<h2 id="org98342e6">方案</h2>
+<div class="outline-text-2" id="text-org98342e6">
 </div>
-<div id="outline-container-orgd6cf7a8" class="outline-3">
-<h3 id="orgd6cf7a8">基础架构</h3>
-<div class="outline-text-3" id="text-orgd6cf7a8">
+<div id="outline-container-org7950b79" class="outline-3">
+<h3 id="org7950b79">基础架构</h3>
+<div class="outline-text-3" id="text-org7950b79">
 </div>
-<div id="outline-container-org31ec16c" class="outline-4">
-<h4 id="org31ec16c">工具</h4>
-<div class="outline-text-4" id="text-org31ec16c">
+<div id="outline-container-orgcf23060" class="outline-4">
+<h4 id="orgcf23060">工具</h4>
+<div class="outline-text-4" id="text-orgcf23060">
 <ol class="org-ol">
 <li>持久化： mysql</li>
 <li>缓存队列： redis</li>
@@ -178,13 +178,13 @@
 </div>
 </div>
 </div>
-<div id="outline-container-org96229a0" class="outline-3">
-<h3 id="org96229a0">持久化数据</h3>
-<div class="outline-text-3" id="text-org96229a0">
+<div id="outline-container-org99312d4" class="outline-3">
+<h3 id="org99312d4">持久化数据</h3>
+<div class="outline-text-3" id="text-org99312d4">
 </div>
-<div id="outline-container-org9c68e39" class="outline-4">
-<h4 id="org9c68e39">Account</h4>
-<div class="outline-text-4" id="text-org9c68e39">
+<div id="outline-container-orgf0ad4da" class="outline-4">
+<h4 id="orgf0ad4da">Account</h4>
+<div class="outline-text-4" id="text-orgf0ad4da">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -280,9 +280,9 @@
 <hr />
 </div>
 </div>
-<div id="outline-container-org88b19d7" class="outline-4">
-<h4 id="org88b19d7">Follow</h4>
-<div class="outline-text-4" id="text-org88b19d7">
+<div id="outline-container-orgbfcebba" class="outline-4">
+<h4 id="orgbfcebba">Follow</h4>
+<div class="outline-text-4" id="text-orgbfcebba">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -331,9 +331,9 @@
 </div>
 </div>
 
-<div id="outline-container-org91cb870" class="outline-4">
-<h4 id="org91cb870">Focus</h4>
-<div class="outline-text-4" id="text-org91cb870">
+<div id="outline-container-orge54f372" class="outline-4">
+<h4 id="orge54f372">Focus</h4>
+<div class="outline-text-4" id="text-orge54f372">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -382,9 +382,9 @@
 </div>
 </div>
 
-<div id="outline-container-org0f444a8" class="outline-4">
-<h4 id="org0f444a8">Feed</h4>
-<div class="outline-text-4" id="text-org0f444a8">
+<div id="outline-container-org54f61f7" class="outline-4">
+<h4 id="org54f61f7">Feed</h4>
+<div class="outline-text-4" id="text-org54f61f7">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -480,9 +480,9 @@
 <hr />
 </div>
 </div>
-<div id="outline-container-orgf9c2f1a" class="outline-4">
-<h4 id="orgf9c2f1a">Feed_Comment</h4>
-<div class="outline-text-4" id="text-orgf9c2f1a">
+<div id="outline-container-org8187582" class="outline-4">
+<h4 id="org8187582">Feed_Comment</h4>
+<div class="outline-text-4" id="text-org8187582">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -542,9 +542,9 @@
 <hr />
 </div>
 </div>
-<div id="outline-container-org95f6d20" class="outline-4">
-<h4 id="org95f6d20">Feed_Like_Account</h4>
-<div class="outline-text-4" id="text-org95f6d20">
+<div id="outline-container-org49b5c96" class="outline-4">
+<h4 id="org49b5c96">Feed_Like_Account</h4>
+<div class="outline-text-4" id="text-org49b5c96">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -598,9 +598,9 @@
 <hr />
 </div>
 </div>
-<div id="outline-container-org3a0d9ba" class="outline-4">
-<h4 id="org3a0d9ba">Comment_Like_Account</h4>
-<div class="outline-text-4" id="text-org3a0d9ba">
+<div id="outline-container-org9254026" class="outline-4">
+<h4 id="org9254026">Comment_Like_Account</h4>
+<div class="outline-text-4" id="text-org9254026">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -654,42 +654,42 @@
 </div>
 
 
-<div id="outline-container-org28405fa" class="outline-4">
-<h4 id="org28405fa">IM [TODO]</h4>
+<div id="outline-container-orgd7026fc" class="outline-4">
+<h4 id="orgd7026fc">IM [TODO]</h4>
 </div>
 </div>
 
-<div id="outline-container-org2846de9" class="outline-3">
-<h3 id="org2846de9">缓存数据</h3>
-<div class="outline-text-3" id="text-org2846de9">
+<div id="outline-container-orgdb33624" class="outline-3">
+<h3 id="orgdb33624">缓存数据</h3>
+<div class="outline-text-3" id="text-orgdb33624">
 </div>
-<div id="outline-container-org7f974f4" class="outline-4">
-<h4 id="org7f974f4">1.手机验证码</h4>
-<div class="outline-text-4" id="text-org7f974f4">
+<div id="outline-container-org6a868b9" class="outline-4">
+<h4 id="org6a868b9">1.手机验证码</h4>
+<div class="outline-text-4" id="text-org6a868b9">
 <p>
 key: type + mobile, value(String): verify_code
 </p>
 </div>
 </div>
-<div id="outline-container-org7fcb29e" class="outline-4">
-<h4 id="org7fcb29e">2.点赞数据</h4>
-<div class="outline-text-4" id="text-org7fcb29e">
+<div id="outline-container-orgf659877" class="outline-4">
+<h4 id="orgf659877">2.点赞数据</h4>
+<div class="outline-text-4" id="text-orgf659877">
 <p>
 key: type + feed_id, value(List): 点赞的账号id
 </p>
 </div>
 </div>
-<div id="outline-container-org807c033" class="outline-4">
-<h4 id="org807c033">3.用户推荐feed队列，上限1000</h4>
-<div class="outline-text-4" id="text-org807c033">
+<div id="outline-container-org8a599bc" class="outline-4">
+<h4 id="org8a599bc">3.用户推荐feed队列，上限1000</h4>
+<div class="outline-text-4" id="text-org8a599bc">
 <p>
 key：type + account_id, value(List): feed_id
 </p>
 </div>
 </div>
-<div id="outline-container-orgedf0cce" class="outline-4">
-<h4 id="orgedf0cce">4.用户在线状态</h4>
-<div class="outline-text-4" id="text-orgedf0cce">
+<div id="outline-container-org9c4cc9e" class="outline-4">
+<h4 id="org9c4cc9e">4.用户在线状态</h4>
+<div class="outline-text-4" id="text-org9c4cc9e">
 <p>
 key: type + account_id, 有时效性，过期则认为不在线
 </p>
@@ -697,22 +697,22 @@ key: type + account_id, 有时效性，过期则认为不在线
 </div>
 </div>
 
-<div id="outline-container-orgdf681a7" class="outline-3">
-<h3 id="orgdf681a7">接口设计</h3>
-<div class="outline-text-3" id="text-orgdf681a7">
+<div id="outline-container-orgebd327b" class="outline-3">
+<h3 id="orgebd327b">接口设计</h3>
+<div class="outline-text-3" id="text-orgebd327b">
 </div>
-<div id="outline-container-org5dc49de" class="outline-4">
-<h4 id="org5dc49de">基本原则</h4>
-<div class="outline-text-4" id="text-org5dc49de">
+<div id="outline-container-orga246001" class="outline-4">
+<h4 id="orga246001">基本原则</h4>
+<div class="outline-text-4" id="text-orga246001">
 <p>
 除账户注册与登录接口，其他接口均需访问时候，在Header中增加token。
 </p>
 </div>
 </div>
 
-<div id="outline-container-org4ac0899" class="outline-4">
-<h4 id="org4ac0899">通用返回</h4>
-<div class="outline-text-4" id="text-org4ac0899">
+<div id="outline-container-orgd0c6e0e" class="outline-4">
+<h4 id="orgd0c6e0e">通用返回</h4>
+<div class="outline-text-4" id="text-orgd0c6e0e">
 <table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
 
 
@@ -759,13 +759,13 @@ key: type + account_id, 有时效性，过期则认为不在线
 </div>
 </div>
 
-<div id="outline-container-org72689b7" class="outline-4">
-<h4 id="org72689b7">账号</h4>
-<div class="outline-text-4" id="text-org72689b7">
+<div id="outline-container-orge3e1b4a" class="outline-4">
+<h4 id="orge3e1b4a">账号</h4>
+<div class="outline-text-4" id="text-orge3e1b4a">
 </div>
 <ul class="org-ul">
-<li><a id="orgbb95262"></a>注册<br />
-<div class="outline-text-5" id="text-orgbb95262">
+<li><a id="org85e815e"></a>注册<br />
+<div class="outline-text-5" id="text-org85e815e">
 <p>
 url:[Post]  /api/account/regist
 </p>
@@ -830,8 +830,8 @@ url:[Post]  /api/account/regist
 </div>
 </li>
 
-<li><a id="org50a362e"></a>登录<br />
-<div class="outline-text-5" id="text-org50a362e">
+<li><a id="org223c54d"></a>登录<br />
+<div class="outline-text-5" id="text-org223c54d">
 <p>
 url:[Post] /api/account/login
 </p>
@@ -896,8 +896,8 @@ url:[Post] /api/account/login
 <hr />
 </div>
 </li>
-<li><a id="org7eb9168"></a>更新基本信息<br />
-<div class="outline-text-5" id="text-org7eb9168">
+<li><a id="org92d2be2"></a>更新基本信息<br />
+<div class="outline-text-5" id="text-org92d2be2">
 <p>
 url:[Post] /api/account/update
 </p>
@@ -956,8 +956,8 @@ url:[Post] /api/account/update
 <hr />
 </div>
 </li>
-<li><a id="orgef81cb9"></a>换绑手机<br />
-<div class="outline-text-5" id="text-orgef81cb9">
+<li><a id="org10ae14d"></a>换绑手机<br />
+<div class="outline-text-5" id="text-org10ae14d">
 <p>
 url:[Post] /api/account/bindMobile
 </p>
@@ -1010,8 +1010,8 @@ url:[Post] /api/account/bindMobile
 <hr />
 </div>
 </li>
-<li><a id="org9e77347"></a>查询账号信息<br />
-<div class="outline-text-5" id="text-org9e77347">
+<li><a id="org32be176"></a>查询账号信息<br />
+<div class="outline-text-5" id="text-org32be176">
 <p>
 url:[Get] /api/account/{accountId}
 </p>
@@ -1086,13 +1086,13 @@ url:[Get] /api/account/{accountId}
 </ul>
 </div>
 
-<div id="outline-container-orgf574ed4" class="outline-4">
-<h4 id="orgf574ed4">Feed</h4>
-<div class="outline-text-4" id="text-orgf574ed4">
+<div id="outline-container-org92c064a" class="outline-4">
+<h4 id="org92c064a">Feed</h4>
+<div class="outline-text-4" id="text-org92c064a">
 </div>
 <ul class="org-ul">
-<li><a id="orgc15e0ff"></a>发表内容<br />
-<div class="outline-text-5" id="text-orgc15e0ff">
+<li><a id="org74edab5"></a>发表内容<br />
+<div class="outline-text-5" id="text-org74edab5">
 <p>
 url: [Post] /api/feed/post
 </p>
@@ -1153,8 +1153,8 @@ url: [Post] /api/feed/post
 <hr />
 </div>
 </li>
-<li><a id="org5b80c8c"></a>拉取内容/列表<br />
-<div class="outline-text-5" id="text-org5b80c8c">
+<li><a id="orgd8801c2"></a>拉取内容/列表<br />
+<div class="outline-text-5" id="text-orgd8801c2">
 <p>
 url: [Get] /api/feed /[list]
 </p>
@@ -1270,13 +1270,13 @@ url: [Get] /api/feed /[list]
 </ul>
 </div>
 
-<div id="outline-container-org50e6648" class="outline-4">
-<h4 id="org50e6648">Comment</h4>
-<div class="outline-text-4" id="text-org50e6648">
+<div id="outline-container-orgd25e938" class="outline-4">
+<h4 id="orgd25e938">Comment</h4>
+<div class="outline-text-4" id="text-orgd25e938">
 </div>
 <ul class="org-ul">
-<li><a id="org6284fe8"></a>发布评论<br />
-<div class="outline-text-5" id="text-org6284fe8">
+<li><a id="org35cbb91"></a>发布评论<br />
+<div class="outline-text-5" id="text-org35cbb91">
 <p>
 url:[Post] /api/comment
 </p>
@@ -1342,8 +1342,8 @@ url:[Post] /api/comment
 <hr />
 </div>
 </li>
-<li><a id="org241369d"></a>获取评论<br />
-<div class="outline-text-5" id="text-org241369d">
+<li><a id="orgb9439ed"></a>获取评论<br />
+<div class="outline-text-5" id="text-orgb9439ed">
 <p>
 url: [Get] /api/comment/list
 </p>
@@ -1452,13 +1452,13 @@ url: [Get] /api/comment/list
 </ul>
 </div>
 
-<div id="outline-container-orge1b7df3" class="outline-4">
-<h4 id="orge1b7df3">Like</h4>
-<div class="outline-text-4" id="text-orge1b7df3">
+<div id="outline-container-org2bf9006" class="outline-4">
+<h4 id="org2bf9006">Like</h4>
+<div class="outline-text-4" id="text-org2bf9006">
 </div>
 <ul class="org-ul">
-<li><a id="org40f4912"></a>点赞<br />
-<div class="outline-text-5" id="text-org40f4912">
+<li><a id="org9575526"></a>点赞<br />
+<div class="outline-text-5" id="text-org9575526">
 <p>
 url:[Post] /api/like
 </p>
@@ -1507,7 +1507,7 @@ url:[Post] /api/like
 <footer id="postamble" class="status">
 <div class='footer'>
 Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
-Last updated on  7 22, 2022 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
+Last updated on  2 07, 2023 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
 </div>
 </footer>
 </body>
