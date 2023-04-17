@@ -3,6 +3,15 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
+<<<<<<< HEAD
+<!--  8 18, 2020 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hbase 数据模型笔记(1)</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="ThinkCat" />
+<meta name="keywords" content="hbase post" />
+=======
 <!--  4 03, 2023 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -10,12 +19,60 @@
 <meta name="author" content="ThinkCat" />
 <meta name="keywords" content="hbase post" />
 <meta name="generator" content="Org Mode" />
+>>>>>>> 24b6b53 ( 【init】)
 <link rel='icon' type='image/x-icon' href='/images/favicon.ico'/>
 <meta name='viewport' content='width=device-width, initial-scale=1'>
 <link rel='stylesheet' href='https://code.cdn.mozilla.net/fonts/fira.css'>
 <link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
 <link rel='stylesheet' href='/css/custom.css' type='text/css'/>
 <link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
+<<<<<<< HEAD
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+=======
 <script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
      function CodeHighlightOn(elem, id)
@@ -35,6 +92,7 @@
        }
      }
 // @license-end
+>>>>>>> 24b6b53 ( 【init】)
 </script>
 </head>
 <body>
@@ -60,11 +118,27 @@
 </ul>
 </div>
 </header>
+<<<<<<< HEAD
+<main id="content">
+=======
 <main id="content" class="content">
+>>>>>>> 24b6b53 ( 【init】)
 <h1 class="title">Hbase 数据模型笔记(1)
 <br />
 <span class="subtitle">发布于  8 17, 2020 by ThinkCat.</span>
 </h1>
+<<<<<<< HEAD
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgcae55af">基础</a></li>
+<li><a href="#org32cac89">表</a></li>
+<li><a href="#org79a71c6">行</a></li>
+<li><a href="#orgc469d66">列族</a></li>
+<li><a href="#org4434bd7">Cells</a></li>
+<li><a href="#orgacd8503">操作</a></li>
+=======
 <div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
@@ -75,13 +149,20 @@
 <li><a href="#org5de0af6">列族</a></li>
 <li><a href="#orgcae6f65">Cells</a></li>
 <li><a href="#org9d4cac0">操作</a></li>
+>>>>>>> 24b6b53 ( 【init】)
 </ul>
 </div>
 </div>
 
+<<<<<<< HEAD
+<section id="outline-container-orgcae55af" class="outline-2">
+<h2 id="orgcae55af">基础</h2>
+<div class="outline-text-2" id="text-orgcae55af">
+=======
 <section id="outline-container-org37bf1b7" class="outline-2">
 <h2 id="org37bf1b7">基础</h2>
 <div class="outline-text-2" id="text-org37bf1b7">
+>>>>>>> 24b6b53 ( 【init】)
 <ol class="org-ol">
 <li>应用程序是以表的方式在HBase存储数据的</li>
 <li>表是由行和列构成的，所有的列是从属于某一个列族的</li>
@@ -91,27 +172,45 @@
 </div>
 </section>
 
+<<<<<<< HEAD
+<section id="outline-container-org32cac89" class="outline-2">
+<h2 id="org32cac89">表</h2>
+<div class="outline-text-2" id="text-org32cac89">
+=======
 <section id="outline-container-org53d3328" class="outline-2">
 <h2 id="org53d3328">表</h2>
 <div class="outline-text-2" id="text-org53d3328">
+>>>>>>> 24b6b53 ( 【init】)
 <p>
 表是在schema声明的时候定义的。
 </p>
 </div>
 </section>
 
+<<<<<<< HEAD
+<section id="outline-container-org79a71c6" class="outline-2">
+<h2 id="org79a71c6">行</h2>
+<div class="outline-text-2" id="text-org79a71c6">
+=======
 <section id="outline-container-orgde16c85" class="outline-2">
 <h2 id="orgde16c85">行</h2>
 <div class="outline-text-2" id="text-orgde16c85">
+>>>>>>> 24b6b53 ( 【init】)
 <p>
 行键是不可分割的字节数组。行是按字典排序由低到高存储在表中的。一个空的数组是用来标识表空间的起始或者结尾。
 </p>
 </div>
 </section>
 
+<<<<<<< HEAD
+<section id="outline-container-orgc469d66" class="outline-2">
+<h2 id="orgc469d66">列族</h2>
+<div class="outline-text-2" id="text-orgc469d66">
+=======
 <section id="outline-container-org5de0af6" class="outline-2">
 <h2 id="org5de0af6">列族</h2>
 <div class="outline-text-2" id="text-org5de0af6">
+>>>>>>> 24b6b53 ( 【init】)
 <ol class="org-ol">
 <li>在HBase是列族一些列的集合。一个列族所有列成员是有着相同的前缀。</li>
 <li>列族必须在表建立的时候声明。column就不需要了，随时可以新建。</li>
@@ -120,18 +219,30 @@
 </div>
 </section>
 
+<<<<<<< HEAD
+<section id="outline-container-org4434bd7" class="outline-2">
+<h2 id="org4434bd7">Cells</h2>
+<div class="outline-text-2" id="text-org4434bd7">
+=======
 <section id="outline-container-orgcae6f65" class="outline-2">
 <h2 id="orgcae6f65">Cells</h2>
 <div class="outline-text-2" id="text-orgcae6f65">
+>>>>>>> 24b6b53 ( 【init】)
 <p>
 A {row, column, version} 元组就是一个HBase中的一个 cell。Cell的内容是不可分割的字节数组。
 </p>
 </div>
 </section>
 
+<<<<<<< HEAD
+<section id="outline-container-orgacd8503" class="outline-2">
+<h2 id="orgacd8503">操作</h2>
+<div class="outline-text-2" id="text-orgacd8503">
+=======
 <section id="outline-container-org9d4cac0" class="outline-2">
 <h2 id="org9d4cac0">操作</h2>
 <div class="outline-text-2" id="text-org9d4cac0">
+>>>>>>> 24b6b53 ( 【init】)
 <p>
 操作有四种：
 </p>
@@ -170,7 +281,11 @@ Hbase 没有修改数据的合适方法，通过创建名为墓碑(tombstones)�
 <footer id="postamble" class="status">
 <div class='footer'>
 Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
+<<<<<<< HEAD
+Last updated on  8 18, 2020 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)
+=======
 Last updated on  2 07, 2023 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
+>>>>>>> 24b6b53 ( 【init】)
 </div>
 </footer>
 </body>
