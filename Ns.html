@@ -1,19 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!--  3 22, 2023 -->
+<<<<<<< HEAD
+<!--  5 04, 2020 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clojure NS</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="wanglei">
+<meta name="keywords" content="clojure">
+=======
+<!--  4 03, 2023 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Clojure NS</title>
 <meta name="author" content="HeHe" />
 <meta name="keywords" content="clojure" />
 <meta name="generator" content="Org Mode" />
+>>>>>>> 24b6b53 ( 【init】)
 <link rel='icon' type='image/x-icon' href='/images/favicon.ico'/>
 <meta name='viewport' content='width=device-width, initial-scale=1'>
 <link rel='stylesheet' href='https://code.cdn.mozilla.net/fonts/fira.css'>
 <link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
 <link rel='stylesheet' href='/css/custom.css' type='text/css'/>
 <link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
+<<<<<<< HEAD
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+=======
 <script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
      function CodeHighlightOn(elem, id)
@@ -33,6 +90,7 @@
        }
      }
 // @license-end
+>>>>>>> 24b6b53 ( 【init】)
 </script>
 </head>
 <body>
@@ -58,6 +116,20 @@
 </ul>
 </div>
 </header>
+<<<<<<< HEAD
+<main id="content">
+<header>
+<h1 class="title">Clojure NS</h1>
+</header><nav id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org4f1f1de">use</a></li>
+<li><a href="#orgc46f952">require</a></li>
+<li><a href="#org586668b">reload &amp; reload-all</a></li>
+<li><a href="#orge806014">import</a></li>
+<li><a href="#org8c95029">简洁的方式</a></li>
+=======
 <main id="content" class="content">
 <header>
 <h1 class="title">Clojure NS</h1>
@@ -65,11 +137,12 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org2e62899">use</a></li>
-<li><a href="#org2fe75e8">require</a></li>
-<li><a href="#org572c31a">reload &amp; reload-all</a></li>
-<li><a href="#orgdb8884c">import</a></li>
-<li><a href="#orgb7a2873">简洁的方式</a></li>
+<li><a href="#orgcbb5e2e">use</a></li>
+<li><a href="#org71d1eee">require</a></li>
+<li><a href="#orgb346aea">reload &amp; reload-all</a></li>
+<li><a href="#org53e5cb3">import</a></li>
+<li><a href="#org5e603dc">简洁的方式</a></li>
+>>>>>>> 24b6b53 ( 【init】)
 </ul>
 </div>
 </nav>
@@ -78,9 +151,15 @@ ns 类似 java 的 import 包系统。
 </p>
 <!-- more -->
 
-<section id="outline-container-org2e62899" class="outline-2">
-<h2 id="org2e62899">use</h2>
-<div class="outline-text-2" id="text-org2e62899">
+<<<<<<< HEAD
+<section id="outline-container-org4f1f1de" class="outline-2">
+<h2 id="org4f1f1de">use</h2>
+<div class="outline-text-2" id="text-org4f1f1de">
+=======
+<section id="outline-container-orgcbb5e2e" class="outline-2">
+<h2 id="orgcbb5e2e">use</h2>
+<div class="outline-text-2" id="text-orgcbb5e2e">
+>>>>>>> 24b6b53 ( 【init】)
 <p>
 使用样例：
 </p>
@@ -112,9 +191,15 @@ encode-to-str 和 parse 是来自于引入的外部函数，使用 use 可以获
 </div>
 </section>
 
-<section id="outline-container-org2fe75e8" class="outline-2">
-<h2 id="org2fe75e8">require</h2>
-<div class="outline-text-2" id="text-org2fe75e8">
+<<<<<<< HEAD
+<section id="outline-container-orgc46f952" class="outline-2">
+<h2 id="orgc46f952">require</h2>
+<div class="outline-text-2" id="text-orgc46f952">
+=======
+<section id="outline-container-org71d1eee" class="outline-2">
+<h2 id="org71d1eee">require</h2>
+<div class="outline-text-2" id="text-org71d1eee">
+>>>>>>> 24b6b53 ( 【init】)
 <p>
 使用样例:
 </p>
@@ -138,9 +223,15 @@ encode-to-str 和 parse 是来自于引入的外部函数，使用 use 可以获
 </div>
 </section>
 
-<section id="outline-container-org572c31a" class="outline-2">
-<h2 id="org572c31a">reload &amp; reload-all</h2>
-<div class="outline-text-2" id="text-org572c31a">
+<<<<<<< HEAD
+<section id="outline-container-org586668b" class="outline-2">
+<h2 id="org586668b">reload &amp; reload-all</h2>
+<div class="outline-text-2" id="text-org586668b">
+=======
+<section id="outline-container-orgb346aea" class="outline-2">
+<h2 id="orgb346aea">reload &amp; reload-all</h2>
+<div class="outline-text-2" id="text-orgb346aea">
+>>>>>>> 24b6b53 ( 【init】)
 <p>
 使用样例:
 </p>
@@ -156,9 +247,15 @@ encode-to-str 和 parse 是来自于引入的外部函数，使用 use 可以获
 </div>
 </section>
 
-<section id="outline-container-orgdb8884c" class="outline-2">
-<h2 id="orgdb8884c">import</h2>
-<div class="outline-text-2" id="text-orgdb8884c">
+<<<<<<< HEAD
+<section id="outline-container-orge806014" class="outline-2">
+<h2 id="orge806014">import</h2>
+<div class="outline-text-2" id="text-orge806014">
+=======
+<section id="outline-container-org53e5cb3" class="outline-2">
+<h2 id="org53e5cb3">import</h2>
+<div class="outline-text-2" id="text-org53e5cb3">
+>>>>>>> 24b6b53 ( 【init】)
 <p>
 使用样例：
 </p>
@@ -174,9 +271,15 @@ import 用于导入 java 包。
 </div>
 </section>
 
-<section id="outline-container-orgb7a2873" class="outline-2">
-<h2 id="orgb7a2873">简洁的方式</h2>
-<div class="outline-text-2" id="text-orgb7a2873">
+<<<<<<< HEAD
+<section id="outline-container-org8c95029" class="outline-2">
+<h2 id="org8c95029">简洁的方式</h2>
+<div class="outline-text-2" id="text-org8c95029">
+=======
+<section id="outline-container-org5e603dc" class="outline-2">
+<h2 id="org5e603dc">简洁的方式</h2>
+<div class="outline-text-2" id="text-org5e603dc">
+>>>>>>> 24b6b53 ( 【init】)
 <div class="org-src-container">
 <pre class="src src-clojure">(ns my-great-project.core
   "This namespace is CRAZY!"
@@ -192,7 +295,11 @@ import 用于导入 java 包。
 <footer id="postamble" class="status">
 <div class='footer'>
 Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
-Last updated on  7 22, 2022 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
+<<<<<<< HEAD
+Last updated on  5 04, 2020 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)
+=======
+Last updated on  2 07, 2023 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
+>>>>>>> 24b6b53 ( 【init】)
 </div>
 </footer>
 </body>

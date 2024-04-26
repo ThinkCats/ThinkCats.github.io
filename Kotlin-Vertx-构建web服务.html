@@ -3,19 +3,76 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!--  3 22, 2023 -->
+<<<<<<< HEAD
+<!--  5 04, 2020 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kotlin &amp; Vertx 构建web服务</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="ThinkCat" />
+<meta name="keywords" content="Kotlin, vertx post" />
+=======
+<!--  4 03, 2023 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Kotlin &amp; Vertx 构建web服务</title>
 <meta name="author" content="ThinkCat" />
 <meta name="keywords" content="Kotlin, vertx post" />
 <meta name="generator" content="Org Mode" />
+>>>>>>> 24b6b53 ( 【init】)
 <link rel='icon' type='image/x-icon' href='/images/favicon.ico'/>
 <meta name='viewport' content='width=device-width, initial-scale=1'>
 <link rel='stylesheet' href='https://code.cdn.mozilla.net/fonts/fira.css'>
 <link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
 <link rel='stylesheet' href='/css/custom.css' type='text/css'/>
 <link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
+<<<<<<< HEAD
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+=======
 <script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
      function CodeHighlightOn(elem, id)
@@ -35,6 +92,7 @@
        }
      }
 // @license-end
+>>>>>>> 24b6b53 ( 【init】)
 </script>
 </head>
 <body>
@@ -60,37 +118,69 @@
 </ul>
 </div>
 </header>
+<<<<<<< HEAD
+<main id="content">
+=======
 <main id="content" class="content">
+>>>>>>> 24b6b53 ( 【init】)
 <h1 class="title">Kotlin &amp; Vertx 构建web服务
 <br />
 <span class="subtitle">发布于  7 22, 2016 by ThinkCat.</span>
 </h1>
+<<<<<<< HEAD
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org1455567">感想</a>
+<ul>
+<li><a href="#orgb45a363">Kotlin</a></li>
+<li><a href="#org71c55dd">Vertx</a></li>
+</ul>
+</li>
+<li><a href="#orgddfed0c">Kotlin &amp; Vertx</a>
+<ul>
+<li><a href="#org28a6c36">1.maven 配置</a></li>
+<li><a href="#orgdf4a795">2.程序入口</a></li>
+<li><a href="#orgdda4345">3.路由设置</a></li>
+<li><a href="#org08b4cdd">4. 还有一个bean 对象</a></li>
+</ul>
+</li>
+<li><a href="#orge3b9974">另外一些感想</a></li>
+=======
 <div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org2c8e604">感想</a>
+<li><a href="#org0bde622">感想</a>
 <ul>
-<li><a href="#org3f0c7b6">Kotlin</a></li>
-<li><a href="#orgf4dd2ee">Vertx</a></li>
+<li><a href="#orgb14c126">Kotlin</a></li>
+<li><a href="#orgaa50f32">Vertx</a></li>
 </ul>
 </li>
-<li><a href="#orgb7f423a">Kotlin &amp; Vertx</a>
+<li><a href="#org3c90c4d">Kotlin &amp; Vertx</a>
 <ul>
-<li><a href="#orgd94fcdb">1.maven 配置</a></li>
-<li><a href="#org8b57419">2.程序入口</a></li>
-<li><a href="#org4486d8a">3.路由设置</a></li>
-<li><a href="#org7b6e2c6">4. 还有一个bean 对象</a></li>
+<li><a href="#orgc8453d3">1.maven 配置</a></li>
+<li><a href="#org56c0fef">2.程序入口</a></li>
+<li><a href="#org5f63f2c">3.路由设置</a></li>
+<li><a href="#org7dd96cc">4. 还有一个bean 对象</a></li>
 </ul>
 </li>
-<li><a href="#org79c85ce">另外一些感想</a></li>
+<li><a href="#orge7d7a09">另外一些感想</a></li>
+>>>>>>> 24b6b53 ( 【init】)
 </ul>
 </div>
 </div>
 
-<section id="outline-container-org2c8e604" class="outline-2">
-<h2 id="org2c8e604">感想</h2>
-<div class="outline-text-2" id="text-org2c8e604">
+<<<<<<< HEAD
+<section id="outline-container-org1455567" class="outline-2">
+<h2 id="org1455567">感想</h2>
+<div class="outline-text-2" id="text-org1455567">
+=======
+<section id="outline-container-org0bde622" class="outline-2">
+<h2 id="org0bde622">感想</h2>
+<div class="outline-text-2" id="text-org0bde622">
+>>>>>>> 24b6b53 ( 【init】)
 <p>
 <b>Kotlin 是一门好语言，值得大家了解一下。</b>
 </p>
@@ -100,9 +190,15 @@
 </p>
 </div>
 
-<div id="outline-container-org3f0c7b6" class="outline-3">
-<h3 id="org3f0c7b6">Kotlin</h3>
-<div class="outline-text-3" id="text-org3f0c7b6">
+<<<<<<< HEAD
+<div id="outline-container-orgb45a363" class="outline-3">
+<h3 id="orgb45a363">Kotlin</h3>
+<div class="outline-text-3" id="text-orgb45a363">
+=======
+<div id="outline-container-orgb14c126" class="outline-3">
+<h3 id="orgb14c126">Kotlin</h3>
+<div class="outline-text-3" id="text-orgb14c126">
+>>>>>>> 24b6b53 ( 【init】)
 <p>
 写过js，也写过一点点go，主力一直是java。用了kotlin，貌似找到了常用语言的平衡点了。
 </p>
@@ -122,9 +218,15 @@ Kotlin 拥有一些偏函数式的语法（java8 也引入了一些），提供�
 </div>
 </div>
 
-<div id="outline-container-orgf4dd2ee" class="outline-3">
-<h3 id="orgf4dd2ee">Vertx</h3>
-<div class="outline-text-3" id="text-orgf4dd2ee">
+<<<<<<< HEAD
+<div id="outline-container-org71c55dd" class="outline-3">
+<h3 id="org71c55dd">Vertx</h3>
+<div class="outline-text-3" id="text-org71c55dd">
+=======
+<div id="outline-container-orgaa50f32" class="outline-3">
+<h3 id="orgaa50f32">Vertx</h3>
+<div class="outline-text-3" id="text-orgaa50f32">
+>>>>>>> 24b6b53 ( 【init】)
 <p>
 vertx 风格和node的express框架思想一致的，换了一种java的实现。不得不说，node的express 启发了很多其他语言的web框架设计。java的vertx，以及go里面的很多web框架(martin&#x2026;)，很多都有express的影子(难道是我先入为主？)
 </p>
@@ -144,13 +246,23 @@ vertx 风格和node的express框架思想一致的，换了一种java的实现�
 </div>
 </section>
 
-<section id="outline-container-orgb7f423a" class="outline-2">
-<h2 id="orgb7f423a">Kotlin &amp; Vertx</h2>
-<div class="outline-text-2" id="text-orgb7f423a">
+<<<<<<< HEAD
+<section id="outline-container-orgddfed0c" class="outline-2">
+<h2 id="orgddfed0c">Kotlin &amp; Vertx</h2>
+<div class="outline-text-2" id="text-orgddfed0c">
 </div>
-<div id="outline-container-orgd94fcdb" class="outline-3">
-<h3 id="orgd94fcdb">1.maven 配置</h3>
-<div class="outline-text-3" id="text-orgd94fcdb">
+<div id="outline-container-org28a6c36" class="outline-3">
+<h3 id="org28a6c36">1.maven 配置</h3>
+<div class="outline-text-3" id="text-org28a6c36">
+=======
+<section id="outline-container-org3c90c4d" class="outline-2">
+<h2 id="org3c90c4d">Kotlin &amp; Vertx</h2>
+<div class="outline-text-2" id="text-org3c90c4d">
+</div>
+<div id="outline-container-orgc8453d3" class="outline-3">
+<h3 id="orgc8453d3">1.maven 配置</h3>
+<div class="outline-text-3" id="text-orgc8453d3">
+>>>>>>> 24b6b53 ( 【init】)
 <p>
 按照kotlin和vertx官方的配置。
 </p>
@@ -256,9 +368,15 @@ vertx 风格和node的express框架思想一致的，换了一种java的实现�
 </div>
 </div>
 
-<div id="outline-container-org8b57419" class="outline-3">
-<h3 id="org8b57419">2.程序入口</h3>
-<div class="outline-text-3" id="text-org8b57419">
+<<<<<<< HEAD
+<div id="outline-container-orgdf4a795" class="outline-3">
+<h3 id="orgdf4a795">2.程序入口</h3>
+<div class="outline-text-3" id="text-orgdf4a795">
+=======
+<div id="outline-container-org56c0fef" class="outline-3">
+<h3 id="org56c0fef">2.程序入口</h3>
+<div class="outline-text-3" id="text-org56c0fef">
+>>>>>>> 24b6b53 ( 【init】)
 <p>
 和spring-boot 一样，vertx 的程序入口也是一个静态的main函数。
 </p>
@@ -269,7 +387,11 @@ vertx 风格和node的express框架思想一致的，换了一种java的实现�
     <span class="org-type">companion</span> <span class="org-variable-name">object</span>{
         <span class="org-c-annotation">@JvmStatic</span> <span class="org-type">fun</span> <span class="org-function-name">main</span>(args: <span class="org-type">Array</span>&lt;<span class="org-type">String</span>&gt;){
             <span class="org-type">var</span> <span class="org-variable-name">vertx</span> = Vertx.vertx()
+<<<<<<< HEAD
+            vertx.deployVerticle(<span class="org-type">HelloWorlds</span>())
+=======
             vertx.deployVerticle(HelloWorlds())
+>>>>>>> 24b6b53 ( 【init】)
         }
     }
 
@@ -299,9 +421,15 @@ vertx 风格和node的express框架思想一致的，换了一种java的实现�
 </div>
 </div>
 
-<div id="outline-container-org4486d8a" class="outline-3">
-<h3 id="org4486d8a">3.路由设置</h3>
-<div class="outline-text-3" id="text-org4486d8a">
+<<<<<<< HEAD
+<div id="outline-container-orgdda4345" class="outline-3">
+<h3 id="orgdda4345">3.路由设置</h3>
+<div class="outline-text-3" id="text-orgdda4345">
+=======
+<div id="outline-container-org5f63f2c" class="outline-3">
+<h3 id="org5f63f2c">3.路由设置</h3>
+<div class="outline-text-3" id="text-org5f63f2c">
+>>>>>>> 24b6b53 ( 【init】)
 <div class="org-src-container">
 <pre class="src src-java"><span class="org-type">fun</span> <span class="org-function-name">customRouter</span>(vertx : Vertx) : Router {
     <span class="org-type">var</span> <span class="org-variable-name">router</span> = Router.router(vertx)
@@ -369,9 +497,15 @@ java版本：
 </div>
 </div>
 
-<div id="outline-container-org7b6e2c6" class="outline-3">
-<h3 id="org7b6e2c6">4. 还有一个bean 对象</h3>
-<div class="outline-text-3" id="text-org7b6e2c6">
+<<<<<<< HEAD
+<div id="outline-container-org08b4cdd" class="outline-3">
+<h3 id="org08b4cdd">4. 还有一个bean 对象</h3>
+<div class="outline-text-3" id="text-org08b4cdd">
+=======
+<div id="outline-container-org7dd96cc" class="outline-3">
+<h3 id="org7dd96cc">4. 还有一个bean 对象</h3>
+<div class="outline-text-3" id="text-org7dd96cc">
+>>>>>>> 24b6b53 ( 【init】)
 <div class="org-src-container">
 <pre class="src src-java"><span class="org-type">data</span> <span class="org-keyword">class</span> Entity(<span class="org-type">var</span> <span class="org-variable-name">name</span>:String,<span class="org-type">var</span> <span class="org-variable-name">description</span>:String){}
 </pre>
@@ -384,9 +518,15 @@ java版本：
 </div>
 </section>
 
-<section id="outline-container-org79c85ce" class="outline-2">
-<h2 id="org79c85ce">另外一些感想</h2>
-<div class="outline-text-2" id="text-org79c85ce">
+<<<<<<< HEAD
+<section id="outline-container-orge3b9974" class="outline-2">
+<h2 id="orge3b9974">另外一些感想</h2>
+<div class="outline-text-2" id="text-orge3b9974">
+=======
+<section id="outline-container-orge7d7a09" class="outline-2">
+<h2 id="orge7d7a09">另外一些感想</h2>
+<div class="outline-text-2" id="text-orge7d7a09">
+>>>>>>> 24b6b53 ( 【init】)
 <p>
 主要代码都在这里了，完整的代码[在这里](<a href="https://github.com/ThinkCats/Vertx.git">https://github.com/ThinkCats/Vertx.git</a>)。
 </p>
@@ -412,7 +552,11 @@ java版本：
 <footer id="postamble" class="status">
 <div class='footer'>
 Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
-Last updated on  7 22, 2022 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
+<<<<<<< HEAD
+Last updated on  5 04, 2020 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)
+=======
+Last updated on  2 07, 2023 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
+>>>>>>> 24b6b53 ( 【init】)
 </div>
 </footer>
 </body>

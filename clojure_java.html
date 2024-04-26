@@ -1,19 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!--  3 22, 2023 -->
+<<<<<<< HEAD
+<!--  5 04, 2020 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clojure 与 Java 交互</title>
+<meta name="generator" content="Org mode">
+<meta name="author" content="wanglei">
+<meta name="keywords" content="clojure, java">
+=======
+<!--  4 03, 2023 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Clojure 与 Java 交互</title>
 <meta name="author" content="HeHe" />
 <meta name="keywords" content="clojure, java" />
 <meta name="generator" content="Org Mode" />
+>>>>>>> 24b6b53 ( 【init】)
 <link rel='icon' type='image/x-icon' href='/images/favicon.ico'/>
 <meta name='viewport' content='width=device-width, initial-scale=1'>
 <link rel='stylesheet' href='https://code.cdn.mozilla.net/fonts/fira.css'>
 <link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
 <link rel='stylesheet' href='/css/custom.css' type='text/css'/>
 <link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
+<<<<<<< HEAD
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+=======
 <script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
      function CodeHighlightOn(elem, id)
@@ -33,6 +90,7 @@
        }
      }
 // @license-end
+>>>>>>> 24b6b53 ( 【init】)
 </script>
 </head>
 <body>
@@ -58,6 +116,26 @@
 </ul>
 </div>
 </header>
+<<<<<<< HEAD
+<main id="content">
+<header>
+<h1 class="title">Clojure 与 Java 交互</h1>
+</header><nav id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgd0068b1">使用 java 文件</a></li>
+<li><a href="#org9111716">创建实例</a></li>
+<li><a href="#org4195323">方法和成员变量</a>
+<ul>
+<li><a href="#org3afdf39">静态方法</a></li>
+<li><a href="#org7a8b5bf">公开非静态方法</a></li>
+<li><a href="#orgb664aca">公开成员变量</a></li>
+</ul>
+</li>
+<li><a href="#orgb9ae68e">.. 宏</a></li>
+<li><a href="#orgb1d565f">doto</a></li>
+=======
 <main id="content" class="content">
 <header>
 <h1 class="title">Clojure 与 Java 交互</h1>
@@ -65,17 +143,18 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org654f83f">使用 java 文件</a></li>
-<li><a href="#org042b3ba">创建实例</a></li>
-<li><a href="#org897da4f">方法和成员变量</a>
+<li><a href="#org5a6f797">使用 java 文件</a></li>
+<li><a href="#org84642d5">创建实例</a></li>
+<li><a href="#org3bd69e7">方法和成员变量</a>
 <ul>
-<li><a href="#org3bac3bd">静态方法</a></li>
-<li><a href="#org422f5cf">公开非静态方法</a></li>
-<li><a href="#org4cca802">公开成员变量</a></li>
+<li><a href="#org8dd8dd3">静态方法</a></li>
+<li><a href="#orgb5c00cc">公开非静态方法</a></li>
+<li><a href="#org93fb45d">公开成员变量</a></li>
 </ul>
 </li>
-<li><a href="#orga300c9e">.. 宏</a></li>
-<li><a href="#org4edea4a">doto</a></li>
+<li><a href="#org9b4d10f">.. 宏</a></li>
+<li><a href="#org6896452">doto</a></li>
+>>>>>>> 24b6b53 ( 【init】)
 </ul>
 </div>
 </nav>
@@ -84,9 +163,15 @@
 </p>
 <!-- more -->
 
-<section id="outline-container-org654f83f" class="outline-2">
-<h2 id="org654f83f">使用 java 文件</h2>
-<div class="outline-text-2" id="text-org654f83f">
+<<<<<<< HEAD
+<section id="outline-container-orgd0068b1" class="outline-2">
+<h2 id="orgd0068b1">使用 java 文件</h2>
+<div class="outline-text-2" id="text-orgd0068b1">
+=======
+<section id="outline-container-org5a6f797" class="outline-2">
+<h2 id="org5a6f797">使用 java 文件</h2>
+<div class="outline-text-2" id="text-org5a6f797">
+>>>>>>> 24b6b53 ( 【init】)
 <p>
 之前在 ns 中，有说过这个，如何引入 java 的文件。
 </p>
@@ -111,9 +196,15 @@
 </div>
 </section>
 
-<section id="outline-container-org042b3ba" class="outline-2">
-<h2 id="org042b3ba">创建实例</h2>
-<div class="outline-text-2" id="text-org042b3ba">
+<<<<<<< HEAD
+<section id="outline-container-org9111716" class="outline-2">
+<h2 id="org9111716">创建实例</h2>
+<div class="outline-text-2" id="text-org9111716">
+=======
+<section id="outline-container-org84642d5" class="outline-2">
+<h2 id="org84642d5">创建实例</h2>
+<div class="outline-text-2" id="text-org84642d5">
+>>>>>>> 24b6b53 ( 【init】)
 <p>
 一个实例的创建，通过类名和一个点(.)即可，如下:
 </p>
@@ -125,13 +216,23 @@
 </div>
 </section>
 
-<section id="outline-container-org897da4f" class="outline-2">
-<h2 id="org897da4f">方法和成员变量</h2>
-<div class="outline-text-2" id="text-org897da4f">
+<<<<<<< HEAD
+<section id="outline-container-org4195323" class="outline-2">
+<h2 id="org4195323">方法和成员变量</h2>
+<div class="outline-text-2" id="text-org4195323">
 </div>
-<div id="outline-container-org3bac3bd" class="outline-3">
-<h3 id="org3bac3bd">静态方法</h3>
-<div class="outline-text-3" id="text-org3bac3bd">
+<div id="outline-container-org3afdf39" class="outline-3">
+<h3 id="org3afdf39">静态方法</h3>
+<div class="outline-text-3" id="text-org3afdf39">
+=======
+<section id="outline-container-org3bd69e7" class="outline-2">
+<h2 id="org3bd69e7">方法和成员变量</h2>
+<div class="outline-text-2" id="text-org3bd69e7">
+</div>
+<div id="outline-container-org8dd8dd3" class="outline-3">
+<h3 id="org8dd8dd3">静态方法</h3>
+<div class="outline-text-3" id="text-org8dd8dd3">
+>>>>>>> 24b6b53 ( 【init】)
 <p>
 静态方法调用，语法: <b>(Classname/staticMethod args</b>)。
 </p>
@@ -146,9 +247,15 @@
 </div>
 </div>
 
-<div id="outline-container-org422f5cf" class="outline-3">
-<h3 id="org422f5cf">公开非静态方法</h3>
-<div class="outline-text-3" id="text-org422f5cf">
+<<<<<<< HEAD
+<div id="outline-container-org7a8b5bf" class="outline-3">
+<h3 id="org7a8b5bf">公开非静态方法</h3>
+<div class="outline-text-3" id="text-org7a8b5bf">
+=======
+<div id="outline-container-orgb5c00cc" class="outline-3">
+<h3 id="orgb5c00cc">公开非静态方法</h3>
+<div class="outline-text-3" id="text-orgb5c00cc">
+>>>>>>> 24b6b53 ( 【init】)
 <p>
 采用一个 <b>.</b> 宏操作符号,实例如下:
 </p>
@@ -177,9 +284,15 @@
 </div>
 </div>
 
-<div id="outline-container-org4cca802" class="outline-3">
-<h3 id="org4cca802">公开成员变量</h3>
-<div class="outline-text-3" id="text-org4cca802">
+<<<<<<< HEAD
+<div id="outline-container-orgb664aca" class="outline-3">
+<h3 id="orgb664aca">公开成员变量</h3>
+<div class="outline-text-3" id="text-orgb664aca">
+=======
+<div id="outline-container-org93fb45d" class="outline-3">
+<h3 id="org93fb45d">公开成员变量</h3>
+<div class="outline-text-3" id="text-org93fb45d">
+>>>>>>> 24b6b53 ( 【init】)
 <p>
 使用 <b>.</b> 宏操作，还可以获取到类的成员变量，格式为：
 <b>(. Classname-symbol member-symbol)</b> 或者 <b>(. instance-expr member-symbol)</b> 。
@@ -196,9 +309,15 @@
 </div>
 </section>
 
-<section id="outline-container-orga300c9e" class="outline-2">
-<h2 id="orga300c9e">.. 宏</h2>
-<div class="outline-text-2" id="text-orga300c9e">
+<<<<<<< HEAD
+<section id="outline-container-orgb9ae68e" class="outline-2">
+<h2 id="orgb9ae68e">.. 宏</h2>
+<div class="outline-text-2" id="text-orgb9ae68e">
+=======
+<section id="outline-container-org9b4d10f" class="outline-2">
+<h2 id="org9b4d10f">.. 宏</h2>
+<div class="outline-text-2" id="text-org9b4d10f">
+>>>>>>> 24b6b53 ( 【init】)
 <p>
 写过 java 的都知道，这个语言比较啰嗦。以 《Clojure in Action》中的获取当前时区名字为例， 按照 <b>.</b> 的用法，是可以逐步获取日历的实例，然后点操作获取时区类，再点操作获取时区名，需要进行嵌套，代码比较冗长，会是下面这个样子：
 </p>
@@ -225,9 +344,15 @@
 </div>
 </section>
 
-<section id="outline-container-org4edea4a" class="outline-2">
-<h2 id="org4edea4a">doto</h2>
-<div class="outline-text-2" id="text-org4edea4a">
+<<<<<<< HEAD
+<section id="outline-container-orgb1d565f" class="outline-2">
+<h2 id="orgb1d565f">doto</h2>
+<div class="outline-text-2" id="text-orgb1d565f">
+=======
+<section id="outline-container-org6896452" class="outline-2">
+<h2 id="org6896452">doto</h2>
+<div class="outline-text-2" id="text-org6896452">
+>>>>>>> 24b6b53 ( 【init】)
 <p>
 doto 是一个懒人宏，主要是为了一个实例，连续调用它的N个方法设立的。比如以下这个给日历设置时间的操作：
 </p>
@@ -269,7 +394,11 @@ doto 是一个懒人宏，主要是为了一个实例，连续调用它的N个�
 <footer id="postamble" class="status">
 <div class='footer'>
 Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
-Last updated on  7 22, 2022 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
+<<<<<<< HEAD
+Last updated on  5 04, 2020 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)
+=======
+Last updated on  2 07, 2023 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
+>>>>>>> 24b6b53 ( 【init】)
 </div>
 </footer>
 </body>
