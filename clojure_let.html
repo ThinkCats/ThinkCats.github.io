@@ -1,76 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<<<<<<< HEAD
-<!--  5 04, 2020 -->
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Clojure系列- 好用的「let」和「_」</title>
-<meta name="generator" content="Org mode">
-<meta name="author" content="wanglei">
-<meta name="keywords" content="clojure">
-=======
-<!--  4 03, 2023 -->
+<!--  3 22, 2023 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Clojure系列- 好用的「let」和「_」</title>
 <meta name="author" content="HeHe" />
 <meta name="keywords" content="clojure" />
 <meta name="generator" content="Org Mode" />
->>>>>>> 24b6b53 ( 【init】)
 <link rel='icon' type='image/x-icon' href='/images/favicon.ico'/>
 <meta name='viewport' content='width=device-width, initial-scale=1'>
 <link rel='stylesheet' href='https://code.cdn.mozilla.net/fonts/fira.css'>
 <link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
 <link rel='stylesheet' href='/css/custom.css' type='text/css'/>
 <link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
-<<<<<<< HEAD
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
-=======
 <script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
      function CodeHighlightOn(elem, id)
@@ -90,7 +33,6 @@ for the JavaScript code in this tag.
        }
      }
 // @license-end
->>>>>>> 24b6b53 ( 【init】)
 </script>
 </head>
 <body>
@@ -116,17 +58,6 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 </header>
-<<<<<<< HEAD
-<main id="content">
-<header>
-<h1 class="title">Clojure系列- 好用的「let」和「_」</h1>
-</header><nav id="table-of-contents">
-<h2>Table of Contents</h2>
-<div id="text-table-of-contents">
-<ul>
-<li><a href="#orgeaa84e8">let</a></li>
-<li><a href="#org170c518">_</a></li>
-=======
 <main id="content" class="content">
 <header>
 <h1 class="title">Clojure系列- 好用的「let」和「_」</h1>
@@ -134,9 +65,8 @@ for the JavaScript code in this tag.
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orgb525c5b">let</a></li>
-<li><a href="#org1998786">_</a></li>
->>>>>>> 24b6b53 ( 【init】)
+<li><a href="#orgc0a975a">let</a></li>
+<li><a href="#org24cc626">_</a></li>
 </ul>
 </div>
 </nav>
@@ -145,15 +75,9 @@ let 应该天生就是为了使代码清晰而生的。
 </p>
 <!-- more -->
 
-<<<<<<< HEAD
-<section id="outline-container-orgeaa84e8" class="outline-2">
-<h2 id="orgeaa84e8">let</h2>
-<div class="outline-text-2" id="text-orgeaa84e8">
-=======
-<section id="outline-container-orgb525c5b" class="outline-2">
-<h2 id="orgb525c5b">let</h2>
-<div class="outline-text-2" id="text-orgb525c5b">
->>>>>>> 24b6b53 ( 【init】)
+<section id="outline-container-orgc0a975a" class="outline-2">
+<h2 id="orgc0a975a">let</h2>
+<div class="outline-text-2" id="text-orgc0a975a">
 <p>
 let 是为了绑定变量用的，这个变量可以是任何的结构，包括函数。
 </p>
@@ -195,15 +119,9 @@ let 是为了绑定变量用的，这个变量可以是任何的结构，包括�
 </p>
 </div>
 </section>
-<<<<<<< HEAD
-<section id="outline-container-org170c518" class="outline-2">
-<h2 id="org170c518">_</h2>
-<div class="outline-text-2" id="text-org170c518">
-=======
-<section id="outline-container-org1998786" class="outline-2">
-<h2 id="org1998786">_</h2>
-<div class="outline-text-2" id="text-org1998786">
->>>>>>> 24b6b53 ( 【init】)
+<section id="outline-container-org24cc626" class="outline-2">
+<h2 id="org24cc626">_</h2>
+<div class="outline-text-2" id="text-org24cc626">
 <p>
 在let中，这个vector的内容必须是成对出现的,假如我们只需要在let中，println输出一下某个绑定的字段值，这个时候其实不需要为该print的form指定绑定名，用下划线&ldquo;_&rdquo;来替代。
 </p>
@@ -229,11 +147,7 @@ let 是为了绑定变量用的，这个变量可以是任何的结构，包括�
 <footer id="postamble" class="status">
 <div class='footer'>
 Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
-<<<<<<< HEAD
-Last updated on  5 04, 2020 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)
-=======
-Last updated on  2 07, 2023 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
->>>>>>> 24b6b53 ( 【init】)
+Last updated on  7 22, 2022 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
 </div>
 </footer>
 </body>

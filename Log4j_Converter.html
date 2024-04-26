@@ -3,76 +3,19 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<<<<<<< HEAD
-<!--  6 12, 2020 -->
-<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Log4j自定义Converter</title>
-<meta name="generator" content="Org mode" />
-<meta name="author" content="ThinkCat" />
-<meta name="keywords" content="Log4j2, Java post" />
-=======
-<!--  4 03, 2023 -->
+<!--  3 22, 2023 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Log4j自定义Converter</title>
 <meta name="author" content="ThinkCat" />
 <meta name="keywords" content="Log4j2, Java post" />
 <meta name="generator" content="Org Mode" />
->>>>>>> 24b6b53 ( 【init】)
 <link rel='icon' type='image/x-icon' href='/images/favicon.ico'/>
 <meta name='viewport' content='width=device-width, initial-scale=1'>
 <link rel='stylesheet' href='https://code.cdn.mozilla.net/fonts/fira.css'>
 <link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
 <link rel='stylesheet' href='/css/custom.css' type='text/css'/>
 <link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
-<<<<<<< HEAD
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-<!--/*--><![CDATA[/*><!--*/
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-/*]]>*///-->
-=======
 <script>
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
      function CodeHighlightOn(elem, id)
@@ -92,7 +35,6 @@ for the JavaScript code in this tag.
        }
      }
 // @license-end
->>>>>>> 24b6b53 ( 【init】)
 </script>
 </head>
 <body>
@@ -118,55 +60,31 @@ for the JavaScript code in this tag.
 </ul>
 </div>
 </header>
-<<<<<<< HEAD
-<main id="content">
-=======
 <main id="content" class="content">
->>>>>>> 24b6b53 ( 【init】)
 <h1 class="title">Log4j自定义Converter
 <br />
 <span class="subtitle">发布于  6 12, 2020 by ThinkCat.</span>
 </h1>
-<<<<<<< HEAD
-<div id="table-of-contents">
-<h2>Table of Contents</h2>
-<div id="text-table-of-contents">
-<ul>
-<li><a href="#orge06f0b7">缘由</a></li>
-<li><a href="#orgabb6dec">实现</a>
-<ul>
-<li><a href="#org49f2090">依赖项</a></li>
-<li><a href="#org5c8adc3">自定义Converter</a></li>
-<li><a href="#org6b0d082">配置log4j2.xml</a></li>
-<li><a href="#org3f21232">测试验证</a></li>
-=======
 <div id="table-of-contents" role="doc-toc">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org7a785c6">缘由</a></li>
-<li><a href="#orgee5400b">实现</a>
+<li><a href="#org5cbe180">缘由</a></li>
+<li><a href="#org1420134">实现</a>
 <ul>
-<li><a href="#org1b1d6eb">依赖项</a></li>
-<li><a href="#orgdb558ae">自定义Converter</a></li>
-<li><a href="#org45bae9c">配置log4j2.xml</a></li>
-<li><a href="#orge194a2e">测试验证</a></li>
->>>>>>> 24b6b53 ( 【init】)
+<li><a href="#org6535f44">依赖项</a></li>
+<li><a href="#orgeca1440">自定义Converter</a></li>
+<li><a href="#org776c73e">配置log4j2.xml</a></li>
+<li><a href="#orga9c4332">测试验证</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 
-<<<<<<< HEAD
-<section id="outline-container-orge06f0b7" class="outline-2">
-<h2 id="orge06f0b7">缘由</h2>
-<div class="outline-text-2" id="text-orge06f0b7">
-=======
-<section id="outline-container-org7a785c6" class="outline-2">
-<h2 id="org7a785c6">缘由</h2>
-<div class="outline-text-2" id="text-org7a785c6">
->>>>>>> 24b6b53 ( 【init】)
+<section id="outline-container-org5cbe180" class="outline-2">
+<h2 id="org5cbe180">缘由</h2>
+<div class="outline-text-2" id="text-org5cbe180">
 <p>
 新公司的基础框架不是太好用，和前公司比，还是差了不少。由于接手的都是老系统，所有东西，都是用的很久之前的，好多很原生的东西，包括JDBC、reids操作，都是裸操作连接。
 </p>
@@ -181,29 +99,17 @@ for the JavaScript code in this tag.
 </div>
 </section>
 
-<<<<<<< HEAD
-<section id="outline-container-orgabb6dec" class="outline-2">
-<h2 id="orgabb6dec">实现</h2>
-<div class="outline-text-2" id="text-orgabb6dec">
-=======
-<section id="outline-container-orgee5400b" class="outline-2">
-<h2 id="orgee5400b">实现</h2>
-<div class="outline-text-2" id="text-orgee5400b">
->>>>>>> 24b6b53 ( 【init】)
+<section id="outline-container-org1420134" class="outline-2">
+<h2 id="org1420134">实现</h2>
+<div class="outline-text-2" id="text-org1420134">
 <p>
 拿SpringBoot做了一个小demo来验证了一下，代码很简单。
 </p>
 </div>
 
-<<<<<<< HEAD
-<div id="outline-container-org49f2090" class="outline-3">
-<h3 id="org49f2090">依赖项</h3>
-<div class="outline-text-3" id="text-org49f2090">
-=======
-<div id="outline-container-org1b1d6eb" class="outline-3">
-<h3 id="org1b1d6eb">依赖项</h3>
-<div class="outline-text-3" id="text-org1b1d6eb">
->>>>>>> 24b6b53 ( 【init】)
+<div id="outline-container-org6535f44" class="outline-3">
+<h3 id="org6535f44">依赖项</h3>
+<div class="outline-text-3" id="text-org6535f44">
 <p>
 首先引入日志依赖：
 </p>
@@ -238,15 +144,9 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<<<<<<< HEAD
-<div id="outline-container-org5c8adc3" class="outline-3">
-<h3 id="org5c8adc3">自定义Converter</h3>
-<div class="outline-text-3" id="text-org5c8adc3">
-=======
-<div id="outline-container-orgdb558ae" class="outline-3">
-<h3 id="orgdb558ae">自定义Converter</h3>
-<div class="outline-text-3" id="text-orgdb558ae">
->>>>>>> 24b6b53 ( 【init】)
+<div id="outline-container-orgeca1440" class="outline-3">
+<h3 id="orgeca1440">自定义Converter</h3>
+<div class="outline-text-3" id="text-orgeca1440">
 <p>
 代码如下：
 </p>
@@ -261,11 +161,7 @@ for the JavaScript code in this tag.
 <span class="org-c-annotation">@Plugin</span>(name = <span class="org-string">"TradeConverter"</span>,category = <span class="org-string">"Converter"</span>)
 <span class="org-c-annotation">@ConverterKeys</span>({<span class="org-string">"traceId"</span>})
 <span class="org-keyword">public</span> <span class="org-keyword">class</span> <span class="org-type">TraceConverter</span> <span class="org-keyword">extends</span> <span class="org-type">LogEventPatternConverter</span> {
-<<<<<<< HEAD
-    <span class="org-keyword">protected</span> <span class="org-function-name">TraceConverter</span>(<span class="org-type">String</span> <span class="org-variable-name">name</span>, <span class="org-type">String</span> <span class="org-variable-name">style</span>) {
-=======
     <span class="org-keyword">protected</span> TraceConverter(<span class="org-type">String</span> <span class="org-variable-name">name</span>, <span class="org-type">String</span> <span class="org-variable-name">style</span>) {
->>>>>>> 24b6b53 ( 【init】)
         <span class="org-keyword">super</span>(name, style);
     }
 
@@ -294,26 +190,15 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<<<<<<< HEAD
-<div id="outline-container-org6b0d082" class="outline-3">
-<h3 id="org6b0d082">配置log4j2.xml</h3>
-<div class="outline-text-3" id="text-org6b0d082">
-=======
-<div id="outline-container-org45bae9c" class="outline-3">
-<h3 id="org45bae9c">配置log4j2.xml</h3>
-<div class="outline-text-3" id="text-org45bae9c">
->>>>>>> 24b6b53 ( 【init】)
+<div id="outline-container-org776c73e" class="outline-3">
+<h3 id="org776c73e">配置log4j2.xml</h3>
+<div class="outline-text-3" id="text-org776c73e">
 <p>
 找了一份比较齐全的配置文件：
 </p>
 <div class="org-src-container">
-<<<<<<< HEAD
-<pre class="src src-xml"><span class="org-string"><span class="org-nxml-processing-instruction-delimiter">&lt;?</span></span><span class="org-string"><span class="org-nxml-processing-instruction-target">xml</span></span><span class="org-string"> </span><span class="org-string"><span class="org-nxml-processing-instruction-content">version="1.0" encoding="UTF-8"</span></span><span class="org-string"><span class="org-nxml-processing-instruction-delimiter">?&gt;</span></span>
-<span class="org-comment-delimiter">&lt;!--</span><span class="org-comment">&#26085;&#24535;&#32423;&#21035;&#20197;&#21450;&#20248;&#20808;&#32423;&#25490;&#24207;: OFF &gt; FATAL &gt; ERROR &gt; WARN &gt; INFO &gt; DEBUG &gt; TRACE &gt; ALL </span><span class="org-comment-delimiter">--&gt;</span>
-=======
 <pre class="src src-xml"><span class="org-nxml-processing-instruction-delimiter">&lt;?</span><span class="org-nxml-processing-instruction-target">xml</span> <span class="org-nxml-processing-instruction-content">version="1.0" encoding="UTF-8"</span><span class="org-nxml-processing-instruction-delimiter">?&gt;</span>
 <span class="org-comment-delimiter">&lt;!--</span><span class="org-comment">&#26085;&#24535;&#32423;&#21035;&#20197;&#21450;&#20248;&#20808;&#32423;&#25490;&#24207;: OFF &gt; FATAL &gt; ERROR &gt; WARN &gt; INFO &gt; DEBUG &gt; TRACE &gt; ALL</span><span class="org-comment-delimiter"> --&gt;</span>
->>>>>>> 24b6b53 ( 【init】)
 <span class="org-comment-delimiter">&lt;!--</span><span class="org-comment">Configuration&#21518;&#38754;&#30340;status&#65292;&#36825;&#20010;&#29992;&#20110;&#35774;&#32622;log4j2&#33258;&#36523;&#20869;&#37096;&#30340;&#20449;&#24687;&#36755;&#20986;&#65292;&#21487;&#20197;&#19981;&#35774;&#32622;&#65292;&#24403;&#35774;&#32622;&#25104;trace&#26102;&#65292;&#20320;&#20250;&#30475;&#21040;log4j2&#20869;&#37096;&#21508;&#31181;&#35814;&#32454;&#36755;&#20986;</span><span class="org-comment-delimiter">--&gt;</span>
 <span class="org-comment-delimiter">&lt;!--</span><span class="org-comment">monitorInterval&#65306;Log4j&#33021;&#22815;&#33258;&#21160;&#26816;&#27979;&#20462;&#25913;&#37197;&#32622; &#25991;&#20214;&#21644;&#37325;&#26032;&#37197;&#32622;&#26412;&#36523;&#65292;&#35774;&#32622;&#38388;&#38548;&#31186;&#25968;</span><span class="org-comment-delimiter">--&gt;</span>
 <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">configuration</span> <span class="org-nxml-attribute-local-name">status</span>=<span class="org-string">"WARN"</span> <span class="org-nxml-attribute-local-name">monitorInterval</span>=<span class="org-string">"30"</span><span class="org-nxml-tag-delimiter">&gt;</span>
@@ -347,11 +232,7 @@ for the JavaScript code in this tag.
                 <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">TimeBasedTriggeringPolicy</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
                 <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">SizeBasedTriggeringPolicy</span> <span class="org-nxml-attribute-local-name">size</span>=<span class="org-string">"100 MB"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
             <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">Policies</span><span class="org-nxml-tag-delimiter">&gt;</span>
-<<<<<<< HEAD
-            <span class="org-comment-delimiter">&lt;!-- </span><span class="org-comment">DefaultRolloverStrategy&#23646;&#24615;&#22914;&#19981;&#35774;&#32622;&#65292;&#21017;&#40664;&#35748;&#20026;&#26368;&#22810;&#21516;&#19968;&#25991;&#20214;&#22841;&#19979;7&#20010;&#25991;&#20214;&#65292;&#36825;&#37324;&#35774;&#32622;&#20102;20 </span><span class="org-comment-delimiter">--&gt;</span>
-=======
             <span class="org-comment-delimiter">&lt;!-- </span><span class="org-comment">DefaultRolloverStrategy&#23646;&#24615;&#22914;&#19981;&#35774;&#32622;&#65292;&#21017;&#40664;&#35748;&#20026;&#26368;&#22810;&#21516;&#19968;&#25991;&#20214;&#22841;&#19979;7&#20010;&#25991;&#20214;&#65292;&#36825;&#37324;&#35774;&#32622;&#20102;20</span><span class="org-comment-delimiter"> --&gt;</span>
->>>>>>> 24b6b53 ( 【init】)
             <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">DefaultRolloverStrategy</span> <span class="org-nxml-attribute-local-name">max</span>=<span class="org-string">"20"</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-tag-delimiter">&gt;</span>
         <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-tag-slash">/</span><span class="org-nxml-element-local-name">RollingFile</span><span class="org-nxml-tag-delimiter">&gt;</span>
         <span class="org-nxml-tag-delimiter">&lt;</span><span class="org-nxml-element-local-name">RollingFile</span> <span class="org-nxml-attribute-local-name">name</span>=<span class="org-string">"RollingFileError"</span> <span class="org-nxml-attribute-local-name">fileName</span>=<span class="org-string">"${sys:user.home}/logs/error.log"</span>
@@ -391,15 +272,9 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<<<<<<< HEAD
-<div id="outline-container-org3f21232" class="outline-3">
-<h3 id="org3f21232">测试验证</h3>
-<div class="outline-text-3" id="text-org3f21232">
-=======
-<div id="outline-container-orge194a2e" class="outline-3">
-<h3 id="orge194a2e">测试验证</h3>
-<div class="outline-text-3" id="text-orge194a2e">
->>>>>>> 24b6b53 ( 【init】)
+<div id="outline-container-orga9c4332" class="outline-3">
+<h3 id="orga9c4332">测试验证</h3>
+<div class="outline-text-3" id="text-orga9c4332">
 <p>
 启动一下，打个日志看看。
 </p>
@@ -461,11 +336,7 @@ Process finished with exit code 0
 <footer id="postamble" class="status">
 <div class='footer'>
 Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
-<<<<<<< HEAD
-Last updated on  6 12, 2020 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 26.3 (<a href="https://orgmode.org">Org</a> mode 9.3.6)
-=======
-Last updated on  2 07, 2023 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
->>>>>>> 24b6b53 ( 【init】)
+Last updated on  7 22, 2022 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.2 (<a href="https://orgmode.org">Org</a> mode 9.5.5)
 </div>
 </footer>
 </body>
