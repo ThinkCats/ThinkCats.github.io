@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- May 10, 2024 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hash算法</title>
+<meta name="author" content="ThinkCat" />
+<meta name="keywords" content="hash post" />
+<meta name="generator" content="Org Mode" />
+<link rel='icon' type='image/x-icon' href='/images/favicon.ico'/>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel='stylesheet' href='https://code.cdn.mozilla.net/fonts/fira.css'>
+<link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
+<link rel='stylesheet' href='/css/custom.css' type='text/css'/>
+<link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="/"> UP </a>
+ |
+ <a accesskey="H" href="/"> HOME </a>
+</div><header id="top" class="status">
+
+ <!-- <div class='intro'>
+ <img src='/images/about/profile.png' alt='ThinkCat' class='no-border'/>
+<h3>ThinkCat</h3>
+ <p>一个简单的开发者</p> 
+</div>
+-->
+
+<div class='nav'>
+<ul>
+<li><b> ThinkCat </b> </li>
+<li>&nbsp;&nbsp;</li>
+<li><a href='/'>Blog</a>.</li>
+<li><a href='/about/'>About</a></li>
+</ul>
+</div>
+</header>
+<main id="content" class="content">
+<h1 class="title">Hash算法
+<br />
+<span class="subtitle">发布于 May 06, 2020 by ThinkCat.</span>
+</h1>
+<p>
+散列函数是将字符串或者数字作为输入，通过计算输出一个整数，理想的散列函数输出非常均匀分布在可能的输出域，特别是当输入非常相似的时候。
+</p>
+
+<p>
+最近准备对线上的数据库进行分表的操作，整理方案的时候，看到最常用的还是采用对特定业务标识做 <code>hash+mod</code> 的方式。
+</p>
+
+<p>
+于是也打算做这个方案，首要的是hash算法问题。有各种的实现，发现神器 guava 里面有一个 <code>Hashing</code> 类，包含 sha256, crc32, murmur3 等各种校验与hash实现。
+</p>
+
+<p>
+测试下来，发现 murmur3 的版本中，会存在hash值是负数的情况，这种就取绝对值了。
+</p>
+
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">public</span> <span class="org-keyword">static</span> <span class="org-type">void</span> <span class="org-function-name">main</span>(<span class="org-type">String</span>[] <span class="org-variable-name">args</span>) {
+    <span class="org-type">HashFunction</span> <span class="org-variable-name">hashFunction</span> = Hashing.murmur3_128();
+    <span class="org-type">long</span> <span class="org-variable-name">a</span> = System.currentTimeMillis();
+    <span class="org-type">int</span> <span class="org-variable-name">count</span> = 0;
+    <span class="org-keyword">for</span> (<span class="org-type">int</span> <span class="org-variable-name">i</span> = 0;i&lt; 1000000;i++) {
+        <span class="org-type">HashCode</span> <span class="org-variable-name">hashCode</span> = hashFunction.hashInt(i);
+        <span class="org-keyword">if</span> (hashCode.asInt() &lt; 0) {
+            System.out.println(<span class="org-string">"Found:"</span> + i);
+            count++;
+        }
+    }
+    System.out.println(<span class="org-string">"all:"</span> + count);
+    System.out.println(System.currentTimeMillis() - a);
+}
+</pre>
+</div>
+
+<p>
+散列函数介绍：
+</p>
+
+<p>
+<a href="https://zh.wikipedia.org/wiki/%E6%95%A3%E5%88%97%E5%87%BD%E6%95%B8">https://zh.wikipedia.org/wiki/%E6%95%A3%E5%88%97%E5%87%BD%E6%95%B8</a>
+</p>
+</main>
+<footer id="postamble" class="status">
+<div class='footer'>
+Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
+Last updated on Feb 07, 2023 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.2 (<a href="https://orgmode.org">Org</a> mode 9.6.15)
+</div>
+</footer>
+</body>
+</html>

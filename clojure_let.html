@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- May 10, 2024 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Clojure系列- 好用的「let」和「_」</title>
+<meta name="author" content="HeHe" />
+<meta name="keywords" content="clojure" />
+<meta name="generator" content="Org Mode" />
+<link rel='icon' type='image/x-icon' href='/images/favicon.ico'/>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel='stylesheet' href='https://code.cdn.mozilla.net/fonts/fira.css'>
+<link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
+<link rel='stylesheet' href='/css/custom.css' type='text/css'/>
+<link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="/"> UP </a>
+ |
+ <a accesskey="H" href="/"> HOME </a>
+</div><header id="top" class="status">
+
+ <!-- <div class='intro'>
+ <img src='/images/about/profile.png' alt='ThinkCat' class='no-border'/>
+<h3>ThinkCat</h3>
+ <p>一个简单的开发者</p> 
+</div>
+-->
+
+<div class='nav'>
+<ul>
+<li><b> ThinkCat </b> </li>
+<li>&nbsp;&nbsp;</li>
+<li><a href='/'>Blog</a>.</li>
+<li><a href='/about/'>About</a></li>
+</ul>
+</div>
+</header>
+<main id="content" class="content">
+<header>
+<h1 class="title">Clojure系列- 好用的「let」和「_」</h1>
+</header><nav id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org76c8cdd">let</a></li>
+<li><a href="#orgf143e91">_</a></li>
+</ul>
+</div>
+</nav>
+<p>
+let 应该天生就是为了使代码清晰而生的。
+</p>
+<!-- more -->
+
+<section id="outline-container-org76c8cdd" class="outline-2">
+<h2 id="org76c8cdd">let</h2>
+<div class="outline-text-2" id="text-org76c8cdd">
+<p>
+let 是为了绑定变量用的，这个变量可以是任何的结构，包括函数。
+</p>
+
+<p>
+当前有个函数（摘自《clojure in action》），形式是这样的：
+</p>
+
+<div class="org-src-container">
+<pre class="src src-clojure">(defn average-pets []
+  (/ (apply + (map :number-pets (vals users))) (count users)))
+</pre>
+</div>
+
+<p>
+其中用到的users结构是这样的:
+</p>
+<div class="org-src-container">
+<pre class="src src-clojure">(def users {"www" {:password "one" :no 12}
+            "zzz" {:password "lala" :no 44}})
+</pre>
+</div>
+
+<p>
+看上去这个average-pets比较复杂，主要是计算的时候，取了各种数据。用let的话，就隔离开了同时计算和取值的这种问题。改造后的:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-clojure">(defn average-pets-2 []
+  (let [user-data (vals users)
+        number-pets (map :no user-data)
+        total (apply + number-pets)
+        count-user (count users)]
+        (/ total count-user)))
+</pre>
+</div>
+<p>
+这样就把取值和计算分开了。
+</p>
+</div>
+</section>
+<section id="outline-container-orgf143e91" class="outline-2">
+<h2 id="orgf143e91">_</h2>
+<div class="outline-text-2" id="text-orgf143e91">
+<p>
+在let中，这个vector的内容必须是成对出现的,假如我们只需要在let中，println输出一下某个绑定的字段值，这个时候其实不需要为该print的form指定绑定名，用下划线&ldquo;_&rdquo;来替代。
+</p>
+<div class="org-src-container">
+<pre class="src src-clojure">(defn average-pets-2 []
+  (let [user-data (vals users)
+        number-pets (map :no user-data)
+        _ (println "no:" number-pets)
+        total (apply + number-pets)
+        _ (println "total:" total)
+        count-user (count users)]
+        (/ total count-user)))
+(average-pets-2)
+;; 运行会输出:
+;; no: (12 44)
+;; total: 56
+
+</pre>
+</div>
+</div>
+</section>
+</main>
+<footer id="postamble" class="status">
+<div class='footer'>
+Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
+Last updated on Feb 07, 2023 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.2 (<a href="https://orgmode.org">Org</a> mode 9.6.15)
+</div>
+</footer>
+</body>
+</html>

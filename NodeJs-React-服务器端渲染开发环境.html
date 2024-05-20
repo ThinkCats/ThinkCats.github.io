@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- May 10, 2024 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NodeJs &amp; React 服务器端渲染开发环境</title>
+<meta name="author" content="ThinkCat" />
+<meta name="keywords" content="JavaScript post" />
+<meta name="generator" content="Org Mode" />
+<link rel='icon' type='image/x-icon' href='/images/favicon.ico'/>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel='stylesheet' href='https://code.cdn.mozilla.net/fonts/fira.css'>
+<link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
+<link rel='stylesheet' href='/css/custom.css' type='text/css'/>
+<link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="/"> UP </a>
+ |
+ <a accesskey="H" href="/"> HOME </a>
+</div><header id="top" class="status">
+
+ <!-- <div class='intro'>
+ <img src='/images/about/profile.png' alt='ThinkCat' class='no-border'/>
+<h3>ThinkCat</h3>
+ <p>一个简单的开发者</p> 
+</div>
+-->
+
+<div class='nav'>
+<ul>
+<li><b> ThinkCat </b> </li>
+<li>&nbsp;&nbsp;</li>
+<li><a href='/'>Blog</a>.</li>
+<li><a href='/about/'>About</a></li>
+</ul>
+</div>
+</header>
+<main id="content" class="content">
+<h1 class="title">NodeJs &amp; React 服务器端渲染开发环境
+<br />
+<span class="subtitle">发布于 Jun 09, 2016 by ThinkCat.</span>
+</h1>
+<p>
+昨天晚上，我对樱泡说：“完了,我已经对 Nodejs + Reactjs服务端渲染的开发环境丧失信心了，我已经放弃了。” 然后自暴自弃，破罐破摔，莫名其妙地去看Emacs去了。。。 找虐！
+</p>
+
+<p>
+刚刚觉得心有不甘，去搞了一下，突然间想起了 nodemon ，顿时豁然开朗，有解决方案了。
+</p>
+
+<p>
+如果用传统的babel-node 去跑的话，node是可以良好运行的，但是不利于调试。每次修改掉组件jsx之后，必须手动重启应用，才可以加载到修改后的东西。 nodemon 类似supervisor ，可以监控修改，自动重启,但是功能貌似更强，官方说可以支持任何语言。
+</p>
+
+<p>
+解决方案很简单：
+</p>
+<ul class="org-ul">
+<li>安装命令： `npm install nodemon &#x2013;save-dev`</li>
+<li>package.json的script配置一下: `&ldquo;dev&rdquo; :&ldquo;nodemon src/app.js &#x2013;exec babel-node &#x2013;presets es2015&rdquo;,`</li>
+</ul>
+
+<p>
+然后就放手去搞吧， npm run dev ！
+</p>
+
+<p>
+现成栗子已准备好，github[传送门](<a href="https://github.com/ThinkCats/ReactRouterServerRender">https://github.com/ThinkCats/ReactRouterServerRender</a>)
+</p>
+</main>
+<footer id="postamble" class="status">
+<div class='footer'>
+Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
+Last updated on Feb 07, 2023 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.2 (<a href="https://orgmode.org">Org</a> mode 9.6.15)
+</div>
+</footer>
+</body>
+</html>

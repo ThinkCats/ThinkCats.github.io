@@ -1,0 +1,1514 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- May 10, 2024 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Feed Flow基础设计</title>
+<meta name="author" content="ThinkCat" />
+<meta name="keywords" content="feed_flow post" />
+<meta name="generator" content="Org Mode" />
+<link rel='icon' type='image/x-icon' href='/images/favicon.ico'/>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel='stylesheet' href='https://code.cdn.mozilla.net/fonts/fira.css'>
+<link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
+<link rel='stylesheet' href='/css/custom.css' type='text/css'/>
+<link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="/"> UP </a>
+ |
+ <a accesskey="H" href="/"> HOME </a>
+</div><header id="top" class="status">
+
+ <!-- <div class='intro'>
+ <img src='/images/about/profile.png' alt='ThinkCat' class='no-border'/>
+<h3>ThinkCat</h3>
+ <p>一个简单的开发者</p> 
+</div>
+-->
+
+<div class='nav'>
+<ul>
+<li><b> ThinkCat </b> </li>
+<li>&nbsp;&nbsp;</li>
+<li><a href='/'>Blog</a>.</li>
+<li><a href='/about/'>About</a></li>
+</ul>
+</div>
+</header>
+<main id="content" class="content">
+<h1 class="title">Feed Flow基础设计
+<br />
+<span class="subtitle">发布于 Aug 18, 2020 by ThinkCat.</span>
+</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orga27c60c">功能</a></li>
+<li><a href="#org554400b">设计</a></li>
+<li><a href="#orgfdf3063">预估量：1000w用户</a></li>
+<li><a href="#orgb93f7af">方案</a>
+<ul>
+<li><a href="#org1966f01">基础架构</a>
+<ul>
+<li><a href="#orgbc6feff">工具</a></li>
+</ul>
+</li>
+<li><a href="#org374e855">持久化数据</a>
+<ul>
+<li><a href="#org9148c24">Account</a></li>
+<li><a href="#org2410291">Follow</a></li>
+<li><a href="#org243df8e">Focus</a></li>
+<li><a href="#org6a71fb8">Feed</a></li>
+<li><a href="#org0c42956">Feed_Comment</a></li>
+<li><a href="#org3095c09">Feed_Like_Account</a></li>
+<li><a href="#org202768a">Comment_Like_Account</a></li>
+<li><a href="#org5f5fcd4">IM [TODO]</a></li>
+</ul>
+</li>
+<li><a href="#org58fc544">缓存数据</a>
+<ul>
+<li><a href="#orgb417c67">1.手机验证码</a></li>
+<li><a href="#org0409ae3">2.点赞数据</a></li>
+<li><a href="#orgc899c89">3.用户推荐feed队列，上限1000</a></li>
+<li><a href="#orgb075fa4">4.用户在线状态</a></li>
+</ul>
+</li>
+<li><a href="#org58acd1e">接口设计</a>
+<ul>
+<li><a href="#org3868130">基本原则</a></li>
+<li><a href="#orgeb883b0">通用返回</a></li>
+<li><a href="#org87c80cb">账号</a></li>
+<li><a href="#orgf98cc59">Feed</a></li>
+<li><a href="#org97ce7bd">Comment</a></li>
+<li><a href="#org9aba30f">Like</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<section id="outline-container-orga27c60c" class="outline-2">
+<h2 id="orga27c60c">功能</h2>
+<div class="outline-text-2" id="text-orga27c60c">
+<p>
+做一个feed流项目，类似微博、朋友圈的功能，用户量预估比较小。主要有：
+</p>
+<ol class="org-ol">
+<li>用户注册、登录</li>
+<li>用户关系绑定：关注（加好友）、取关（删除好友），好友关系并非是严格的完整双向关系。</li>
+<li>feed流数据维护：关注下可见，取关不可见</li>
+<li>feed流数据可见性维护：仅限自己和好友</li>
+<li>点赞、评论功能，评论均可见</li>
+<li>好友聊天</li>
+</ol>
+</div>
+</section>
+
+<section id="outline-container-org554400b" class="outline-2">
+<h2 id="org554400b">设计</h2>
+<div class="outline-text-2" id="text-org554400b">
+<ol class="org-ol">
+<li>用户账号体系统一以mobile为唯一区分</li>
+<li>feed推模式：feed产生后，推送到不同的用户队列下</li>
+<li>推荐feed，feed_id推送到用户的redis队列中，队列保持固定大小，新的feed放到前面</li>
+<li>一条feed推送时候，可以按一定的规则，推送到不同的用户下</li>
+<li>读取过的feed从队列中移除，一个feed仅被浏览一次。队列变小时候，发起推送补充。</li>
+<li>推荐feed，翻页查询的时候，无需偏移量，仅需要limit</li>
+<li>关注feed，按focus关注关系表，关联到feed表中的account_id,查询feed(多线程并发查询，并发量与分表数相同，考虑使用countDownLatch模式)。</li>
+<li>分表策略：feed表按account_id分表</li>
+<li>采用redis队列维护推荐feed，队列需要保证进去过的feed，极少会再次进来(拉取后从队列中移除，触发推送补充，补充尽量随机从不同分表中获取feed,采用布隆过滤器)</li>
+</ol>
+</div>
+</section>
+
+<section id="outline-container-orgfdf3063" class="outline-2">
+<h2 id="orgfdf3063">预估量：1000w用户</h2>
+<div class="outline-text-2" id="text-orgfdf3063">
+<ol class="org-ol">
+<li>对应1000w的用户推荐feed队列，每个队列上限1000，内存不超过4G</li>
+<li>每个用户平均产生1000条feed，共100亿数据，分表256张，平均单表5000w数据量，优化索引，可以支持</li>
+<li>服务器CPU，内存性能，TODO</li>
+</ol>
+</div>
+</section>
+
+<section id="outline-container-orgb93f7af" class="outline-2">
+<h2 id="orgb93f7af">方案</h2>
+<div class="outline-text-2" id="text-orgb93f7af">
+</div>
+<div id="outline-container-org1966f01" class="outline-3">
+<h3 id="org1966f01">基础架构</h3>
+<div class="outline-text-3" id="text-org1966f01">
+</div>
+<div id="outline-container-orgbc6feff" class="outline-4">
+<h4 id="orgbc6feff">工具</h4>
+<div class="outline-text-4" id="text-orgbc6feff">
+<ol class="org-ol">
+<li>持久化： mysql</li>
+<li>缓存队列： redis</li>
+</ol>
+</div>
+</div>
+</div>
+<div id="outline-container-org374e855" class="outline-3">
+<h3 id="org374e855">持久化数据</h3>
+<div class="outline-text-3" id="text-org374e855">
+</div>
+<div id="outline-container-org9148c24" class="outline-4">
+<h4 id="org9148c24">Account</h4>
+<div class="outline-text-4" id="text-org9148c24">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">id</td>
+<td class="org-left">bigint</td>
+<td class="org-left">key</td>
+</tr>
+
+<tr>
+<td class="org-left">account</td>
+<td class="org-left">varchar(50)</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">password</td>
+<td class="org-left">varchar(50)</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">mobile</td>
+<td class="org-left">char(11)</td>
+<td class="org-left">unique</td>
+</tr>
+
+<tr>
+<td class="org-left">nick_name</td>
+<td class="org-left">varchar(30)</td>
+<td class="org-left">default:xxx</td>
+</tr>
+
+<tr>
+<td class="org-left">avatar</td>
+<td class="org-left">text</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">sex</td>
+<td class="org-left">tinyint</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">age</td>
+<td class="org-left">tinyint</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">area</td>
+<td class="org-left">char(100)</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">status_desc</td>
+<td class="org-left">char(100)</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">create_time</td>
+<td class="org-left">datetime</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">update_time</td>
+<td class="org-left">datetime</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+</div>
+</div>
+<div id="outline-container-org2410291" class="outline-4">
+<h4 id="org2410291">Follow</h4>
+<div class="outline-text-4" id="text-org2410291">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">id</td>
+<td class="org-left">bigint</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">account_id</td>
+<td class="org-left">bigint</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">follower_id</td>
+<td class="org-left">bigint</td>
+<td class="org-left">fans account id</td>
+</tr>
+
+<tr>
+<td class="org-left">create_time</td>
+<td class="org-left">datetime</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+</div>
+</div>
+
+<div id="outline-container-org243df8e" class="outline-4">
+<h4 id="org243df8e">Focus</h4>
+<div class="outline-text-4" id="text-org243df8e">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">id</td>
+<td class="org-left">bigint</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">account_id</td>
+<td class="org-left">bigint</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">focus_id</td>
+<td class="org-left">bigint</td>
+<td class="org-left">focus account id</td>
+</tr>
+
+<tr>
+<td class="org-left">create_time</td>
+<td class="org-left">datetime</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+</div>
+</div>
+
+<div id="outline-container-org6a71fb8" class="outline-4">
+<h4 id="org6a71fb8">Feed</h4>
+<div class="outline-text-4" id="text-org6a71fb8">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">id</td>
+<td class="org-left">bigint</td>
+<td class="org-left">key</td>
+</tr>
+
+<tr>
+<td class="org-left">account_id</td>
+<td class="org-left">bigint</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">body</td>
+<td class="org-left">text</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">files</td>
+<td class="org-left">text</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">area</td>
+<td class="org-left">varchar(50)</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">topic_ids</td>
+<td class="org-left">varchar(100)</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">visible_type</td>
+<td class="org-left">tinyint</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">likeCount</td>
+<td class="org-left">int</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">commentCount</td>
+<td class="org-left">int</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">delete</td>
+<td class="org-left">tinyint</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">create_time</td>
+<td class="org-left">datetime</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">soft_del_time</td>
+<td class="org-left">datetime</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+</div>
+</div>
+<div id="outline-container-org0c42956" class="outline-4">
+<h4 id="org0c42956">Feed_Comment</h4>
+<div class="outline-text-4" id="text-org0c42956">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">id</td>
+<td class="org-left">bigint</td>
+<td class="org-left">key</td>
+</tr>
+
+<tr>
+<td class="org-left">feedId</td>
+<td class="org-left">bigint</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">comment</td>
+<td class="org-left">text</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">account_id</td>
+<td class="org-left">bigint</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">create_time</td>
+<td class="org-left">datetime</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">update_time</td>
+<td class="org-left">datetime</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+</div>
+</div>
+<div id="outline-container-org3095c09" class="outline-4">
+<h4 id="org3095c09">Feed_Like_Account</h4>
+<div class="outline-text-4" id="text-org3095c09">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">id</td>
+<td class="org-left">bigint</td>
+<td class="org-left">key</td>
+</tr>
+
+<tr>
+<td class="org-left">feedId</td>
+<td class="org-left">bigint</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">likeAccountId</td>
+<td class="org-left">bigint</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">create_time</td>
+<td class="org-left">datetime</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">update_time</td>
+<td class="org-left">datetime</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+</div>
+</div>
+<div id="outline-container-org202768a" class="outline-4">
+<h4 id="org202768a">Comment_Like_Account</h4>
+<div class="outline-text-4" id="text-org202768a">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">id</td>
+<td class="org-left">bigint</td>
+<td class="org-left">key</td>
+</tr>
+
+<tr>
+<td class="org-left">commentId</td>
+<td class="org-left">bigint</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">likeAccountId</td>
+<td class="org-left">bigint</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">create_time</td>
+<td class="org-left">datetime</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">update_time</td>
+<td class="org-left">datetime</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+<div id="outline-container-org5f5fcd4" class="outline-4">
+<h4 id="org5f5fcd4">IM [TODO]</h4>
+</div>
+</div>
+
+<div id="outline-container-org58fc544" class="outline-3">
+<h3 id="org58fc544">缓存数据</h3>
+<div class="outline-text-3" id="text-org58fc544">
+</div>
+<div id="outline-container-orgb417c67" class="outline-4">
+<h4 id="orgb417c67">1.手机验证码</h4>
+<div class="outline-text-4" id="text-orgb417c67">
+<p>
+key: type + mobile, value(String): verify_code
+</p>
+</div>
+</div>
+<div id="outline-container-org0409ae3" class="outline-4">
+<h4 id="org0409ae3">2.点赞数据</h4>
+<div class="outline-text-4" id="text-org0409ae3">
+<p>
+key: type + feed_id, value(List): 点赞的账号id
+</p>
+</div>
+</div>
+<div id="outline-container-orgc899c89" class="outline-4">
+<h4 id="orgc899c89">3.用户推荐feed队列，上限1000</h4>
+<div class="outline-text-4" id="text-orgc899c89">
+<p>
+key：type + account_id, value(List): feed_id
+</p>
+</div>
+</div>
+<div id="outline-container-orgb075fa4" class="outline-4">
+<h4 id="orgb075fa4">4.用户在线状态</h4>
+<div class="outline-text-4" id="text-orgb075fa4">
+<p>
+key: type + account_id, 有时效性，过期则认为不在线
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org58acd1e" class="outline-3">
+<h3 id="org58acd1e">接口设计</h3>
+<div class="outline-text-3" id="text-org58acd1e">
+</div>
+<div id="outline-container-org3868130" class="outline-4">
+<h4 id="org3868130">基本原则</h4>
+<div class="outline-text-4" id="text-org3868130">
+<p>
+除账户注册与登录接口，其他接口均需访问时候，在Header中增加token。
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgeb883b0" class="outline-4">
+<h4 id="orgeb883b0">通用返回</h4>
+<div class="outline-text-4" id="text-orgeb883b0">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">success</td>
+<td class="org-left">Boolean</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">code</td>
+<td class="org-left">Integer</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">errMsg</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">data</td>
+<td class="org-left">&lt;T&gt;</td>
+<td class="org-left">业务数据</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-org87c80cb" class="outline-4">
+<h4 id="org87c80cb">账号</h4>
+<div class="outline-text-4" id="text-org87c80cb">
+</div>
+<ul class="org-ul">
+<li><a id="org1b1eaff"></a>注册<br />
+<div class="outline-text-5" id="text-org1b1eaff">
+<p>
+url:[Post]  /api/account/regist
+</p>
+
+<p>
+入参：
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">account</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">password</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">mobile</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">verifyCode</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">type</td>
+<td class="org-left">Integer</td>
+<td class="org-left">Regist Type</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+出参： 通用返回
+</p>
+<hr />
+</div>
+</li>
+
+<li><a id="org2980ad3"></a>登录<br />
+<div class="outline-text-5" id="text-org2980ad3">
+<p>
+url:[Post] /api/account/login
+</p>
+
+<p>
+入参：
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">account</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">password</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">mobile</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">verifyCode</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">type</td>
+<td class="org-left">Integer</td>
+<td class="org-left">Regist Type</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+出参： 通用返回+业务数据 T&lt;String&gt;: token
+</p>
+
+<hr />
+</div>
+</li>
+<li><a id="org1399327"></a>更新基本信息<br />
+<div class="outline-text-5" id="text-org1399327">
+<p>
+url:[Post] /api/account/update
+</p>
+
+<p>
+入参：
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">accountId</td>
+<td class="org-left">Long</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">nickname</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">age</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">avatar</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+出参： 通用返回
+</p>
+
+<hr />
+</div>
+</li>
+<li><a id="orgfce144f"></a>换绑手机<br />
+<div class="outline-text-5" id="text-orgfce144f">
+<p>
+url:[Post] /api/account/bindMobile
+</p>
+
+<p>
+入参：
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">accountId</td>
+<td class="org-left">Long</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">mobile</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">verifyCode</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+出参： 通用返回
+</p>
+
+<hr />
+</div>
+</li>
+<li><a id="orga201e1f"></a>查询账号信息<br />
+<div class="outline-text-5" id="text-orga201e1f">
+<p>
+url:[Get] /api/account/{accountId}
+</p>
+
+<p>
+出参：通用返回+业务数据 T (结构如下)
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">accountId</td>
+<td class="org-left">Long</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">nickname</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">age</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">avatar</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">mobile</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">area</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">status_desc</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-orgf98cc59" class="outline-4">
+<h4 id="orgf98cc59">Feed</h4>
+<div class="outline-text-4" id="text-orgf98cc59">
+</div>
+<ul class="org-ul">
+<li><a id="org5a10939"></a>发表内容<br />
+<div class="outline-text-5" id="text-org5a10939">
+<p>
+url: [Post] /api/feed/post
+</p>
+
+<p>
+入参：
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">body</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">files</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">area</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">topics</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">visibleType</td>
+<td class="org-left">Integer</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<hr />
+</div>
+</li>
+<li><a id="org556eb51"></a>拉取内容/列表<br />
+<div class="outline-text-5" id="text-org556eb51">
+<p>
+url: [Get] /api/feed /[list]
+</p>
+
+<p>
+入参：
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">type</td>
+<td class="org-left">Integer</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">offset</td>
+<td class="org-left">Integer</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">size</td>
+<td class="org-left">Integer</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>
+出参：业务数据 [List]&lt;T&gt;
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">body</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">files</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">area</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">topics</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">likeCount</td>
+<td class="org-left">Integer</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">commentCount</td>
+<td class="org-left">Integer</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">postTime</td>
+<td class="org-left">Date</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org97ce7bd" class="outline-4">
+<h4 id="org97ce7bd">Comment</h4>
+<div class="outline-text-4" id="text-org97ce7bd">
+</div>
+<ul class="org-ul">
+<li><a id="org343a12d"></a>发布评论<br />
+<div class="outline-text-5" id="text-org343a12d">
+<p>
+url:[Post] /api/comment
+</p>
+
+<p>
+入参：
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">feedId</td>
+<td class="org-left">Long</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">writerAccount</td>
+<td class="org-left">Long</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">comment</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">files</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">likeCount</td>
+<td class="org-left">Integer</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>
+出参：通用返回
+</p>
+
+<hr />
+</div>
+</li>
+<li><a id="orgb5bda90"></a>获取评论<br />
+<div class="outline-text-5" id="text-orgb5bda90">
+<p>
+url: [Get] /api/comment/list
+</p>
+
+<p>
+入参：
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">feedId</td>
+<td class="org-left">Long</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">accountId</td>
+<td class="org-left">Long</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">offset</td>
+<td class="org-left">Integer</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">size</td>
+<td class="org-left">Integer</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+出参: 业务数据 T
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">feedId</td>
+<td class="org-left">Long</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">writerAccount</td>
+<td class="org-left">Long</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">comment</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">files</td>
+<td class="org-left">String</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-left">likeCount</td>
+<td class="org-left">Integer</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+</ul>
+</div>
+
+<div id="outline-container-org9aba30f" class="outline-4">
+<h4 id="org9aba30f">Like</h4>
+<div class="outline-text-4" id="text-org9aba30f">
+</div>
+<ul class="org-ul">
+<li><a id="org5890ea2"></a>点赞<br />
+<div class="outline-text-5" id="text-org5890ea2">
+<p>
+url:[Post] /api/like
+</p>
+
+<p>
+入参:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">字段</th>
+<th scope="col" class="org-left">类型</th>
+<th scope="col" class="org-left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">likeId</td>
+<td class="org-left">Long</td>
+<td class="org-left">feedId or CommentId</td>
+</tr>
+
+<tr>
+<td class="org-left">likeType</td>
+<td class="org-left">Integer</td>
+<td class="org-left">feed or comment</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</section>
+</main>
+<footer id="postamble" class="status">
+<div class='footer'>
+Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
+Last updated on Feb 07, 2023 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.2 (<a href="https://orgmode.org">Org</a> mode 9.6.15)
+</div>
+</footer>
+</body>
+</html>

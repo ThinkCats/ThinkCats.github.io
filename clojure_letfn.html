@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- May 10, 2024 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Clojure垃圾函数系列-「letfn」</title>
+<meta name="author" content="ThinkCat" />
+<meta name="keywords" content="clojure post" />
+<meta name="generator" content="Org Mode" />
+<link rel='icon' type='image/x-icon' href='/images/favicon.ico'/>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel='stylesheet' href='https://code.cdn.mozilla.net/fonts/fira.css'>
+<link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
+<link rel='stylesheet' href='/css/custom.css' type='text/css'/>
+<link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="/"> UP </a>
+ |
+ <a accesskey="H" href="/"> HOME </a>
+</div><header id="top" class="status">
+
+ <!-- <div class='intro'>
+ <img src='/images/about/profile.png' alt='ThinkCat' class='no-border'/>
+<h3>ThinkCat</h3>
+ <p>一个简单的开发者</p> 
+</div>
+-->
+
+<div class='nav'>
+<ul>
+<li><b> ThinkCat </b> </li>
+<li>&nbsp;&nbsp;</li>
+<li><a href='/'>Blog</a>.</li>
+<li><a href='/about/'>About</a></li>
+</ul>
+</div>
+</header>
+<main id="content" class="content">
+<h1 class="title">Clojure垃圾函数系列-「letfn」
+<br />
+<span class="subtitle">发布于 Aug 08, 2018 by ThinkCat.</span>
+</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org06b1eea">函数样例</a></li>
+<li><a href="#org795aa8c">说明一下</a></li>
+</ul>
+</div>
+</div>
+<p>
+letfn实际上是一个可有可无的函数，它的存在大概是想再拯救一下手残的你。
+</p>
+<!-- more -->
+
+
+<section id="outline-container-org06b1eea" class="outline-2">
+<h2 id="org06b1eea">函数样例</h2>
+<div class="outline-text-2" id="text-org06b1eea">
+<div class="org-src-container">
+<pre class="src src-clojure">;;样例1
+(letfn [(plus [x] (+ 2 x)) (gg [y] (- 22 y))]
+  ;;do something with plus and gg
+  (+ (plus 11) (gg 2))
+  )
+;; result: 33
+
+;;样例2
+(defn do-something [item]
+  ;;do something using letfn
+  (letfn [(eat [x] (println "eat:" x))
+          (sleep [y] (println "sleep:" y))]
+    ;;do
+    (eat item)
+    (sleep item)
+    )
+  )
+(do-something "hehe")
+
+;;result: nil
+;;打印以下内容:
+;; eat: hehe
+;; sleep: hehe
+
+</pre>
+</div>
+
+<p>
+样例1，就返回一个数值而已。然后样例2，传入一个参数，参与letfn的内部计算，有副作用的无返回值。
+</p>
+</div>
+</section>
+
+<section id="outline-container-org795aa8c" class="outline-2">
+<h2 id="org795aa8c">说明一下</h2>
+<div class="outline-text-2" id="text-org795aa8c">
+<p>
+letfn允许像解构绑定数据一样，去声明一个函数。当然，可以不用这么写，可以直接把函数写到外部，然后去调用。
+</p>
+
+<p>
+也没什么不对，只是对于一些辅助性质的专用小函数，放这里还是挺方便的。
+</p>
+
+<p>
+毕竟是用来拯救手残的。
+</p>
+</div>
+</section>
+</main>
+<footer id="postamble" class="status">
+<div class='footer'>
+Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
+Last updated on Feb 07, 2023 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.2 (<a href="https://orgmode.org">Org</a> mode 9.6.15)
+</div>
+</footer>
+</body>
+</html>

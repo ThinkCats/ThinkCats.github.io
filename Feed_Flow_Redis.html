@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- May 10, 2024 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Feed Flow 准备工作 - 推荐设计</title>
+<meta name="author" content="ThinkCat" />
+<meta name="keywords" content="redis post" />
+<meta name="generator" content="Org Mode" />
+<link rel='icon' type='image/x-icon' href='/images/favicon.ico'/>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel='stylesheet' href='https://code.cdn.mozilla.net/fonts/fira.css'>
+<link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
+<link rel='stylesheet' href='/css/custom.css' type='text/css'/>
+<link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="/"> UP </a>
+ |
+ <a accesskey="H" href="/"> HOME </a>
+</div><header id="top" class="status">
+
+ <!-- <div class='intro'>
+ <img src='/images/about/profile.png' alt='ThinkCat' class='no-border'/>
+<h3>ThinkCat</h3>
+ <p>一个简单的开发者</p> 
+</div>
+-->
+
+<div class='nav'>
+<ul>
+<li><b> ThinkCat </b> </li>
+<li>&nbsp;&nbsp;</li>
+<li><a href='/'>Blog</a>.</li>
+<li><a href='/about/'>About</a></li>
+</ul>
+</div>
+</header>
+<main id="content" class="content">
+<h1 class="title">Feed Flow 准备工作 - 推荐设计
+<br />
+<span class="subtitle">发布于 Aug 22, 2020 by ThinkCat.</span>
+</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org2f0fa67">重复率低的推荐</a>
+<ul>
+<li><a href="#orgb9a8bab">实现</a></li>
+<li><a href="#org5359347">流程</a>
+<ul>
+<li><a href="#org6b17c4e">推送消息</a></li>
+<li><a href="#org91a4bfd">拉取消息</a></li>
+<li><a href="#orged6efc8">复杂情况</a></li>
+</ul>
+</li>
+<li><a href="#org6c4eb5f">Redis 布隆过滤器模块</a>
+<ul>
+<li><a href="#org3920e46">安装</a></li>
+<li><a href="#org5007736">启动</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<section id="outline-container-org2f0fa67" class="outline-2">
+<h2 id="org2f0fa67">重复率低的推荐</h2>
+<div class="outline-text-2" id="text-org2f0fa67">
+</div>
+<div id="outline-container-orgb9a8bab" class="outline-3">
+<h3 id="orgb9a8bab">实现</h3>
+<div class="outline-text-3" id="text-orgb9a8bab">
+<p>
+为了简单快速做到推荐的内容，用户浏览后，就不会或者极少概率再次看到。采用布隆过滤器方式。
+</p>
+
+<p>
+实现原理：维护一个已读集合，里面有10亿个元素，每次给接收人推队列的时候，监测这个接收人的这个消息是不是在这个集合中，不在的话再推给该人的队列。
+</p>
+
+<p>
+过滤器元素： receiverID+feedId。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org5359347" class="outline-3">
+<h3 id="org5359347">流程</h3>
+<div class="outline-text-3" id="text-org5359347">
+<p>
+用户拉取到了信息，那么这条信息就可以标记为已读。用户队列正常发送最新信息，放入前也保证信息是不包括已读的。
+</p>
+</div>
+<div id="outline-container-org6b17c4e" class="outline-4">
+<h4 id="org6b17c4e">推送消息</h4>
+<div class="outline-text-4" id="text-org6b17c4e">
+<ol class="org-ol">
+<li>消息产生：推给receiverId, 该用户必须在线，不在线不推送。检查（receiverId+feedId）是否是已读的，非已读的，才会往receiverId的队列中放消息（最新消息）</li>
+
+<li>补充推送：按规则获取feed，推送到队列。或许会存在性能问题。</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org91a4bfd" class="outline-4">
+<h4 id="org91a4bfd">拉取消息</h4>
+<div class="outline-text-4" id="text-org91a4bfd">
+<p>
+拉取到消息，标记消息已读。同时将拉取的消息从队列中移除，再发起【补充推送】。
+</p>
+
+<p>
+redis里面创建了一个10亿数量的已读集合，0.0001误差率的过滤器，内存使用是 2.40G。这个量级可以接受。再说这个10亿的已读量，按100w活跃用户，每人一天读100条，10天才会占满。10天后，该过滤器作废，再重建集合（可能会导致10天前的数据会重新推送给用户）
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orged6efc8" class="outline-4">
+<h4 id="orged6efc8">复杂情况</h4>
+<div class="outline-text-4" id="text-orged6efc8">
+<p>
+产生消息的数据量，远远低于拉取量，会导致用户队列中内容为空，即是：无新增的消息。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org6c4eb5f" class="outline-3">
+<h3 id="org6c4eb5f">Redis 布隆过滤器模块</h3>
+<div class="outline-text-3" id="text-org6c4eb5f">
+</div>
+<div id="outline-container-org3920e46" class="outline-4">
+<h4 id="org3920e46">安装</h4>
+<div class="outline-text-4" id="text-org3920e46">
+<div class="org-src-container">
+<pre class="src src-shell">git clone https://github.com/RedisBloom/RedisBloom.git
+<span class="org-builtin">cd</span> RedisBloom
+make
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5007736" class="outline-4">
+<h4 id="org5007736">启动</h4>
+<div class="outline-text-4" id="text-org5007736">
+<p>
+安装后，在 RedisBloom 目录中，生成 redisbloom.so 文件，拷贝到 redis 目录下，启动 redis 时候进行加载。
+</p>
+<div class="org-src-container">
+<pre class="src src-shell"><span class="org-comment-delimiter"># </span><span class="org-comment">&#22312;redis&#30446;&#24405;&#19979;</span>
+./src/redis-server --loadmodule ./redisbloom.so
+</pre>
+</div>
+
+<p>
+该命令可以做成一个shell脚本。
+</p>
+
+<p>
+详细参考：<a href="https://oss.redislabs.com/redisbloom/Quick_Start/">https://oss.redislabs.com/redisbloom/Quick_Start/</a>
+</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer id="postamble" class="status">
+<div class='footer'>
+Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
+Last updated on Feb 07, 2023 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.2 (<a href="https://orgmode.org">Org</a> mode 9.6.15)
+</div>
+</footer>
+</body>
+</html>

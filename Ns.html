@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- May 10, 2024 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Clojure NS</title>
+<meta name="author" content="HeHe" />
+<meta name="keywords" content="clojure" />
+<meta name="generator" content="Org Mode" />
+<link rel='icon' type='image/x-icon' href='/images/favicon.ico'/>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel='stylesheet' href='https://code.cdn.mozilla.net/fonts/fira.css'>
+<link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
+<link rel='stylesheet' href='/css/custom.css' type='text/css'/>
+<link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="/"> UP </a>
+ |
+ <a accesskey="H" href="/"> HOME </a>
+</div><header id="top" class="status">
+
+ <!-- <div class='intro'>
+ <img src='/images/about/profile.png' alt='ThinkCat' class='no-border'/>
+<h3>ThinkCat</h3>
+ <p>一个简单的开发者</p> 
+</div>
+-->
+
+<div class='nav'>
+<ul>
+<li><b> ThinkCat </b> </li>
+<li>&nbsp;&nbsp;</li>
+<li><a href='/'>Blog</a>.</li>
+<li><a href='/about/'>About</a></li>
+</ul>
+</div>
+</header>
+<main id="content" class="content">
+<header>
+<h1 class="title">Clojure NS</h1>
+</header><nav id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org8b8def6">use</a></li>
+<li><a href="#org28134c1">require</a></li>
+<li><a href="#org421f9a7">reload &amp; reload-all</a></li>
+<li><a href="#org186ac7d">import</a></li>
+<li><a href="#org5dd498b">简洁的方式</a></li>
+</ul>
+</div>
+</nav>
+<p>
+ns 类似 java 的 import 包系统。
+</p>
+<!-- more -->
+
+<section id="outline-container-org8b8def6" class="outline-2">
+<h2 id="org8b8def6">use</h2>
+<div class="outline-text-2" id="text-org8b8def6">
+<p>
+使用样例：
+</p>
+<div class="org-src-container">
+<pre class="src src-clojure">(ns org.currylogic.damages.http.expenses)
+(use 'org.danlarkin.json)
+(use 'clojure.xml)
+
+(defn import-transactions-xml-from-bank [url]
+  (let [xml-document (parse url)]
+    ;; more code here
+(defn totals-by-day [start-date end-date]
+  (let [expenses-by-day (load-totals start-date end-date)]
+    (encode-to-str expenses-by-day)))
+</pre>
+</div>
+
+<p>
+use takes all public functions from the namespace and includes them in the current namespace. 
+</p>
+
+<p>
+encode-to-str 和 parse 是来自于引入的外部函数，使用 use 可以获取到这些函数，但是会摸不到头脑：这些函数是在哪里定义的？
+</p>
+
+<p>
+更简洁的，使用 require.
+</p>
+</div>
+</section>
+
+<section id="outline-container-org28134c1" class="outline-2">
+<h2 id="org28134c1">require</h2>
+<div class="outline-text-2" id="text-org28134c1">
+<p>
+使用样例:
+</p>
+<div class="org-src-container">
+<pre class="src src-clojure">(ns org.currylogic.damages.http.expenses)
+(require '(org.danlarkin [json :as json-lib]))
+(require '(clojure [xml :as xml-core]))
+
+(defn import-transactions-xml-from-bank [url]
+  (let [xml-document (xml-core/parse url)]
+    ;; more code here
+(defn totals-by-day [start-date end-date]
+  (let [expenses-by-day (load-totals start-date end-date)]
+    (json-lib/encode-to-str expenses-by-day)))
+</pre>
+</div>
+
+<p>
+这样在调用外部函数的时候，能明确知道函数来源于哪里，并且可以为外部的ns设置别名。
+</p>
+</div>
+</section>
+
+<section id="outline-container-org421f9a7" class="outline-2">
+<h2 id="org421f9a7">reload &amp; reload-all</h2>
+<div class="outline-text-2" id="text-org421f9a7">
+<p>
+使用样例:
+</p>
+<div class="org-src-container">
+<pre class="src src-clojure">(use 'org.currylogic.damages.http.expenses :reload)
+(require '(org.currylogic.damages.http [expenses :as exp]) :reload)
+</pre>
+</div>
+
+<p>
+引入其他 ns 中的函数， 当这些函数发生改动，使用 reload 可以得到更新。(:reload can be replaced with :reload-all to reload all libraries that are used either directly or indirectly by the specified library.)
+</p>
+</div>
+</section>
+
+<section id="outline-container-org186ac7d" class="outline-2">
+<h2 id="org186ac7d">import</h2>
+<div class="outline-text-2" id="text-org186ac7d">
+<p>
+使用样例：
+</p>
+<div class="org-src-container">
+<pre class="src src-clojure">(import '(org.apache.hadoop.hbase.client HTable Scan Scanner)
+        '(org.apache.hadoop.hbase.filter RegExpRowFilter StopRowFilter))
+</pre>
+</div>
+
+<p>
+import 用于导入 java 包。
+</p>
+</div>
+</section>
+
+<section id="outline-container-org5dd498b" class="outline-2">
+<h2 id="org5dd498b">简洁的方式</h2>
+<div class="outline-text-2" id="text-org5dd498b">
+<div class="org-src-container">
+<pre class="src src-clojure">(ns my-great-project.core
+  "This namespace is CRAZY!"
+  (:use [clojure.string :only [split join]] :reload)
+  (:require clojure.stacktrace
+            [clojure.test :as test])
+  (:import (java.util Date GregorianCalendar)))
+</pre>
+</div>
+</div>
+</section>
+</main>
+<footer id="postamble" class="status">
+<div class='footer'>
+Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
+Last updated on Feb 07, 2023 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.2 (<a href="https://orgmode.org">Org</a> mode 9.6.15)
+</div>
+</footer>
+</body>
+</html>

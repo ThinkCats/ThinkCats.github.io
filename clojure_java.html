@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- May 10, 2024 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Clojure 与 Java 交互</title>
+<meta name="author" content="HeHe" />
+<meta name="keywords" content="clojure, java" />
+<meta name="generator" content="Org Mode" />
+<link rel='icon' type='image/x-icon' href='/images/favicon.ico'/>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel='stylesheet' href='https://code.cdn.mozilla.net/fonts/fira.css'>
+<link rel='stylesheet' href='/css/site.css?v=2' type='text/css'/>
+<link rel='stylesheet' href='/css/custom.css' type='text/css'/>
+<link rel='stylesheet' href='/css/syntax-coloring.css' type='text/css'/>
+<script>
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+// @license-end
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="/"> UP </a>
+ |
+ <a accesskey="H" href="/"> HOME </a>
+</div><header id="top" class="status">
+
+ <!-- <div class='intro'>
+ <img src='/images/about/profile.png' alt='ThinkCat' class='no-border'/>
+<h3>ThinkCat</h3>
+ <p>一个简单的开发者</p> 
+</div>
+-->
+
+<div class='nav'>
+<ul>
+<li><b> ThinkCat </b> </li>
+<li>&nbsp;&nbsp;</li>
+<li><a href='/'>Blog</a>.</li>
+<li><a href='/about/'>About</a></li>
+</ul>
+</div>
+</header>
+<main id="content" class="content">
+<header>
+<h1 class="title">Clojure 与 Java 交互</h1>
+</header><nav id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org5cf544f">使用 java 文件</a></li>
+<li><a href="#org3be5895">创建实例</a></li>
+<li><a href="#org8200a2b">方法和成员变量</a>
+<ul>
+<li><a href="#orga335717">静态方法</a></li>
+<li><a href="#org3b123d4">公开非静态方法</a></li>
+<li><a href="#org63bc91d">公开成员变量</a></li>
+</ul>
+</li>
+<li><a href="#orgfaec744">.. 宏</a></li>
+<li><a href="#org595e353">doto</a></li>
+</ul>
+</div>
+</nav>
+<p>
+作为活在jvm上的语言，并且把使用 java 库作为自己的优势，与 java 的调用绝不可避免。所以，这个知识很重要。
+</p>
+<!-- more -->
+
+<section id="outline-container-org5cf544f" class="outline-2">
+<h2 id="org5cf544f">使用 java 文件</h2>
+<div class="outline-text-2" id="text-org5cf544f">
+<p>
+之前在 ns 中，有说过这个，如何引入 java 的文件。
+</p>
+
+<p>
+语法: <b>(import &amp; import-symbols-or-lists)</b>
+</p>
+
+<p>
+实例:
+</p>
+<div class="org-src-container">
+<pre class="src src-clojure">(import
+         '(org.apache.hadoop.hbase.client HTable Scan Scanner)
+          '(org.apache.hadoop.hbase.filter RegExpRowFilter StopRowFilter))
+
+;; 或者
+(ns com.clojureinaction.book
+  (:import (java.util Set)))
+</pre>
+</div>
+</div>
+</section>
+
+<section id="outline-container-org3be5895" class="outline-2">
+<h2 id="org3be5895">创建实例</h2>
+<div class="outline-text-2" id="text-org3be5895">
+<p>
+一个实例的创建，通过类名和一个点(.)即可，如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-clojure">(import '(java.text SimpleDateFormat))
+(def sdf (Simpledateformat. "yyyy-MM-dd"))
+</pre>
+</div>
+</div>
+</section>
+
+<section id="outline-container-org8200a2b" class="outline-2">
+<h2 id="org8200a2b">方法和成员变量</h2>
+<div class="outline-text-2" id="text-org8200a2b">
+</div>
+<div id="outline-container-orga335717" class="outline-3">
+<h3 id="orga335717">静态方法</h3>
+<div class="outline-text-3" id="text-orga335717">
+<p>
+静态方法调用，语法: <b>(Classname/staticMethod args</b>)。
+</p>
+
+<p>
+实例如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-clojure">(Long/parseLong "12321")
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3b123d4" class="outline-3">
+<h3 id="org3b123d4">公开非静态方法</h3>
+<div class="outline-text-3" id="text-org3b123d4">
+<p>
+采用一个 <b>.</b> 宏操作符号,实例如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-clojure">(defn date-from-date-string [date-string]
+  (let [sdf (SimpleDateFormat. "yyyy-MM-dd")]
+    (.parse sdf date-string)))
+</pre>
+</div>
+
+<p>
+同时还有一种方法，格式为: 
+<b>(. Classname-symbol method-symbol args</b>) 或者 <b>(. Classname-symbol (method-symbol args</b>))
+</p>
+
+<p>
+实例如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-clojure">(import '(java.util Random))
+(let [rnd (Random. )]
+  (. rnd (nextInt 10)))
+;; 也可以写成: (.nextInt rnd 10)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org63bc91d" class="outline-3">
+<h3 id="org63bc91d">公开成员变量</h3>
+<div class="outline-text-3" id="text-org63bc91d">
+<p>
+使用 <b>.</b> 宏操作，还可以获取到类的成员变量，格式为：
+<b>(. Classname-symbol member-symbol)</b> 或者 <b>(. instance-expr member-symbol)</b> 。
+</p>
+
+<p>
+实例如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-clojure">(. Calendar DECEMBER)
+</pre>
+</div>
+</div>
+</div>
+</section>
+
+<section id="outline-container-orgfaec744" class="outline-2">
+<h2 id="orgfaec744">.. 宏</h2>
+<div class="outline-text-2" id="text-orgfaec744">
+<p>
+写过 java 的都知道，这个语言比较啰嗦。以 《Clojure in Action》中的获取当前时区名字为例， 按照 <b>.</b> 的用法，是可以逐步获取日历的实例，然后点操作获取时区类，再点操作获取时区名，需要进行嵌套，代码比较冗长，会是下面这个样子：
+</p>
+<div class="org-src-container">
+<pre class="src src-clojure">(import '(java.util Calendar TimeZone))
+(. (. (Calendar/getInstance) (getTimeZone)) (getDisplayName))
+</pre>
+</div>
+
+<p>
+这样的代码看上去简直难以接受，类的获取再深入一点，可能要嵌套多层。 <b>..</b> 宏就是应对这个问题的，使用 <b>..</b> 之后，代码如下:
+</p>
+<div class="org-src-container">
+<pre class="src src-clojure">(import '(java.util Calendar TimeZone))
+(..
+  (Calendar/getInstance)
+  (getTimeZone)
+  (getDisplayName true TimeZone/SHORT))
+</pre>
+</div>
+<p>
+最后一个 getDisplayname 方法接收了两个参数。
+</p>
+</div>
+</section>
+
+<section id="outline-container-org595e353" class="outline-2">
+<h2 id="org595e353">doto</h2>
+<div class="outline-text-2" id="text-org595e353">
+<p>
+doto 是一个懒人宏，主要是为了一个实例，连续调用它的N个方法设立的。比如以下这个给日历设置时间的操作：
+</p>
+<div class="org-src-container">
+<pre class="src src-clojure">(import '(java.util Calendar))
+(defn the-past-midnight-1 []
+  (let [calendar-obj (Calendar/getInstance)]
+    (.set calendar-obj Calendar/AM_PM Calendar/AM)
+    (.set calendar-obj Calendar/HOUR 0)
+    (.set calendar-obj Calendar/MINUTE 0)
+    (.set calendar-obj Calendar/SECOND 0)
+    (.set calendar-obj Calendar/MILLISECOND 0)
+    (.getTime calendar-obj)))
+</pre>
+</div>
+
+<p>
+有了 doto 后，会少一些代码。如下：
+</p>
+<div class="org-src-container">
+<pre class="src src-clojure">(defn the-past-midnight-2 []
+  (let [calendar-obj (Calendar/getInstance)]
+    (doto calendar-obj
+      (.set Calendar/AM_PM Calendar/AM)
+      (.set Calendar/HOUR 0)
+      (.set Calendar/MINUTE 0)
+      (.set Calendar/SECOND 0)
+      (.set Calendar/MILLISECOND 0))
+    (.getTime calendar-obj)))
+</pre>
+</div>
+
+<p>
+常用的操作就这些，很实用很不错。
+</p>
+</div>
+</section>
+</main>
+<footer id="postamble" class="status">
+<div class='footer'>
+Copyright © 2020 <a href='mailto:juepei123@gmail.com'>ThinkCat</a><br>
+Last updated on Feb 07, 2023 using <a href="https://www.gnu.org/software/emacs/">Emacs</a> 29.2 (<a href="https://orgmode.org">Org</a> mode 9.6.15)
+</div>
+</footer>
+</body>
+</html>

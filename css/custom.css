@@ -1,0 +1,31 @@
+body img {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    border: none;
+    width: 100%;
+}
+body .pubdate {
+    border-bottom: none;
+    text-align:left;
+}
+
+figcaption {
+    text-align: center;
+}
+
+#table-of-contents {
+    position: fixed;
+    float: right;
+    right: 100px;
+    top: 80px;
+}
+
+figure {}
+
+figure img {
+    width: 100%;
+}
+
+
+
